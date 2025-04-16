@@ -7,6 +7,7 @@ import networking.requesthandlers.UserRequestHandler;
 import persistence.daos.user.UserDao;
 import persistence.daos.user.UserJsonFileDao;
 import persistence.daos.user.UserListDao;
+import persistence.daos.user.UserPostgresDao;
 import services.authentication.AuthServiceImpl;
 import services.authentication.AuthenticationService;
 import services.user.UserService;
@@ -56,7 +57,7 @@ public class ServiceProvider
 
     private static UserDao getUserDao()
     {
-        return new UserJsonFileDao();
+        return new UserPostgresDao();
     }
 
 

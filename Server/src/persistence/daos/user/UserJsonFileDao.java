@@ -20,7 +20,7 @@ public class UserJsonFileDao implements UserDao
         if (!new File("Users.json").exists())
         {
             UserList users = new UserList(new ArrayList<>(Arrays.asList(
-                    new User("trmo@via.dk", "1234", "Troels", "Mortensen"),
+                    new User(",trmo@via.dk", "1234", "Troels", "Mortensen"),
                     new User("jaja@gmail.com", "1234", "Jakob", "Jakobsen"),
                     new User("pepe@gmail.com", "1234", "Peter", "Petersen"),
                     new User("jeje@gmail.com", "1234", "Jens", "Jensen"),
@@ -112,7 +112,7 @@ public class UserJsonFileDao implements UserDao
     }
 
     @Override
-    public List<User> getMany(int pageIndex, int pageSize, String firstNameContains)
+    public List<User> getMany(String firstNameContains)
     {
         try
         {
@@ -128,10 +128,8 @@ public class UserJsonFileDao implements UserDao
                 }
             }
 
-            int fromIndex = Math.min(pageIndex * pageSize, filtered.size());
-            int toIndex = Math.min(fromIndex + pageSize, filtered.size());
 
-            return filtered.subList(fromIndex, toIndex);
+            return filtered;
         }
         catch (ParserException e)
         {

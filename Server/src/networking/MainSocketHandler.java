@@ -14,6 +14,7 @@ import utilities.logging.Logger;
 
 import java.io.*;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.Arrays;
 
 public class MainSocketHandler implements Runnable
@@ -98,7 +99,8 @@ public class MainSocketHandler implements Runnable
         }
     }
 
-    private void handleRequest(ObjectInputStream incomingData, ObjectOutputStream outgoingData) throws IOException, ClassNotFoundException
+    private void handleRequest(ObjectInputStream incomingData, ObjectOutputStream outgoingData)
+        throws IOException, ClassNotFoundException, SQLException
     {
         Request request = (Request) incomingData.readObject();
         logger.log("Incoming request: " + request.handler() + "/" + request.action() + ". Body: " + request.payload(), LogLevel.INFO);

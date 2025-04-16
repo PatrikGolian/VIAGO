@@ -5,6 +5,8 @@ import dtos.auth.RegisterUserRequest;
 import networking.exceptions.InvalidActionException;
 import services.authentication.AuthenticationService;
 
+import java.sql.SQLException;
+
 public class AuthRequestHandler implements RequestHandler
 {
     private final AuthenticationService authenticationService;
@@ -15,7 +17,7 @@ public class AuthRequestHandler implements RequestHandler
     }
 
     @Override
-    public Object handle(String action, Object payload)
+    public Object handle(String action, Object payload) throws SQLException
     {
         // Some methods can return something, some do not. Logging in? If no exceptions are thrown, success could be assumed.
         // Here, though, I explicitly return "OK", just as an example. I don't really use it.

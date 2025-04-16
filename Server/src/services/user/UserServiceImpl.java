@@ -9,6 +9,7 @@ import model.exceptions.NotFoundException;
 import model.exceptions.ValidationException;
 import persistence.daos.user.UserDao;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class UserServiceImpl implements UserService
     // * update
     // * save changes
     @Override
-    public void promoteToAdmin(PromoteUserRequest request)
+    public void promoteToAdmin(PromoteUserRequest request) throws SQLException
     {
         // retrieve
         User user = userDao.getSingle(request.email());
@@ -56,7 +57,7 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
-    public void blacklistUser(BlacklistUserRequest request)
+    public void blacklistUser(BlacklistUserRequest request) throws SQLException
     {
         User user = userDao.getSingle(request.email());
         if (user == null)
@@ -74,8 +75,9 @@ public class UserServiceImpl implements UserService
 
     @Override
     public List<ViewUsers.UserDisplayDto> getUsersOverview(ViewUsers.Request filterParameters)
+        throws SQLException
     {
-        List<User> users = userDao.getMany(filterParameters.pageIndex(), filterParameters.pageSize(), filterParameters.firstNameContains());
+        List<User> users = userDao.getMany(filterParameters.firstNameContains());
         List<ViewUsers.UserDisplayDto> result = new ArrayList<>();
 
         // convert User to UserDto. This way we only send the data, the client needs. We don't include the password, for example.
@@ -92,6 +94,7 @@ public class UserServiceImpl implements UserService
 
     @Override
     public void updatePassword(UpdatePasswordRequest request)
+        throws SQLException
     {
         // retrieve
         User user = userDao.getSingle(request.email());

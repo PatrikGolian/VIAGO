@@ -6,6 +6,8 @@ import dtos.user.UpdatePasswordRequest;
 import dtos.user.ViewUsers;
 import services.user.UserService;
 
+import java.sql.SQLException;
+
 public class UserRequestHandler implements RequestHandler
 {
     private final UserService userService;
@@ -16,7 +18,7 @@ public class UserRequestHandler implements RequestHandler
     }
 
     @Override
-    public Object handle(String action, Object payload)
+    public Object handle(String action, Object payload) throws SQLException
     {
         switch (action)
         {

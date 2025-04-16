@@ -7,6 +7,8 @@ import model.entities.User;
 import model.exceptions.ValidationException;
 import persistence.daos.user.UserDao;
 
+import java.sql.SQLException;
+
 public class AuthServiceImpl implements AuthenticationService
 {
 
@@ -19,7 +21,7 @@ public class AuthServiceImpl implements AuthenticationService
 
 
     @Override
-    public void registerUser(RegisterUserRequest request)
+    public void registerUser(RegisterUserRequest request) throws SQLException
     {
         User existingUser = userDao.getSingle(request.email());
         if (existingUser != null)
@@ -27,12 +29,14 @@ public class AuthServiceImpl implements AuthenticationService
             throw new ValidationException("Email is already in use.");
         }
 
+
         validateEmailIsCorrectFormat(request.email());
         validatePasswordIsCorrectFormat(request.password());
         validateFirstName(request.firstName());
         validateLastName(request.lastName());
 
         User newUser = new User(
+
                 request.email(),
                 request.password(),
                 request.firstName(),
@@ -98,7 +102,7 @@ public class AuthServiceImpl implements AuthenticationService
     }
 
     @Override
-    public UserDataDto login(LoginRequest request)
+    public UserDataDto login(LoginRequest request) throws SQLException
     {
         User existingUser = userDao.getSingle(request.email());
         if (existingUser == null)

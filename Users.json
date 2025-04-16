@@ -89,6 +89,24 @@
       "isAdmin": false,
       "isBlacklisted": false,
       "blacklistReason": ""
+    },
+    {
+      "email": "111111@via.dk",
+      "password": "44444444",
+      "firstName": "Blaa",
+      "lastName": "Blaa",
+      "isAdmin": false,
+      "isBlacklisted": false,
+      "blacklistReason": ""
+    },
+    {
+      "email": "123456@via.dk",
+      "password": "33333333",
+      "firstName": "Mihail",
+      "lastName": "Rotaru",
+      "isAdmin": false,
+      "isBlacklisted": false,
+      "blacklistReason": ""
     }
   ]
 }

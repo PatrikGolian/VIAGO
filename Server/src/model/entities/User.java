@@ -2,6 +2,7 @@ package model.entities;
 
 public class User
 {
+
     private String email;
     private String password;
     private String firstName;
@@ -19,6 +20,17 @@ public class User
         this.isAdmin = false;
         isBlacklisted = false;
         blacklistReason = "";
+    }
+
+    public User(String email, String password, String firstName, String lastName, boolean isAdmin, boolean isBlacklisted, String blacklistReason)
+    {
+        this.email = email;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.isAdmin = isAdmin;
+        this.isBlacklisted = isBlacklisted;
+        this.blacklistReason = blacklistReason;
     }
 
     public String getEmail()
@@ -76,7 +88,7 @@ public class User
     public String toString()
     {
         return "User{" +
-                "email='" + email + '\'' +
+                ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
@@ -85,4 +97,6 @@ public class User
                 ", blacklistReason='" + blacklistReason + '\'' +
                 '}';
     }
+
+
 }
