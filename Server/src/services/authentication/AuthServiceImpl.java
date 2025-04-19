@@ -66,7 +66,7 @@ public class AuthServiceImpl implements AuthenticationService
         {
             throw new ValidationException("First name cannot be empty");
         }
-        else if(name.length() <= 3)
+        else if(name.length() < 2)
         {
             throw new ValidationException("First name has to have at least 3 letters");
         }
@@ -82,7 +82,7 @@ public class AuthServiceImpl implements AuthenticationService
         {
             throw new ValidationException("Last name cannot be empty");
         }
-        else if (name.length() <= 3)
+        else if (name.length() < 2)
         {
             throw new ValidationException("Last name has to have at least 3 letters.");
         }
