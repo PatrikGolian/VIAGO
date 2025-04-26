@@ -66,7 +66,7 @@ public class RegisterVM
             messageProp.set("Last name cannot be empty");
             return;
         }
-        if(lastNameProp.get().length() <2)
+        if(lastNameProp.get().length() < 2)
         {
             messageProp.set("Last name has to have at least 3 letters");
             return;

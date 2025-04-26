@@ -5,5 +5,6 @@ public enum ViewType
     WELCOME,
     LOGIN,
     VIEWUSERS,
-    REGISTER
+    REGISTER,
+    ADDNEW
 }

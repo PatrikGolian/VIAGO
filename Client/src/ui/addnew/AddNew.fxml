@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.addnew.AddNewController">
+   <children>
+      <Label layoutX="111.0" layoutY="100.0" text="Brand:" />
+      <Label layoutX="110.0" layoutY="138.0" text="Model:" />
+      <Label layoutX="101.0" layoutY="169.0" text="Condition:" />
+      <Label layoutX="114.0" layoutY="200.0" text="Color:" />
+      <Label layoutX="325.0" layoutY="60.0" text="Price per day:" />
+      <Button fx:id="backButton" layoutX="23.0" layoutY="347.0" mnemonicParsing="false" onAction="#onBack" text="&lt; Back" />
+      <Button fx:id="addButton" layoutX="251.0" layoutY="294.0" mnemonicParsing="false" onAction="#onAddButton" prefHeight="77.0" prefWidth="159.0" text="Add">
+         <font>
+            <Font size="36.0" />
+         </font>
+      </Button>
+      <TextField fx:id="brandField" layoutX="165.0" layoutY="96.0" prefHeight="25.0" prefWidth="113.0" />
+      <TextField fx:id="modelField" layoutX="165.0" layoutY="134.0" prefHeight="25.0" prefWidth="113.0" />
+      <TextField fx:id="colorField" layoutX="165.0" layoutY="196.0" prefHeight="25.0" prefWidth="113.0" />
+      <TextField fx:id="priceField" layoutX="437.0" layoutY="56.0" prefHeight="25.0" prefWidth="113.0" />
+      <Label fx:id="speedLabel" layoutX="331.0" layoutY="100.0" text="Max speed:" />
+      <Label fx:id="rangeLabel" layoutX="327.0" layoutY="138.0" text="One charge range:" />
+      <Label fx:id="bikeTypeLabel" layoutX="335.0" layoutY="181.0" text="Bike type:" />
+      <TextField fx:id="speedField" layoutX="437.0" layoutY="96.0" prefHeight="25.0" prefWidth="113.0" />
+      <TextField fx:id="rangeField" layoutX="437.0" layoutY="134.0" prefHeight="25.0" prefWidth="113.0" />
+      <TextField fx:id="bikeTypeField" layoutX="437.0" layoutY="177.0" prefHeight="25.0" prefWidth="113.0" />
+      <Label fx:id="messageLabel" layoutX="78.0" layoutY="269.0" prefHeight="17.0" prefWidth="503.0" />
+      <TextField fx:id="conditionField" layoutX="165.0" layoutY="165.0" prefHeight="25.0" prefWidth="113.0" />
+      <TextField fx:id="typeField" layoutX="165.0" layoutY="56.0" onAction="#onTypeField" prefHeight="25.0" prefWidth="113.0" />
+      <Label layoutX="116.0" layoutY="60.0" text="Type:" />
+   </children>
+</AnchorPane>

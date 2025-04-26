@@ -3,10 +3,14 @@ package startup;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import networking.addnew.AddNewClient;
+import networking.addnew.SocketAddNewClient;
 import networking.authentication.AuthenticationClient;
 import networking.authentication.SocketAuthenticationClient;
 import networking.user.SocketUsersClient;
 import networking.user.UsersClient;
+import ui.addnew.AddNewController;
+import ui.addnew.AddNewVM;
 import ui.common.Controller;
 import ui.login.LoginController;
 import ui.login.LoginVM;
@@ -45,6 +49,7 @@ public class ViewHandler
                 case REGISTER -> openRegisterView();
                 case LOGIN -> openLoginView();
                 case VIEWUSERS -> openUsersOverview();
+                case ADDNEW -> openAddNewView();
                 default -> throw new RuntimeException("View not found.");
             }
         }
@@ -113,6 +118,15 @@ public class ViewHandler
         WelcomeController controller = new WelcomeController();
         String viewTitle = "Welcome";
         String viewSubPath = "welcome/Welcome.fxml";
+        openView(viewTitle, viewSubPath, controller);
+    }
+    private static void openAddNewView() throws IOException
+    {
+        AddNewClient addNew = new SocketAddNewClient();
+        AddNewVM vm = new AddNewVM(addNew);
+        AddNewController controller = new AddNewController(vm);
+        String viewTitle = "AddNew";
+        String viewSubPath = "addnew/AddNew.fxml";
         openView(viewTitle, viewSubPath, controller);
     }
 
