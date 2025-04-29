@@ -1,20 +1,24 @@
 package startup;
 
 import model.exceptions.NoSuchServiceException;
+import networking.requesthandlers.AddNewVehicleRequestHandler;
 import networking.requesthandlers.AuthRequestHandler;
 import networking.requesthandlers.RequestHandler;
 import networking.requesthandlers.UserRequestHandler;
 import persistence.daos.user.UserDao;
-import persistence.daos.user.UserJsonFileDao;
 import persistence.daos.user.UserListDao;
 import persistence.daos.user.UserPostgresDao;
 import services.authentication.AuthServiceImpl;
 import services.authentication.AuthenticationService;
 import services.user.UserService;
 import services.user.UserServiceImpl;
+import services.vehicle.VehicleService;
+import services.vehicle.VehicleServiceImpl;
 import utilities.logging.ConsoleLogger;
 import utilities.logging.LogLevel;
 import utilities.logging.Logger;
+import persistence.daos.vehicle.VehicleDao;
+import persistence.daos.vehicle.VehiclePostgresDao;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +44,11 @@ public class ServiceProvider
         return new UserRequestHandler(getUserService());
     }
 
+    public RequestHandler getAddNewVehicleRequestHandler()
+    {
+         return new AddNewVehicleRequestHandler(getVehicleService());
+    }
+
     public Logger getLogger()
     {
         return new ConsoleLogger(LogLevel.INFO);
@@ -55,9 +64,19 @@ public class ServiceProvider
         return new UserServiceImpl(getUserDao());
     }
 
+    private static VehicleService getVehicleService()
+    {
+        return new VehicleServiceImpl(getVehicleDao());
+    }
+
     private static UserDao getUserDao()
     {
         return new UserPostgresDao();
+    }
+
+    private static VehicleDao getVehicleDao()
+    {
+        return new VehiclePostgresDao();
     }
 
 

@@ -7,8 +7,9 @@ public class Vehicle
   private double pricePerDay;
   private String brand, model, color;
 
-  public Vehicle(String type, String brand, String model, String condition, String color, double pricePerDay)
+  public Vehicle(int id, String type, String brand, String model, String condition, String color, double pricePerDay)
   {
+    this.id = id;
     this.type = type;
     this.condition = condition;
     this.pricePerDay = pricePerDay;
@@ -16,6 +17,7 @@ public class Vehicle
     this.model = model;
     this.color = color;
   }
+
 
   public String getType()
   {

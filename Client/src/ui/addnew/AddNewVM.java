@@ -1,18 +1,18 @@
 package ui.addnew;
 
+import dtos.vehicle.AddNewBikeRequest;
+import dtos.vehicle.AddNewEBikeRequest;
+import dtos.vehicle.AddNewScooterRequest;
+import dtos.vehicle.AddNewVehicleRequest;
 import javafx.beans.Observable;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import networking.addnew.AddNewClient;
+import javafx.beans.property.*;
+import networking.addnew.AddNewVehicleClient;
 import utils.StringUtils;
-
-import javax.print.DocFlavor;
 
 public class AddNewVM
 {
   private final StringProperty typeProp = new SimpleStringProperty();
+  private final IntegerProperty idProp = new SimpleIntegerProperty();
   private final StringProperty brandProp = new SimpleStringProperty();
   private final StringProperty modelProp = new SimpleStringProperty();
   private final StringProperty conditionProp = new SimpleStringProperty();
@@ -30,9 +30,9 @@ public class AddNewVM
   private final BooleanProperty bikeTypeFieldVisibility = new SimpleBooleanProperty();
   private final BooleanProperty disableAddButtonProp = new SimpleBooleanProperty(true);
 
-  private final AddNewClient addNewService;
+  private final AddNewVehicleClient addNewService;
 
-  public AddNewVM(AddNewClient addNewService)
+  public AddNewVM(AddNewVehicleClient addNewService)
   {
     this.addNewService = addNewService;
 
@@ -50,9 +50,60 @@ public class AddNewVM
   public void add()
   {
     // logic for adding to the system ig
-
     messageProp.set(""); // clear potential existing message
+    try
+    {
+      switch (typeProp.get())
+      {
+        case "scooter" ->
+        {
+          double price = Double.parseDouble(priceProp.get());
+          int speed = Integer.parseInt(speedProp.get());
+          int range = Integer.parseInt(rangeProp.get());
+          addNewService.addNewVehicle(new AddNewScooterRequest(idProp.get(),typeProp.get(), brandProp.get(), modelProp.get(), conditionProp.get(), colorProp.get(), price, speed, range));
 
+          messageProp.set("Success");
+          // clear fields
+          typeProp.set("");
+          clearFields();
+        }
+        case "bike" ->
+        {
+          double price = Double.parseDouble(priceProp.get());
+          addNewService.addNewVehicle(new AddNewBikeRequest(idProp.get(),typeProp.get(), brandProp.get(), modelProp.get(), conditionProp.get(), colorProp.get(), price, bikeTypeProp.get()));
+
+          messageProp.set("Success");
+          // clear fields
+          typeProp.set("");
+          clearFields();
+        }
+        case "e-bike" ->
+        {
+          double price = Double.parseDouble(priceProp.get());
+          int speed = Integer.parseInt(speedProp.get());
+          int range = Integer.parseInt(rangeProp.get());
+          addNewService.addNewVehicle(new AddNewEBikeRequest(idProp.get(),typeProp.get(), brandProp.get(), modelProp.get(), conditionProp.get(), colorProp.get(), price, speed, range, bikeTypeProp.get()));
+
+          messageProp.set("Success");
+          // clear fields
+          typeProp.set("");
+          clearFields();
+        }
+        default ->
+        {
+
+        }
+      }
+    }
+    catch (NumberFormatException e)
+    {
+
+      messageProp.set(e.getMessage());
+    }
+    catch (Exception e)
+    {
+      messageProp.set(e.getMessage());
+    }
   }
 
   public void setVisibility()

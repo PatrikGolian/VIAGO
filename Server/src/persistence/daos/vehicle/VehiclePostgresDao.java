@@ -7,7 +7,6 @@ import model.entities.vehicles.Vehicle;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 
 public class VehiclePostgresDao implements VehicleDao
 {
@@ -18,69 +17,98 @@ public class VehiclePostgresDao implements VehicleDao
         "postgres", "password");
   }
 
-
   public Vehicle create(Vehicle vehicle) throws SQLException
   {
     int id = vehicle.getId(), maxSpeed, oneChargeRange;
-    String type = vehicle.getType(), brand = vehicle.getBrand(), model = vehicle.getModel(),
-        condition = vehicle.getCondition(), color = vehicle.getColor(), biketype =null;
+    String type = vehicle.getType(), brand = vehicle.getBrand(), model = vehicle.getModel(), condition = vehicle.getCondition(), color = vehicle.getColor(), biketype = null;
     double pricePerDay = vehicle.getPricePerDay();
-
-    int typeInt;
-    if (!type.equals("bike"))
-    {
-      if (!type.equals("e-bike"))
-      {
-        typeInt = 3;
-      }
-      else
-      {
-        typeInt = 2;
-      }
-    }
-    else
-    {
-      typeInt = 1;
-    }
-
+    ResultSet keys;
 
     try (Connection connection = getConnection())
     {
-      PreparedStatement statement =
-          connection.prepareStatement("INSERT INTO vehicle(id, type, brand, model, condition, color, pricePerDay, bikeType, maxSpeed, oneChargeRange) VALUES(?,?,?,?,?,?,?,?,?,?)");
-      statement.setInt(1,id);
-      statement.setString(2,type);
-      statement.setString(3,brand);
-      statement.setString(4,model);
-      statement.setString(5,condition);
-      statement.setString(6,color);
-      statement.setDouble(7,pricePerDay);
-      switch (typeInt)
+      PreparedStatement statement;
+      switch (type)
       {
-        case 1:
+        case "bike":
+          statement = connection.prepareStatement(
+              "INSERT INTO bike(type, brand, model, condition, color, pricePerDay, bikeType) VALUES(?,?,?,?,?,?,?)",
+              PreparedStatement.RETURN_GENERATED_KEYS);
+          statement.setString(1, type);
+          statement.setString(2, brand);
+          statement.setString(3, model);
+          statement.setString(4, condition);
+          statement.setString(5, color);
+          statement.setDouble(6, pricePerDay);
           biketype = ((Bike) vehicle).getBikeType();
-          statement.setString(8,biketype);
-          break;
-        case 2:
+          statement.setString(7, biketype);
+          statement.executeUpdate();
+          keys = statement.getGeneratedKeys();
+          if (keys.next())
+          {
+            return (Vehicle) (new Bike(keys.getInt(1), type, brand, model,
+                condition, color, pricePerDay, biketype));
+          }
+          else
+          {
+            throw new SQLException("No keys generated");
+          }
+        case "e-bike":
+          statement = connection.prepareStatement(
+              "INSERT INTO eBike(type, brand, model, condition, color, pricePerDay, bikeType, maxSpeed, oneChargeRange) VALUES(?,?,?,?,?,?,?,?,?)",
+              PreparedStatement.RETURN_GENERATED_KEYS);
+          statement.setString(1, type);
+          statement.setString(2, brand);
+          statement.setString(3, model);
+          statement.setString(4, condition);
+          statement.setString(5, color);
+          statement.setDouble(6, pricePerDay);
           maxSpeed = ((EBike) vehicle).getMaxSpeed();
           oneChargeRange = ((EBike) vehicle).getOneChargeRange();
           biketype = ((EBike) vehicle).getBikeType();
-          statement.setString(8,biketype);
-          statement.setInt(9,maxSpeed);
-          statement.setInt(10,oneChargeRange);
-          break;
-        case 3:
+          statement.setString(7, biketype);
+          statement.setInt(8, maxSpeed);
+          statement.setInt(9, oneChargeRange);
+          statement.executeUpdate();
+          keys = statement.getGeneratedKeys();
+          if (keys.next())
+          {
+            return (Vehicle) (new EBike(keys.getInt(1), type, brand, model,
+                condition, color, pricePerDay, biketype, maxSpeed,
+                oneChargeRange));
+          }
+          else
+          {
+            throw new SQLException("No keys generated");
+          }
+        case "scooter":
+          statement = connection.prepareStatement(
+              "INSERT INTO scooter(type, brand, model, condition, color, pricePerDay, maxSpeed, oneChargeRange) VALUES(?,?,?,?,?,?,?,?)",
+              PreparedStatement.RETURN_GENERATED_KEYS);
+          statement.setString(1, type);
+          statement.setString(2, brand);
+          statement.setString(3, model);
+          statement.setString(4, condition);
+          statement.setString(5, color);
+          statement.setDouble(6, pricePerDay);
           maxSpeed = ((Scooter) vehicle).getMaxSpeed();
           oneChargeRange = ((Scooter) vehicle).getOneChargeRange();
-          statement.setInt(9,maxSpeed);
-          statement.setInt(10,oneChargeRange);
-          break;
+          statement.setInt(7, maxSpeed);
+          statement.setInt(8, oneChargeRange);
+          statement.executeUpdate();
+          keys = statement.getGeneratedKeys();
+          if (keys.next())
+          {
+            return (Vehicle) (new Scooter(keys.getInt(1), type, brand, model,
+                condition, color, pricePerDay, maxSpeed, oneChargeRange));
+          }
+          else
+          {
+            throw new SQLException("No keys generated");
+          }
+        default:
+          throw new IllegalStateException("Unexpected value: " + type);
       }
-      statement.executeUpdate();
-
-      return vehicle;
     }
-
   }
 
   @Override public void add(Vehicle vehicle) throws SQLException
@@ -91,70 +119,120 @@ public class VehiclePostgresDao implements VehicleDao
   @Override public ArrayList<Vehicle> getByType(String type) throws SQLException
   {
     ArrayList<Vehicle> vehicles = null;
-    try(Connection connection = getConnection()){
-      PreparedStatement statement = connection.prepareStatement("SELECT* FROM vehicle WHERE type =?");
-      statement.setString(1,type);
-      ResultSet resultSet = statement.executeQuery();
-      if(resultSet.next())
+    try (Connection connection = getConnection())
+    {
+      switch (type)
       {
-        int id = resultSet.getInt("id"),maxSpeed,oneChargeRange;
-        String brand = resultSet.getString("brand"),
-        model = resultSet.getString("model"),
-        condition = resultSet.getString("condition"),
-        color = resultSet.getString("color"), bikeType;
-        double pricePerDay = resultSet.getDouble("pricePerDay");
 
-        int typeInt = 0;
-        if (type.equals("bike")){
-          typeInt = 1;
-        }
-        else if (type.equals("e-bike"))
-        {
-          typeInt = 2;
-        }
-        else if (type.equals("scooter"))
-        {
-          typeInt = 3;
-        }
-        switch (typeInt)
-        {
-          case 1:
-            bikeType = resultSet.getString("bikeType");
-            Bike bike = new Bike(type,brand,model,condition,color,pricePerDay,bikeType);
-            bike.setId(id);
-            vehicles.add(bike);
-            break;
-          case 2:
-            bikeType = resultSet.getString("biketype");
-            maxSpeed = resultSet.getInt("maxSpeed");
-            oneChargeRange = resultSet.getInt("oneChargeRange");
-            EBike eBike = new EBike(type,brand,model,condition,color,pricePerDay,maxSpeed,oneChargeRange, bikeType);
-            eBike.setId(id);
-            vehicles.add(eBike);
-            break;
-          case 3:
-            maxSpeed = resultSet.getInt("maxSpeed");
-            oneChargeRange = resultSet.getInt("oneChargeRange");
-            Scooter scooter = new Scooter(type,brand,model,condition,color,pricePerDay,maxSpeed,oneChargeRange);
-            scooter.setId(id);
-            vehicles.add(scooter);
-            break;
-          default:
-            System.out.println("Problem with VehiclePostgresDao initializing vehicle type");
-        }
+        case "bike":
+          vehicles = getBike(connection, type);
+          break;
+        case "e-bike":
+          vehicles = getEBike(connection, type);
+          break;
+        case "scooter":
+          vehicles = getScooter(connection, type);
+          break;
 
       }
-      return  vehicles;
     }
+    return vehicles;
+  }
+
+
+  private ArrayList<Vehicle> getBike(Connection connection, String type) throws SQLException
+  {
+    ArrayList<Vehicle> vehicles = null;
+    PreparedStatement statement = connection.prepareStatement("SELECT* FROM bike");
+    ResultSet resultSet = statement.executeQuery();
+    if(resultSet.next())
+    {
+      int id = resultSet.getInt("id"), maxSpeed, oneChargeRange;
+      String brand = resultSet.getString(
+          "brand"), model = resultSet.getString(
+          "model"), condition = resultSet.getString(
+          "condition"), color = resultSet.getString("color"), bikeType;
+      double pricePerDay = resultSet.getDouble("pricePerDay");
+      bikeType = resultSet.getString("bikeType");
+      Bike bike = new Bike(id,type, brand, model, condition, color, pricePerDay,
+          bikeType);
+      bike.setId(id);
+      vehicles.add(bike);
+    }
+    return vehicles;
+  }
+  private ArrayList<Vehicle> getEBike(Connection connection, String type) throws SQLException
+  {
+    ArrayList<Vehicle> vehicles = null;
+    PreparedStatement statement = connection.prepareStatement("SELECT* FROM eBike");
+    ResultSet resultSet = statement.executeQuery();
+    if(resultSet.next())
+    {
+      int id = resultSet.getInt("id"), maxSpeed, oneChargeRange;
+      String brand = resultSet.getString(
+          "brand"), model = resultSet.getString(
+          "model"), condition = resultSet.getString(
+          "condition"), color = resultSet.getString("color"), bikeType;
+      double pricePerDay = resultSet.getDouble("pricePerDay");
+      bikeType = resultSet.getString("biketype");
+      maxSpeed = resultSet.getInt("maxSpeed");
+      oneChargeRange = resultSet.getInt("oneChargeRange");
+      EBike eBike = new EBike(id,type, brand, model, condition, color,
+          pricePerDay,bikeType, maxSpeed, oneChargeRange);
+      eBike.setId(id);
+      vehicles.add(eBike);
+    }
+    return vehicles;
+  }
+  private ArrayList<Vehicle> getScooter(Connection connection, String type)
+      throws SQLException
+  {
+    ArrayList<Vehicle> vehicles = null;
+    PreparedStatement statement = connection.prepareStatement("SELECT* FROM scooter");
+    ResultSet resultSet = statement.executeQuery();
+    if(resultSet.next())
+    {
+      int id = resultSet.getInt("id"), maxSpeed, oneChargeRange;
+      String brand = resultSet.getString(
+          "brand"), model = resultSet.getString(
+          "model"), condition = resultSet.getString(
+          "condition"), color = resultSet.getString("color"), bikeType;
+      double pricePerDay = resultSet.getDouble("pricePerDay");
+
+      maxSpeed = resultSet.getInt("maxSpeed");
+      oneChargeRange = resultSet.getInt("oneChargeRange");
+      Scooter scooter = new Scooter(id, type, brand, model, condition, color,
+          pricePerDay, maxSpeed, oneChargeRange);
+      scooter.setId(id);
+      vehicles.add(scooter);
+    }
+    return vehicles;
   }
 
   @Override public void delete(Vehicle vehicle) throws SQLException
   {
+    String type = vehicle.getType();
+    PreparedStatement statement;
     try(Connection connection = getConnection())
     {
-      PreparedStatement statement = connection.prepareStatement("DELETE FROM account WHERE id = ?");
-      statement.setInt(1, vehicle.getId());
-      statement.executeUpdate();
+      switch (type)
+      {
+        case "bike":
+          statement = connection.prepareStatement("DELETE FROM bike WHERE id = ?");
+          statement.setInt(1, vehicle.getId());
+          statement.executeUpdate();
+          break;
+        case "e-bike":
+          statement = connection.prepareStatement("DELETE FROM eBike WHERE id = ?");
+          statement.setInt(1, vehicle.getId());
+          statement.executeUpdate();
+          break;
+        case "scooter":
+          statement = connection.prepareStatement("DELETE FROM scooter WHERE id = ?");
+          statement.setInt(1, vehicle.getId());
+          statement.executeUpdate();
+          break;
+      }
     }
   }
 
@@ -162,43 +240,49 @@ public class VehiclePostgresDao implements VehicleDao
   {
     try(Connection connection = getConnection())
     {
-      PreparedStatement statement = connection.prepareStatement("UPDATE vehicle SET type = ?, brand = ?, model = ?, condition = ?, color = ?, pricePerDay = ?, bikeType = ?, maxSpeed = ?, oneChargeRange = ? WHERE id = ?");
-      statement.setString(1, vehicle.getType());
-      statement.setString(2, vehicle.getBrand());
-      statement.setString(3, vehicle.getModel());
-      statement.setString(4, vehicle.getCondition());
-      statement.setString(5, vehicle.getColor());
-      statement.setDouble(6, vehicle.getPricePerDay());
-      int typeInt;
+      PreparedStatement statement;
       String type = vehicle.getType();
-      if (!type.equals("bike"))
+
+      switch (type)
       {
-        if (!type.equals("e-bike"))
-        {
-          typeInt = 3;
-        }
-        else
-        {
-          typeInt = 2;
-        }
-      }
-      else
-      {
-        typeInt = 1;
-      }
-      switch (typeInt)
-      {
-        case 1:
+        case "bike":
+          statement= connection.prepareStatement("UPDATE bike SET type = ?, brand = ?, model = ?, condition = ?, color = ?, pricePerDay = ?, bikeType = ? WHERE id = ?");
+          statement.setString(1, vehicle.getType());
+          statement.setString(2, vehicle.getBrand());
+          statement.setString(3, vehicle.getModel());
+          statement.setString(4, vehicle.getCondition());
+          statement.setString(5, vehicle.getColor());
+          statement.setDouble(6, vehicle.getPricePerDay());
           statement.setString(7, ((Bike) vehicle).getBikeType());
+          statement.setInt(8,oldVehicle.getId());
           break;
-        case 2:
+        case "e-bike":
+          statement= connection.prepareStatement("UPDATE eBike SET type = ?, brand = ?, model = ?, condition = ?, color = ?, pricePerDay = ?, bikeType = ?, maxSpeed = ?, oneChargeRange = ? WHERE id = ?");
+          statement.setString(1, vehicle.getType());
+          statement.setString(2, vehicle.getBrand());
+          statement.setString(3, vehicle.getModel());
+          statement.setString(4, vehicle.getCondition());
+          statement.setString(5, vehicle.getColor());
+          statement.setDouble(6, vehicle.getPricePerDay());
+          statement.setString(7, ((EBike) vehicle).getBikeType());
           statement.setInt(8,((EBike) vehicle).getMaxSpeed());
           statement.setInt(9,((EBike) vehicle).getOneChargeRange());
+          statement.setInt(10,oldVehicle.getId());
           break;
-        case 3:
-          statement.setInt(8,((Scooter) vehicle).getMaxSpeed());
-          statement.setInt(9,((Scooter) vehicle).getOneChargeRange());
+        case "scooter":
+          statement= connection.prepareStatement("UPDATE scooter SET type = ?, brand = ?, model = ?, condition = ?, color = ?, pricePerDay = ?, maxSpeed = ?, oneChargeRange = ? WHERE id = ?");
+          statement.setString(1, vehicle.getType());
+          statement.setString(2, vehicle.getBrand());
+          statement.setString(3, vehicle.getModel());
+          statement.setString(4, vehicle.getCondition());
+          statement.setString(5, vehicle.getColor());
+          statement.setDouble(6, vehicle.getPricePerDay());
+          statement.setInt(7,((Scooter) vehicle).getMaxSpeed());
+          statement.setInt(8,((Scooter) vehicle).getOneChargeRange());
+          statement.setInt(9,oldVehicle.getId());
           break;
+        default:
+          throw new IllegalStateException("Unexpected value: " + type);
       }
       statement.executeUpdate();
     }

@@ -13,7 +13,7 @@ public class SocketAuthenticationClient implements AuthenticationClient
     {
         Request request = new Request("auth", "register", user);
         SocketService.sendRequest(request);
-        // ignore response, don't need it. If the above method succeeds, then the request is a success.
+
     }
 
     @Override

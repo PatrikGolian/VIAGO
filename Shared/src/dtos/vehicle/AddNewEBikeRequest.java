@@ -11,7 +11,8 @@ public record AddNewEBikeRequest( int id,
                                   int oneChargeRange,
                                   String bikeType) implements AddNewVehicleRequest
 {
-  @Override public String toString()
+  @Override
+  public String toString()
   {
     return "AddNewEBikeRequest{" + "type='" + type + '\'' + ", brand='" + brand
         + '\'' + ", model='" + model + '\'' + ", condition='" + condition + '\''

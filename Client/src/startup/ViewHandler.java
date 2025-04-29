@@ -3,8 +3,8 @@ package startup;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import networking.addnew.AddNewClient;
-import networking.addnew.SocketAddNewClient;
+import networking.addnew.AddNewVehicleClient;
+import networking.addnew.SocketAddNewVehicleClient;
 import networking.authentication.AuthenticationClient;
 import networking.authentication.SocketAuthenticationClient;
 import networking.user.SocketUsersClient;
@@ -122,7 +122,7 @@ public class ViewHandler
     }
     private static void openAddNewView() throws IOException
     {
-        AddNewClient addNew = new SocketAddNewClient();
+        AddNewVehicleClient addNew = new SocketAddNewVehicleClient();
         AddNewVM vm = new AddNewVM(addNew);
         AddNewController controller = new AddNewController(vm);
         String viewTitle = "AddNew";

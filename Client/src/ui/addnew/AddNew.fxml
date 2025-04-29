@@ -6,7 +6,6 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.addnew.AddNewController">
    <children>
       <Label layoutX="111.0" layoutY="100.0" text="Brand:" />
@@ -30,7 +29,7 @@
       <TextField fx:id="speedField" layoutX="437.0" layoutY="96.0" prefHeight="25.0" prefWidth="113.0" />
       <TextField fx:id="rangeField" layoutX="437.0" layoutY="134.0" prefHeight="25.0" prefWidth="113.0" />
       <TextField fx:id="bikeTypeField" layoutX="437.0" layoutY="177.0" prefHeight="25.0" prefWidth="113.0" />
-      <Label fx:id="messageLabel" layoutX="78.0" layoutY="269.0" prefHeight="17.0" prefWidth="503.0" />
+      <Label fx:id="messageLabel" layoutX="73.0" layoutY="250.0" prefHeight="17.0" prefWidth="503.0" />
       <TextField fx:id="conditionField" layoutX="165.0" layoutY="165.0" prefHeight="25.0" prefWidth="113.0" />
       <TextField fx:id="typeField" layoutX="165.0" layoutY="56.0" onAction="#onTypeField" prefHeight="25.0" prefWidth="113.0" />
       <Label layoutX="116.0" layoutY="60.0" text="Type:" />

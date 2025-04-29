@@ -1,7 +1,7 @@
 package dtos.vehicle;
 
-public record AddNewBikeRequest( int id,
-                                 String type,
+public record AddNewBikeRequest(int id,
+                                String type,
                                 String brand,
                                 String model,
                                 String condition,
@@ -9,7 +9,8 @@ public record AddNewBikeRequest( int id,
                                 double pricePerDay,
                                 String bikeType) implements AddNewVehicleRequest
 {
-  @Override public String toString()
+  @Override
+  public String toString()
   {
     return "AddNewBikeRequest{" + "type='" + type + '\'' + ", brand='" + brand
         + '\'' + ", model='" + model + '\'' + ", condition='" + condition + '\''

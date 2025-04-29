@@ -5,8 +5,8 @@ public class EBike extends Vehicle
   private int maxSpeed, oneChargeRange;
   String bikeType;
 
-  public EBike(String type, String brand, String model, String condition, String color, double pricePerDay, int maxSpeed, int oneChargeRange, String bikeType){
-    super(type, brand, model, condition, color, pricePerDay);
+  public EBike(int id,String type, String brand, String model, String condition, String color, double pricePerDay, String bikeType, int maxSpeed, int oneChargeRange){
+    super(id, type, brand, model, condition, color, pricePerDay);
 
     this.maxSpeed = maxSpeed;
     this.oneChargeRange = oneChargeRange;

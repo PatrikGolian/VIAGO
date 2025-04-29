@@ -10,7 +10,8 @@ public record AddNewScooterRequest( int id,
                                     int maxSpeed,
                                     int oneChargeRange) implements AddNewVehicleRequest
 {
-  @Override public String toString()
+  @Override
+  public String toString()
   {
     return "AddNewScooterRequest{" + "type='" + type + '\'' + ", brand='"
         + brand + '\'' + ", model='" + model + '\'' + ", condition='"

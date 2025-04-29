@@ -19,13 +19,7 @@ public class UserJsonFileDao implements UserDao
     {
         if (!new File("Users.json").exists())
         {
-            UserList users = new UserList(new ArrayList<>(Arrays.asList(
-                    new User(",trmo@via.dk", "1234", "Troels", "Mortensen"),
-                    new User("jaja@gmail.com", "1234", "Jakob", "Jakobsen"),
-                    new User("pepe@gmail.com", "1234", "Peter", "Petersen"),
-                    new User("jeje@gmail.com", "1234", "Jens", "Jensen"),
-                    new User("momo@gmail.com", "1234", "Morten", "Mortensen"),
-                    new User("anan@gmail.com", "1234", "Anna", "Annasen"))));
+            UserList users = new UserList(new ArrayList<>(Arrays.asList()));
             try
             {
                 parser.toJson(users, "Users.json");
