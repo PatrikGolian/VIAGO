@@ -20,7 +20,10 @@ public class VehiclePostgresDao implements VehicleDao
   public Vehicle create(Vehicle vehicle) throws SQLException
   {
     int id = vehicle.getId(), maxSpeed, oneChargeRange;
-    String type = vehicle.getType(), brand = vehicle.getBrand(), model = vehicle.getModel(), condition = vehicle.getCondition(), color = vehicle.getColor(), biketype = null;
+    String type = vehicle.getType(), brand = vehicle.getBrand(),
+        model = vehicle.getModel(), condition = vehicle.getCondition(),
+        color = vehicle.getColor(), biketype = null, ownerEmail = vehicle.getOwnerEmail(),
+        state = vehicle.getState();
     double pricePerDay = vehicle.getPricePerDay();
     ResultSet keys;
 
@@ -31,7 +34,7 @@ public class VehiclePostgresDao implements VehicleDao
       {
         case "bike":
           statement = connection.prepareStatement(
-              "INSERT INTO bike(type, brand, model, condition, color, pricePerDay, bikeType) VALUES(?,?,?,?,?,?,?)",
+              "INSERT INTO bike(type, brand, model, condition, color, pricePerDay, bikeType, ownerEmail, state) VALUES(?,?,?,?,?,?,?,?,?)",
               PreparedStatement.RETURN_GENERATED_KEYS);
           statement.setString(1, type);
           statement.setString(2, brand);
@@ -41,12 +44,14 @@ public class VehiclePostgresDao implements VehicleDao
           statement.setDouble(6, pricePerDay);
           biketype = ((Bike) vehicle).getBikeType();
           statement.setString(7, biketype);
+          statement.setString(8, ownerEmail);
+          statement.setString(9,state);
           statement.executeUpdate();
           keys = statement.getGeneratedKeys();
           if (keys.next())
           {
             return (Vehicle) (new Bike(keys.getInt(1), type, brand, model,
-                condition, color, pricePerDay, biketype));
+                condition, color, pricePerDay, biketype,ownerEmail, state));
           }
           else
           {
@@ -54,7 +59,7 @@ public class VehiclePostgresDao implements VehicleDao
           }
         case "e-bike":
           statement = connection.prepareStatement(
-              "INSERT INTO eBike(type, brand, model, condition, color, pricePerDay, bikeType, maxSpeed, oneChargeRange) VALUES(?,?,?,?,?,?,?,?,?)",
+              "INSERT INTO eBike(type, brand, model, condition, color, pricePerDay, bikeType, maxSpeed, oneChargeRange, ownerEmail, state) VALUES(?,?,?,?,?,?,?,?,?,?,?)",
               PreparedStatement.RETURN_GENERATED_KEYS);
           statement.setString(1, type);
           statement.setString(2, brand);
@@ -68,13 +73,15 @@ public class VehiclePostgresDao implements VehicleDao
           statement.setString(7, biketype);
           statement.setInt(8, maxSpeed);
           statement.setInt(9, oneChargeRange);
+          statement.setString(10, ownerEmail);
+          statement.setString(11, state);
           statement.executeUpdate();
           keys = statement.getGeneratedKeys();
           if (keys.next())
           {
             return (Vehicle) (new EBike(keys.getInt(1), type, brand, model,
                 condition, color, pricePerDay, biketype, maxSpeed,
-                oneChargeRange));
+                oneChargeRange, ownerEmail, state));
           }
           else
           {
@@ -82,7 +89,7 @@ public class VehiclePostgresDao implements VehicleDao
           }
         case "scooter":
           statement = connection.prepareStatement(
-              "INSERT INTO scooter(type, brand, model, condition, color, pricePerDay, maxSpeed, oneChargeRange) VALUES(?,?,?,?,?,?,?,?)",
+              "INSERT INTO scooter(type, brand, model, condition, color, pricePerDay, maxSpeed, oneChargeRange, ownerEmail, state) VALUES(?,?,?,?,?,?,?,?,?,?)",
               PreparedStatement.RETURN_GENERATED_KEYS);
           statement.setString(1, type);
           statement.setString(2, brand);
@@ -94,12 +101,14 @@ public class VehiclePostgresDao implements VehicleDao
           oneChargeRange = ((Scooter) vehicle).getOneChargeRange();
           statement.setInt(7, maxSpeed);
           statement.setInt(8, oneChargeRange);
+          statement.setString(9, ownerEmail);
+          statement.setString(10, state);
           statement.executeUpdate();
           keys = statement.getGeneratedKeys();
           if (keys.next())
           {
             return (Vehicle) (new Scooter(keys.getInt(1), type, brand, model,
-                condition, color, pricePerDay, maxSpeed, oneChargeRange));
+                condition, color, pricePerDay, maxSpeed, oneChargeRange, ownerEmail, state));
           }
           else
           {
@@ -125,13 +134,13 @@ public class VehiclePostgresDao implements VehicleDao
       {
 
         case "bike":
-          vehicles = getBike(connection, type);
+          vehicles = getBike(connection);
           break;
         case "e-bike":
-          vehicles = getEBike(connection, type);
+          vehicles = getEBike(connection);
           break;
         case "scooter":
-          vehicles = getScooter(connection, type);
+          vehicles = getScooter(connection);
           break;
 
       }
@@ -139,70 +148,175 @@ public class VehiclePostgresDao implements VehicleDao
     return vehicles;
   }
 
+  @Override public ArrayList<Vehicle> getByState(String state)
+      throws SQLException
+  {
+    ArrayList<Vehicle> vehicles = null;
+    try (Connection connection = getConnection())
+    {
+      //for bike
+      PreparedStatement statement = connection.prepareStatement("SELECT* FROM bike where state = ?");
+      statement.setString(1, state);
+      ResultSet resultSet = statement.executeQuery();
+      while (resultSet.next())
+      {
+        int id = resultSet.getInt("id"), maxSpeed, oneChargeRange;
+        String brand = resultSet.getString(
+            "brand"), model = resultSet.getString(
+            "model"), condition = resultSet.getString(
+            "condition"), color = resultSet.getString("color"),
+            bikeType, ownerEmail = resultSet.getString("ownerEmail"),
+            type = resultSet.getString("type");
+        double pricePerDay = resultSet.getDouble("pricePerDay");
+        bikeType = resultSet.getString("bikeType");
+        Bike bike = new Bike(id,type, brand, model, condition, color, pricePerDay,
+            bikeType, ownerEmail, state);
+        bike.setId(id);
+        vehicles.add(bike);
+      }
+      //for eBike
+      statement = connection.prepareStatement("SELECT* FROM eBike where state = ?");
+      statement.setString(1, state);
+      resultSet = statement.executeQuery();
+      while(resultSet.next())
+      {
+        int id = resultSet.getInt("id"), maxSpeed, oneChargeRange;
+        String brand = resultSet.getString("brand"),
+            model = resultSet.getString("model"),
+            condition = resultSet.getString("condition"),
+            color = resultSet.getString("color"),
+            bikeType = resultSet.getString("biketype"),
+            ownerEmail = resultSet.getString("ownerEmail"),
+            type = resultSet.getString("type");
+        double pricePerDay = resultSet.getDouble("pricePerDay");
+        maxSpeed = resultSet.getInt("maxSpeed");
+        oneChargeRange = resultSet.getInt("oneChargeRange");
+        EBike eBike = new EBike(id,type, brand, model, condition, color,
+            pricePerDay,bikeType, maxSpeed, oneChargeRange, ownerEmail, state);
+        eBike.setId(id);
+        vehicles.add(eBike);
+      }
+      //for Scooter
+      statement = connection.prepareStatement("SELECT* FROM scooter where state = ?");
+      statement.setString(1, state);
+      resultSet = statement.executeQuery();
+      while(resultSet.next())
+      {
+        int id = resultSet.getInt("id"),
+            maxSpeed = resultSet.getInt("maxSpeed"),
+            oneChargeRange  = resultSet.getInt("oneChargeRange");;
+        String brand = resultSet.getString("brand"),
+            model = resultSet.getString("model"),
+            condition = resultSet.getString("condition"),
+            color = resultSet.getString("color"),
+            ownerEmail = resultSet.getString("ownerEmail"),
+            type = resultSet.getString("type");
+        double pricePerDay = resultSet.getDouble("pricePerDay");
+        Scooter scooter = new Scooter(id, type, brand, model, condition, color,
+            pricePerDay, maxSpeed, oneChargeRange, ownerEmail, state);
+        scooter.setId(id);
+        vehicles.add(scooter);
+      }
+    }
+    return vehicles;
+  }
 
-  private ArrayList<Vehicle> getBike(Connection connection, String type) throws SQLException
+  @Override public ArrayList<Vehicle> getAll() throws SQLException
+  {
+    ArrayList<Vehicle> vehicles = null;
+
+    try (Connection connection = getConnection())
+    {
+      ArrayList<Vehicle> bikes = getBike(connection);
+      ArrayList<Vehicle> eBikes = getEBike(connection);
+      ArrayList<Vehicle> scooters = getScooter(connection);
+      for (int b = 0; b < bikes.size() ; b++)
+      {
+        vehicles.add(bikes.get(b));
+      }
+      for (int e = 0; e < eBikes.size(); e++)
+      {
+        vehicles.add(eBikes.get(e));
+      }
+      for (int s = 0; s < scooters.size(); s++)
+      {
+        vehicles.add(scooters.get(s));
+      }
+    }
+    return vehicles;
+  }
+
+  private ArrayList<Vehicle> getBike(Connection connection) throws SQLException
   {
     ArrayList<Vehicle> vehicles = null;
     PreparedStatement statement = connection.prepareStatement("SELECT* FROM bike");
     ResultSet resultSet = statement.executeQuery();
-    if(resultSet.next())
+    while(resultSet.next())
     {
       int id = resultSet.getInt("id"), maxSpeed, oneChargeRange;
       String brand = resultSet.getString(
           "brand"), model = resultSet.getString(
           "model"), condition = resultSet.getString(
-          "condition"), color = resultSet.getString("color"), bikeType;
+          "condition"), color = resultSet.getString("color"),
+          bikeType, ownerEmail = resultSet.getString("ownerEmail"),
+          state = resultSet.getString("state"),
+      type = resultSet.getString("type");
       double pricePerDay = resultSet.getDouble("pricePerDay");
       bikeType = resultSet.getString("bikeType");
       Bike bike = new Bike(id,type, brand, model, condition, color, pricePerDay,
-          bikeType);
+          bikeType, ownerEmail, state);
       bike.setId(id);
       vehicles.add(bike);
     }
     return vehicles;
   }
-  private ArrayList<Vehicle> getEBike(Connection connection, String type) throws SQLException
+  private ArrayList<Vehicle> getEBike(Connection connection) throws SQLException
   {
     ArrayList<Vehicle> vehicles = null;
     PreparedStatement statement = connection.prepareStatement("SELECT* FROM eBike");
     ResultSet resultSet = statement.executeQuery();
-    if(resultSet.next())
+    while(resultSet.next())
     {
       int id = resultSet.getInt("id"), maxSpeed, oneChargeRange;
-      String brand = resultSet.getString(
-          "brand"), model = resultSet.getString(
-          "model"), condition = resultSet.getString(
-          "condition"), color = resultSet.getString("color"), bikeType;
+      String brand = resultSet.getString("brand"),
+          model = resultSet.getString("model"),
+          condition = resultSet.getString("condition"),
+          color = resultSet.getString("color"),
+          bikeType = resultSet.getString("biketype"),
+          ownerEmail = resultSet.getString("ownerEmail"),
+          state = resultSet.getString("state"),
+          type = resultSet.getString("type");
       double pricePerDay = resultSet.getDouble("pricePerDay");
-      bikeType = resultSet.getString("biketype");
       maxSpeed = resultSet.getInt("maxSpeed");
       oneChargeRange = resultSet.getInt("oneChargeRange");
       EBike eBike = new EBike(id,type, brand, model, condition, color,
-          pricePerDay,bikeType, maxSpeed, oneChargeRange);
+          pricePerDay,bikeType, maxSpeed, oneChargeRange, ownerEmail, state);
       eBike.setId(id);
       vehicles.add(eBike);
     }
     return vehicles;
   }
-  private ArrayList<Vehicle> getScooter(Connection connection, String type)
+  private ArrayList<Vehicle> getScooter(Connection connection)
       throws SQLException
   {
     ArrayList<Vehicle> vehicles = null;
     PreparedStatement statement = connection.prepareStatement("SELECT* FROM scooter");
     ResultSet resultSet = statement.executeQuery();
-    if(resultSet.next())
+    while(resultSet.next())
     {
-      int id = resultSet.getInt("id"), maxSpeed, oneChargeRange;
-      String brand = resultSet.getString(
-          "brand"), model = resultSet.getString(
-          "model"), condition = resultSet.getString(
-          "condition"), color = resultSet.getString("color"), bikeType;
+      int id = resultSet.getInt("id"),
+          maxSpeed = resultSet.getInt("maxSpeed"),
+          oneChargeRange  = resultSet.getInt("oneChargeRange");;
+      String brand = resultSet.getString("brand"),
+          model = resultSet.getString("model"),
+          condition = resultSet.getString("condition"),
+          color = resultSet.getString("color"),
+          ownerEmail = resultSet.getString("ownerEmail"),
+          state = resultSet.getString("state"),
+          type = resultSet.getString("type");
       double pricePerDay = resultSet.getDouble("pricePerDay");
-
-      maxSpeed = resultSet.getInt("maxSpeed");
-      oneChargeRange = resultSet.getInt("oneChargeRange");
       Scooter scooter = new Scooter(id, type, brand, model, condition, color,
-          pricePerDay, maxSpeed, oneChargeRange);
+          pricePerDay, maxSpeed, oneChargeRange, ownerEmail, state);
       scooter.setId(id);
       vehicles.add(scooter);
     }
@@ -246,7 +360,7 @@ public class VehiclePostgresDao implements VehicleDao
       switch (type)
       {
         case "bike":
-          statement= connection.prepareStatement("UPDATE bike SET type = ?, brand = ?, model = ?, condition = ?, color = ?, pricePerDay = ?, bikeType = ? WHERE id = ?");
+          statement= connection.prepareStatement("UPDATE bike SET type = ?, brand = ?, model = ?, condition = ?, color = ?, pricePerDay = ?, bikeType = ?,ownerEmail = ?, state = ? WHERE id = ?");
           statement.setString(1, vehicle.getType());
           statement.setString(2, vehicle.getBrand());
           statement.setString(3, vehicle.getModel());
@@ -254,10 +368,12 @@ public class VehiclePostgresDao implements VehicleDao
           statement.setString(5, vehicle.getColor());
           statement.setDouble(6, vehicle.getPricePerDay());
           statement.setString(7, ((Bike) vehicle).getBikeType());
-          statement.setInt(8,oldVehicle.getId());
+          statement.setString(8, vehicle.getOwnerEmail());
+          statement.setString(9, vehicle.getState());
+          statement.setInt(10,oldVehicle.getId());
           break;
         case "e-bike":
-          statement= connection.prepareStatement("UPDATE eBike SET type = ?, brand = ?, model = ?, condition = ?, color = ?, pricePerDay = ?, bikeType = ?, maxSpeed = ?, oneChargeRange = ? WHERE id = ?");
+          statement= connection.prepareStatement("UPDATE eBike SET type = ?, brand = ?, model = ?, condition = ?, color = ?, pricePerDay = ?, bikeType = ?, maxSpeed = ?, oneChargeRange = ?,ownerEmail = ?, state = ? WHERE id = ?");
           statement.setString(1, vehicle.getType());
           statement.setString(2, vehicle.getBrand());
           statement.setString(3, vehicle.getModel());
@@ -267,10 +383,12 @@ public class VehiclePostgresDao implements VehicleDao
           statement.setString(7, ((EBike) vehicle).getBikeType());
           statement.setInt(8,((EBike) vehicle).getMaxSpeed());
           statement.setInt(9,((EBike) vehicle).getOneChargeRange());
-          statement.setInt(10,oldVehicle.getId());
+          statement.setString(10, vehicle.getOwnerEmail());
+          statement.setString(11, vehicle.getState());
+          statement.setInt(12,oldVehicle.getId());
           break;
         case "scooter":
-          statement= connection.prepareStatement("UPDATE scooter SET type = ?, brand = ?, model = ?, condition = ?, color = ?, pricePerDay = ?, maxSpeed = ?, oneChargeRange = ? WHERE id = ?");
+          statement= connection.prepareStatement("UPDATE scooter SET type = ?, brand = ?, model = ?, condition = ?, color = ?, pricePerDay = ?, maxSpeed = ?, oneChargeRange = ?, ownerEmail = ?, state = ? WHERE id = ?");
           statement.setString(1, vehicle.getType());
           statement.setString(2, vehicle.getBrand());
           statement.setString(3, vehicle.getModel());
@@ -279,7 +397,9 @@ public class VehiclePostgresDao implements VehicleDao
           statement.setDouble(6, vehicle.getPricePerDay());
           statement.setInt(7,((Scooter) vehicle).getMaxSpeed());
           statement.setInt(8,((Scooter) vehicle).getOneChargeRange());
-          statement.setInt(9,oldVehicle.getId());
+          statement.setString(9, vehicle.getOwnerEmail());
+          statement.setString(10, vehicle.getState());
+          statement.setInt(11,oldVehicle.getId());
           break;
         default:
           throw new IllegalStateException("Unexpected value: " + type);

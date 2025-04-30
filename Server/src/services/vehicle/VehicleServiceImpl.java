@@ -43,7 +43,9 @@ public class VehicleServiceImpl implements VehicleService
           bikeRequest.condition(),
           bikeRequest.color(),
           bikeRequest.pricePerDay(),
-          bikeRequest.bikeType()
+          bikeRequest.bikeType(),
+          bikeRequest.ownerEmail(),
+          bikeRequest.state()
       );
       vehicleDao.add(newBike);
     } else if (request instanceof AddNewEBikeRequest eBikeRequest) {
@@ -68,7 +70,9 @@ public class VehicleServiceImpl implements VehicleService
           eBikeRequest.pricePerDay(),
           eBikeRequest.bikeType(),
           eBikeRequest.maxSpeed(),
-          eBikeRequest.oneChargeRange()
+          eBikeRequest.oneChargeRange(),
+          eBikeRequest.ownerEmail(),
+          eBikeRequest.state()
       );
       vehicleDao.add(newEBike);
     } else if (request instanceof AddNewScooterRequest scooterRequest) {
@@ -90,7 +94,9 @@ public class VehicleServiceImpl implements VehicleService
           scooterRequest.color(),
           scooterRequest.pricePerDay(),
           scooterRequest.maxSpeed(),
-          scooterRequest.oneChargeRange()
+          scooterRequest.oneChargeRange(),
+          scooterRequest.ownerEmail(),
+          scooterRequest.state()
       );
       vehicleDao.add(newScooter);
     } else {

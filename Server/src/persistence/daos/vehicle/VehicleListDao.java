@@ -3,6 +3,7 @@ package persistence.daos.vehicle;
 import model.entities.vehicles.Vehicle;
 import utils.StringUtils;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,6 +45,30 @@ public class VehicleListDao implements VehicleDao
       {
         returns.add(vehicle);
       }
+    }
+    return returns;
+  }
+
+  @Override public ArrayList<Vehicle> getByState(String state)
+      throws SQLException
+  {
+    ArrayList<Vehicle> returns = null;
+    for (Vehicle vehicle : vehicles)
+    {
+      if (state.equals(vehicle.getState()))
+      {
+        returns.add(vehicle);
+      }
+    }
+    return returns;
+  }
+
+  @Override public ArrayList<Vehicle> getAll() throws SQLException
+  {
+    ArrayList<Vehicle> returns = null;
+    for (Vehicle vehicle : vehicles)
+    {
+      returns.add(vehicle);
     }
     return returns;
   }

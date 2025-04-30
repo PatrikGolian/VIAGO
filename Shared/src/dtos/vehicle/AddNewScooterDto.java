@@ -8,15 +8,17 @@ public record AddNewScooterDto(int id,
                                String color,
                                double pricePerDay,
                                int maxSpeed,
-                               int oneChargeRange) implements VehicleDataDto
+                               int oneChargeRange,
+                               String ownerEmail,
+                               String state) implements VehicleDataDto
 {
-  @Override
-  public String toString()
+  @Override public String toString()
   {
-    return "AddNewScooterDto{" + "type='" + type + '\'' + ", brand='"
-        + brand + '\'' + ", model='" + model + '\'' + ", condition='"
-        + condition + '\'' + ", color='" + color + '\'' + ", pricePerDay="
-        + pricePerDay + ", maxSpeed=" + maxSpeed + ", oneChargeRange="
-        + oneChargeRange + '}';
+    return "AddNewScooterDto{" + "id=" + id + ", type='" + type + '\''
+        + ", brand='" + brand + '\'' + ", model='" + model + '\''
+        + ", condition='" + condition + '\'' + ", color='" + color + '\''
+        + ", pricePerDay=" + pricePerDay + ", maxSpeed=" + maxSpeed
+        + ", oneChargeRange=" + oneChargeRange + ", ownerEmail='" + ownerEmail
+        + '\'' + ", state='" + state + '\'' + '}';
   }
 }

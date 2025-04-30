@@ -50,6 +50,7 @@ public class UserListDao implements UserDao
     @Override
     public void delete(String email)
     {
+        users.remove(getSingle(email));
         // Will implement later. Just remove from list.
     }
 

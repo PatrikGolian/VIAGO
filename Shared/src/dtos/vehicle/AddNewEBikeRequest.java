@@ -9,15 +9,18 @@ public record AddNewEBikeRequest( int id,
                                   double pricePerDay,
                                   int maxSpeed,
                                   int oneChargeRange,
-                                  String bikeType) implements AddNewVehicleRequest
+                                  String bikeType,
+                                  String ownerEmail,
+                                  String state) implements AddNewVehicleRequest
 {
-  @Override
-  public String toString()
+  @Override public String toString()
   {
-    return "AddNewEBikeRequest{" + "type='" + type + '\'' + ", brand='" + brand
-        + '\'' + ", model='" + model + '\'' + ", condition='" + condition + '\''
-        + ", color='" + color + '\'' + ", pricePerDay=" + pricePerDay
-        + ", maxSpeed=" + maxSpeed + ", oneChargeRange=" + oneChargeRange
-        + ", bikeType='" + bikeType + '\'' + '}';
+    return "AddNewEBikeRequest{" + "id=" + id + ", type='" + type + '\''
+        + ", brand='" + brand + '\'' + ", model='" + model + '\''
+        + ", condition='" + condition + '\'' + ", color='" + color + '\''
+        + ", pricePerDay=" + pricePerDay + ", maxSpeed=" + maxSpeed
+        + ", oneChargeRange=" + oneChargeRange + ", bikeType='" + bikeType
+        + '\'' + ", ownerEmail='" + ownerEmail + '\'' + ", state='" + state
+        + '\'' + '}';
   }
 }

@@ -8,15 +8,17 @@ public record AddNewScooterRequest( int id,
                                     String color,
                                     double pricePerDay,
                                     int maxSpeed,
-                                    int oneChargeRange) implements AddNewVehicleRequest
+                                    int oneChargeRange,
+                                    String ownerEmail,
+                                    String state) implements AddNewVehicleRequest
 {
-  @Override
-  public String toString()
+  @Override public String toString()
   {
-    return "AddNewScooterRequest{" + "type='" + type + '\'' + ", brand='"
-        + brand + '\'' + ", model='" + model + '\'' + ", condition='"
-        + condition + '\'' + ", color='" + color + '\'' + ", pricePerDay="
-        + pricePerDay + ", maxSpeed=" + maxSpeed + ", oneChargeRange="
-        + oneChargeRange + '}';
+    return "AddNewScooterRequest{" + "id=" + id + ", type='" + type + '\''
+        + ", brand='" + brand + '\'' + ", model='" + model + '\''
+        + ", condition='" + condition + '\'' + ", color='" + color + '\''
+        + ", pricePerDay=" + pricePerDay + ", maxSpeed=" + maxSpeed
+        + ", oneChargeRange=" + oneChargeRange + ", ownerEmail='" + ownerEmail
+        + '\'' + ", state='" + state + '\'' + '}';
   }
 }

@@ -3,10 +3,10 @@ package ui.addnew;
 import dtos.vehicle.AddNewBikeRequest;
 import dtos.vehicle.AddNewEBikeRequest;
 import dtos.vehicle.AddNewScooterRequest;
-import dtos.vehicle.AddNewVehicleRequest;
 import javafx.beans.Observable;
 import javafx.beans.property.*;
 import networking.addnew.AddNewVehicleClient;
+import state.AppState;
 import utils.StringUtils;
 
 public class AddNewVM
@@ -50,6 +50,7 @@ public class AddNewVM
   public void add()
   {
     // logic for adding to the system ig
+    String email = AppState.getCurrentUser().email();
     messageProp.set(""); // clear potential existing message
     try
     {
@@ -60,7 +61,7 @@ public class AddNewVM
           double price = Double.parseDouble(priceProp.get());
           int speed = Integer.parseInt(speedProp.get());
           int range = Integer.parseInt(rangeProp.get());
-          addNewService.addNewVehicle(new AddNewScooterRequest(idProp.get(),typeProp.get(), brandProp.get(), modelProp.get(), conditionProp.get(), colorProp.get(), price, speed, range));
+          addNewService.addNewVehicle(new AddNewScooterRequest(idProp.get(),typeProp.get(), brandProp.get(), modelProp.get(), conditionProp.get(), colorProp.get(), price, speed, range, email, "Available"));
 
           messageProp.set("Success");
           // clear fields
@@ -70,7 +71,7 @@ public class AddNewVM
         case "bike" ->
         {
           double price = Double.parseDouble(priceProp.get());
-          addNewService.addNewVehicle(new AddNewBikeRequest(idProp.get(),typeProp.get(), brandProp.get(), modelProp.get(), conditionProp.get(), colorProp.get(), price, bikeTypeProp.get()));
+          addNewService.addNewVehicle(new AddNewBikeRequest(idProp.get(),typeProp.get(), brandProp.get(), modelProp.get(), conditionProp.get(), colorProp.get(), price, bikeTypeProp.get(), email, "Available"));
 
           messageProp.set("Success");
           // clear fields
@@ -82,7 +83,7 @@ public class AddNewVM
           double price = Double.parseDouble(priceProp.get());
           int speed = Integer.parseInt(speedProp.get());
           int range = Integer.parseInt(rangeProp.get());
-          addNewService.addNewVehicle(new AddNewEBikeRequest(idProp.get(),typeProp.get(), brandProp.get(), modelProp.get(), conditionProp.get(), colorProp.get(), price, speed, range, bikeTypeProp.get()));
+          addNewService.addNewVehicle(new AddNewEBikeRequest(idProp.get(),typeProp.get(), brandProp.get(), modelProp.get(), conditionProp.get(), colorProp.get(), price, speed, range, bikeTypeProp.get(), email, "Available"));
 
           messageProp.set("Success");
           // clear fields

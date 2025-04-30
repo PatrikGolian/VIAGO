@@ -7,14 +7,17 @@ public record AddNewBikeDto( int id,
                              String condition,
                              String color,
                              double pricePerDay,
-                             String bikeType) implements VehicleDataDto
+                             String bikeType,
+                             String ownerEmail,
+                             String state) implements VehicleDataDto
 {
-  @Override
-  public String toString()
+  @Override public String toString()
   {
-    return "AddNewBikeDto{" + "type='" + type + '\'' + ", brand='" + brand
-        + '\'' + ", model='" + model + '\'' + ", condition='" + condition + '\''
-        + ", color='" + color + '\'' + ", pricePerDay=" + pricePerDay
-        + ", bikeType='" + bikeType + '\'' + '}';
+    return "AddNewBikeDto{" + "id=" + id + ", type='" + type + '\''
+        + ", brand='" + brand + '\'' + ", model='" + model + '\''
+        + ", condition='" + condition + '\'' + ", color='" + color + '\''
+        + ", pricePerDay=" + pricePerDay + ", bikeType='" + bikeType + '\''
+        + ", ownerEmail='" + ownerEmail + '\'' + ", state='" + state + '\''
+        + '}';
   }
 }

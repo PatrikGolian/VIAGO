@@ -24,5 +24,6 @@ public abstract class ViewUsers
             implements Serializable
     {
     }
+
 }
 
