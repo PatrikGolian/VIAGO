@@ -7,6 +7,8 @@ import networking.addnew.AddNewVehicleClient;
 import networking.addnew.SocketAddNewVehicleClient;
 import networking.authentication.AuthenticationClient;
 import networking.authentication.SocketAuthenticationClient;
+import networking.reservation.ReservationClient;
+import networking.reservation.SocketReservationClient;
 import networking.user.SocketUsersClient;
 import networking.user.UsersClient;
 import ui.addnew.AddNewController;
@@ -18,6 +20,8 @@ import ui.popup.MessageType;
 import ui.popup.PopupController;
 import ui.register.RegisterController;
 import ui.register.RegisterVM;
+import ui.reservation.ReservationController;
+import ui.reservation.ReservationVM;
 import ui.viewusers.ViewUsersController;
 import ui.viewusers.ViewUsersVM;
 import ui.welcome.WelcomeController;
@@ -50,6 +54,7 @@ public class ViewHandler
                 case LOGIN -> openLoginView();
                 case VIEWUSERS -> openUsersOverview();
                 case ADDNEW -> openAddNewView();
+                case RESERVATION -> openReservationView();
                 default -> throw new RuntimeException("View not found.");
             }
         }
@@ -128,6 +133,15 @@ public class ViewHandler
         String viewTitle = "AddNew";
         String viewSubPath = "addnew/AddNew.fxml";
         openView(viewTitle, viewSubPath, controller);
+    }
+    private static void openReservationView() throws IOException
+    {
+        ReservationClient reservationClient = new SocketReservationClient();
+        ReservationVM vm = new ReservationVM(reservationClient);
+        ReservationController controller = new ReservationController(vm);
+        String viewTitle = "Reservation";
+        String viewSubPath = "reservation/Reservation.fxml";
+        openView(viewTitle,viewSubPath,controller);
     }
 
     private static void openView(String viewTitle, String viewSubPath, Controller controller) throws IOException

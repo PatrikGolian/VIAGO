@@ -7,6 +7,7 @@ import java.time.LocalDate;
 
 public interface ReservationService
 {
-  void updateVehicleState(Date today);
+  void updateVehicleState();
   void addNewReservation(ReservationRequest request);
+
 }

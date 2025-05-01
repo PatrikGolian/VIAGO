@@ -22,6 +22,11 @@ public class Reservation
     this.price = price;
   }
 
+  public Reservation()
+  {
+
+  }
+
   public int getVehicleId()
   {
     return vehicleId;

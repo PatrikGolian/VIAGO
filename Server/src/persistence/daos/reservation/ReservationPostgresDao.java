@@ -1,16 +1,14 @@
 package persistence.daos.reservation;
 
-import model.entities.User;
 import model.entities.reservation.Reservation;
-import model.entities.vehicles.Bike;
-import model.entities.vehicles.Vehicle;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class ReservationPostgresDao
+public class ReservationPostgresDao implements ReservationDao
 {
+
   private static Connection getConnection() throws SQLException
   {
     return DriverManager.getConnection(
@@ -131,8 +129,9 @@ public class ReservationPostgresDao
     }
   }
 
-  ArrayList<Reservation> getByReservEmail(String reservedByEmail) throws SQLException
+  public ArrayList<Reservation> getByReservEmail(String reservedByEmail) throws SQLException
   {
+
     ArrayList<Reservation> reservations = null;
 
     try (Connection connection = getConnection())
@@ -157,7 +156,7 @@ public class ReservationPostgresDao
     return reservations;
   }
 
-  ArrayList<Reservation> getAll() throws SQLException
+  public ArrayList<Reservation> getAll() throws SQLException
   {
     ArrayList<Reservation> reservations = null;
 

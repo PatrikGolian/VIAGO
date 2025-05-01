@@ -1,9 +1,9 @@
 package services.vehicle;
 
-import dtos.vehicle.AddNewBikeRequest;
-import dtos.vehicle.AddNewEBikeRequest;
-import dtos.vehicle.AddNewScooterRequest;
-import dtos.vehicle.AddNewVehicleRequest;
+import dtos.Request;
+import dtos.user.ViewUsers;
+import dtos.vehicle.*;
+import model.entities.User;
 import model.entities.vehicles.Bike;
 import model.entities.vehicles.EBike;
 import model.entities.vehicles.Scooter;
@@ -12,6 +12,8 @@ import model.exceptions.ValidationException;
 import persistence.daos.vehicle.VehicleDao;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VehicleServiceImpl implements VehicleService
 {
@@ -103,6 +105,23 @@ public class VehicleServiceImpl implements VehicleService
       throw new IllegalArgumentException("Unknown vehicle request type: " + request.getClass());
     }
 
+  }
+  public List<VehicleDisplayDto> getVehiclesOverview()
+      throws SQLException
+  {
+    List<Vehicle> vehicles = vehicleDao.getAll();
+    List<VehicleDisplayDto> result = new ArrayList<>();
+
+    // convert User to UserDto. This way we only send the data, the client needs. We don't include the password, for example.
+    // I could add admin status or black list status, if needed.
+
+    for (Vehicle vehicle : vehicles)
+    {
+      VehicleDisplayDto dto = new VehicleDisplayDto(vehicle.getType(), vehicle.getBrand(), vehicle.getModel(), vehicle.getPricePerDay(),vehicle.getState());
+      result.add(dto);
+    }
+
+    return result;
   }
 
   private static void typeValidation(String type)

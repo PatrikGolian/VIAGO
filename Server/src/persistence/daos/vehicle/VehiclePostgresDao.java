@@ -408,4 +408,31 @@ public class VehiclePostgresDao implements VehicleDao
     }
   }
 
+  @Override public Vehicle getByIdAndType(int id, String vehicleType)
+      throws SQLException
+  {
+    ArrayList<Vehicle> temp = new ArrayList<>();
+    try(Connection connection = getConnection())
+    {
+      switch (vehicleType)
+      {
+        case "bike":
+          temp = getBike(connection);
+        break;
+        case "e-bike":
+          temp = getEBike(connection);
+          break;
+        case "scooter":
+          temp = getScooter(connection);
+          break;
+      }
+    }
+    for (int t = 0; t < temp.size(); t++)
+    {
+      if (temp.get(t).getId() == id){
+        return temp.get(t);
+      }
+    }
+    return null;
+  }
 }

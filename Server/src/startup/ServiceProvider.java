@@ -1,15 +1,16 @@
 package startup;
 
 import model.exceptions.NoSuchServiceException;
-import networking.requesthandlers.AddNewVehicleRequestHandler;
-import networking.requesthandlers.AuthRequestHandler;
-import networking.requesthandlers.RequestHandler;
-import networking.requesthandlers.UserRequestHandler;
+import networking.requesthandlers.*;
+import persistence.daos.reservation.ReservationDao;
+import persistence.daos.reservation.ReservationPostgresDao;
 import persistence.daos.user.UserDao;
 import persistence.daos.user.UserListDao;
 import persistence.daos.user.UserPostgresDao;
 import services.authentication.AuthServiceImpl;
 import services.authentication.AuthenticationService;
+import services.reservation.ReservationService;
+import services.reservation.ReservationServiceImpl;
 import services.user.UserService;
 import services.user.UserServiceImpl;
 import services.vehicle.VehicleService;
@@ -46,7 +47,12 @@ public class ServiceProvider
 
     public RequestHandler getAddNewVehicleRequestHandler()
     {
-         return new AddNewVehicleRequestHandler(getVehicleService());
+        return new AddNewVehicleRequestHandler(getVehicleService());
+    }
+
+    public RequestHandler getReservationRequestHandler()
+    {
+        return new ReservationRequestHandler(getReservationService());
     }
 
     public Logger getLogger()
@@ -79,11 +85,15 @@ public class ServiceProvider
         return new VehiclePostgresDao();
     }
 
+    private static ReservationDao getReservationDao()
+    {
+        return new ReservationPostgresDao();
+    }
 
-
-
-
-
+    static ReservationService getReservationService()
+    {
+        return new ReservationServiceImpl(getReservationDao(), getVehicleDao());
+    }
 
 
 

@@ -4,6 +4,7 @@ import dtos.Request;
 import dtos.user.BlacklistUserRequest;
 import dtos.user.PromoteUserRequest;
 import dtos.user.ViewUsers;
+import javafx.collections.ObservableList;
 import networking.SocketService;
 
 import java.util.List;

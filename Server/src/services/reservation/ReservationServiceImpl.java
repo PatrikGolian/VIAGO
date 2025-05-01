@@ -28,10 +28,19 @@ public class ReservationServiceImpl implements ReservationService
     this.vehicleDao = vehicleDao;
   }
 
-  @Override
-  public void updateVehicleState(Date today)
+
+  public void updateVehicleState()
   {
-    ArrayList<Reservation> reservations = reservationDao.getAll();
+    Date today = Date.today();
+    ArrayList<Reservation> reservations = null;
+    try
+    {
+      reservations = reservationDao.getAll();
+    }
+    catch (SQLException e)
+    {
+      throw new RuntimeException(e);
+    }
     for(Reservation reservation : reservations)
     {
       if(reservation.getStartDate().equals(today))

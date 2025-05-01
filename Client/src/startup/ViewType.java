@@ -6,5 +6,6 @@ public enum ViewType
     LOGIN,
     VIEWUSERS,
     REGISTER,
-    ADDNEW
+    ADDNEW,
+    RESERVATION
 }

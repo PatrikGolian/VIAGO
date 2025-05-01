@@ -3,6 +3,7 @@ package ui.reservation;
 import javafx.scene.control.*;
 
 import javafx.fxml.FXML;
+import persistence.daos.vehicle.VehiclePostgresDao;
 import startup.ViewHandler;
 import startup.ViewType;
 import ui.common.Controller;
@@ -38,8 +39,9 @@ public class ReservationController implements Controller
 
   public void initialize()
   {
-    viewModel.loadVehicles;
+    viewModel.loadVehicles();
 
+    vehicleTable.getItems().addAll(VehiclePostgresDao.getAll());
   }
 
   public void onBack()

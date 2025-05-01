@@ -110,6 +110,7 @@ public class MainSocketHandler implements Runnable
             case "auth" -> serviceProvider.getAuthenticationRequestHandler();
             case "users" -> serviceProvider.getUserRequestHandler();
             case "addVehicle" -> serviceProvider.getAddNewVehicleRequestHandler();
+            case "reservation" -> serviceProvider.getReservationRequestHandler();
             default -> throw new IllegalStateException("Unexpected value: " + request.handler());
         };
 
