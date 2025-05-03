@@ -52,7 +52,7 @@ public class ServiceProvider
 
     public RequestHandler getReservationRequestHandler()
     {
-        return new ReservationRequestHandler(getReservationService());
+        return new ReservationRequestHandler(getReservationService(), getVehicleService());
     }
 
     public Logger getLogger()

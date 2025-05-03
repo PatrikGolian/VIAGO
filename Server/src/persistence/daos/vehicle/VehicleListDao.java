@@ -26,6 +26,11 @@ public class VehicleListDao implements VehicleDao
     vehicles.add(vehicle);
   }
 
+  @Override public Vehicle getByIdAndType(int id, String vehicleType)
+      throws SQLException
+  {
+    return null;
+  }
 
   /**
    * Find a User entity by a given email.

@@ -10,12 +10,12 @@ import ui.common.Controller;
 
 public class ReservationController implements Controller
 {
-  @FXML private TableView<ReservationFx> vehicleTable;
-  @FXML private TableColumn<ReservationFx, String> typeColumn;
-  @FXML private TableColumn<ReservationFx, String> brandColumn;
-  @FXML private TableColumn<ReservationFx, String> modelColumn;
-  @FXML private TableColumn<ReservationFx, Integer> priceColumn;
-  @FXML private TableColumn<ReservationFx, String> stateColumn;
+  @FXML private TableView<VehicleFx> vehicleTable;
+  @FXML private TableColumn<VehicleFx, String> typeColumn;
+  @FXML private TableColumn<VehicleFx, String> brandColumn;
+  @FXML private TableColumn<VehicleFx, String> modelColumn;
+  @FXML private TableColumn<VehicleFx, Double> priceColumn;
+  @FXML private TableColumn<VehicleFx, String> stateColumn;
 
   @FXML private TextField conditionField;
   @FXML private TextField colorField;
@@ -26,7 +26,7 @@ public class ReservationController implements Controller
   @FXML private Label bikeTypeLabel;
   @FXML private Label speedLabel;
   @FXML private Label rangeLabel;
-  @FXML private Label priceField;
+  @FXML private TextField priceField;
   @FXML private Button reserveButton;
 
 
@@ -41,7 +41,14 @@ public class ReservationController implements Controller
   {
     viewModel.loadVehicles();
 
-    vehicleTable.getItems().addAll(VehiclePostgresDao.getAll());
+    vehicleTable.setItems(viewModel.getVehicleList());
+    vehicleTable.setEditable(false);
+    vehicleTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    typeColumn.setCellValueFactory(param -> param.getValue().typePropProperty());
+    brandColumn.setCellValueFactory(param -> param.getValue().brandPropProperty());
+    modelColumn.setCellValueFactory(param -> param.getValue().modelPropProperty());
+    priceColumn.setCellValueFactory(param -> param.getValue().pricePerDayPropProperty().asObject());
+    stateColumn.setCellValueFactory(param -> param.getValue().statePropProperty());
   }
 
   public void onBack()

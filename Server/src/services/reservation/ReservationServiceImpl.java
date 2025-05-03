@@ -60,10 +60,7 @@ public class ReservationServiceImpl implements ReservationService
     }
   }
 
-  /*public boolean isAvailable(AddNewVehicleRequest request)
-  {
 
-  } */
 
   public void addNewReservation(ReservationRequest request)
   {
