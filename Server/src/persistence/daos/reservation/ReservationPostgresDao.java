@@ -48,6 +48,7 @@ public class ReservationPostgresDao implements ReservationDao
   {
     create(reservation);
   }
+
   public ArrayList<Reservation> getByDate(Date date)
   {
     try(Connection connection = getConnection()){
@@ -102,7 +103,7 @@ public class ReservationPostgresDao implements ReservationDao
     int vehicleId = reservation.getVehicleId(), oldVehicleId = oldReservation.getVehicleId();
     String ownerEmail = reservation.getOwnerEmail(),
         reservedByEmail = reservation.getReservedByEmail();
-    Double price = reservation.getPrice();
+    double price = reservation.getPrice();
     model.Date startDate = reservation.getStartDate(),
         endDate = reservation.getEndDate(),
         oldStartDate = oldReservation.getStartDate(),
@@ -162,7 +163,7 @@ public class ReservationPostgresDao implements ReservationDao
 
     try (Connection connection = getConnection())
     {
-      PreparedStatement statement = connection.prepareStatement("SELECT* FROM reservation ");
+      PreparedStatement statement = connection.prepareStatement("SELECT* FROM reservation");
       ResultSet resultSet = statement.executeQuery();
       while (resultSet.next())
       {

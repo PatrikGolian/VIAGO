@@ -5,6 +5,7 @@ import networking.requesthandlers.*;
 import persistence.daos.reservation.ReservationDao;
 import persistence.daos.reservation.ReservationPostgresDao;
 import persistence.daos.user.UserDao;
+import persistence.daos.user.UserJsonFileDao;
 import persistence.daos.user.UserListDao;
 import persistence.daos.user.UserPostgresDao;
 import services.authentication.AuthServiceImpl;
@@ -52,7 +53,8 @@ public class ServiceProvider
 
     public RequestHandler getReservationRequestHandler()
     {
-        return new ReservationRequestHandler(getReservationService(), getVehicleService());
+        return new ReservationRequestHandler(getReservationService(),
+            getVehicleService());
     }
 
     public Logger getLogger()
@@ -78,6 +80,7 @@ public class ServiceProvider
     private static UserDao getUserDao()
     {
         return new UserPostgresDao();
+        //return new UserJsonFileDao();
     }
 
     private static VehicleDao getVehicleDao()
@@ -95,48 +98,47 @@ public class ServiceProvider
         return new ReservationServiceImpl(getReservationDao(), getVehicleDao());
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // Ignore the below code!!
-    // ------------------------------
-    // I am not currently using this. Just checking out what Java can do with generics.
-    public <T> T getService(Class<T> serviceType)
-    {
-        if (!serviceRegistry.containsKey(serviceType))
-        {
-
-            throw new NoSuchServiceException(serviceType.getName());
-        }
-        return (T) serviceRegistry.get(serviceType);
-    }
-
-    private static Map<Class<?>, Supplier<?>> serviceRegistry = new HashMap<>();
-
-    static
-    {
-        serviceRegistry.put(
-                AuthRequestHandler.class,
-                () -> new AuthRequestHandler((AuthenticationService) serviceRegistry.get(AuthenticationService.class).get())
-        );
-        serviceRegistry.put(
-                AuthenticationService.class,
-                () -> new AuthServiceImpl((UserDao) serviceRegistry.get(UserDao.class).get())
-        );
-        serviceRegistry.put(
-                UserDao.class,
-                () -> new UserListDao()
-        );
-
-    }
 }
+
+
+
+
+
+
+
+
+
+
+//
+//    // Ignore the below code!!
+//    // ------------------------------
+//    // I am not currently using this. Just checking out what Java can do with generics.
+//    public <T> T getService(Class<T> serviceType)
+//    {
+//        if (!serviceRegistry.containsKey(serviceType))
+//        {
+//
+//            throw new NoSuchServiceException(serviceType.getName());
+//        }
+//        return (T) serviceRegistry.get(serviceType);
+//    }
+//
+//    private static Map<Class<?>, Supplier<?>> serviceRegistry = new HashMap<>();
+//
+//    static
+//    {
+//        serviceRegistry.put(
+//                AuthRequestHandler.class,
+//                () -> new AuthRequestHandler((AuthenticationService) serviceRegistry.get(AuthenticationService.class).get())
+//        );
+//        serviceRegistry.put(
+//                AuthenticationService.class,
+//                () -> new AuthServiceImpl((UserDao) serviceRegistry.get(UserDao.class).get())
+//        );
+//        serviceRegistry.put(
+//                UserDao.class,
+//                () -> new UserListDao()
+//        );
+//
+//    }
+//}

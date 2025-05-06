@@ -19,8 +19,6 @@ public class AuthRequestHandler implements RequestHandler
     @Override
     public Object handle(String action, Object payload) throws SQLException
     {
-        // Some methods can return something, some do not. Logging in? If no exceptions are thrown, success could be assumed.
-        // Here, though, I explicitly return "OK", just as an example. I don't really use it.
         switch (action)
         {
             case "register" -> authenticationService.registerUser((RegisterUserRequest) payload);
@@ -31,6 +29,6 @@ public class AuthRequestHandler implements RequestHandler
             default -> throw new InvalidActionException("auth", action);
         }
         ;
-        return null; // just a default return value. Some actions above may return stuff.
+        return null;
     }
 }

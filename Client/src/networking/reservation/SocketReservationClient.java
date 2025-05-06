@@ -2,6 +2,7 @@ package networking.reservation;
 
 import dtos.Request;
 import dtos.reservation.ReservationRequest;
+import dtos.vehicle.AddNewVehicleRequest;
 import dtos.vehicle.VehicleDisplayDto;
 import model.entities.reservation.Reservation;
 import networking.SocketService;
@@ -18,7 +19,20 @@ public class SocketReservationClient implements ReservationClient
 
   @Override public List<VehicleDisplayDto> getVehicles()
   {
-    Request request = new Request("reservation", "getVehicles", new Reservation() );
-    return (List<VehicleDisplayDto>) SocketService.sendRequest(request);
+    Request request = new Request("reservation", "view_vehicles", new AddNewVehicleRequest()
+    {
+    });
+    //return (List<VehicleDisplayDto>) SocketService.sendRequest(request);
+
+    List<VehicleDisplayDto> response = (List<VehicleDisplayDto>) SocketService.sendRequest(request);
+
+    System.out.println("Received object: " + response);
+    System.out.println("Received type: " + (response != null ? response.getClass().getName() : "null"));
+
+    if (response instanceof List<?>) {
+      return response;
+    } else {
+      throw new RuntimeException("Unexpected response: " + response);
+    }
   }
 }

@@ -112,9 +112,6 @@ public class VehicleServiceImpl implements VehicleService
     List<Vehicle> vehicles = vehicleDao.getAll();
     List<VehicleDisplayDto> result = new ArrayList<>();
 
-    // convert User to UserDto. This way we only send the data, the client needs. We don't include the password, for example.
-    // I could add admin status or black list status, if needed.
-
     for (Vehicle vehicle : vehicles)
     {
       VehicleDisplayDto dto = new VehicleDisplayDto(vehicle.getType(), vehicle.getBrand(), vehicle.getModel(), vehicle.getPricePerDay(),vehicle.getState());

@@ -14,7 +14,7 @@ public class SocketUsersClient implements UsersClient
     @Override
     public List<ViewUsers.UserDisplayDto> getUsers()
     {
-        Request request = new Request("users", "view_users", new ViewUsers.Request(0, 100, null));
+        Request request = new Request("users", "view_users", new ViewUsers.Request( null));
         return (List<ViewUsers.UserDisplayDto>) SocketService.sendRequest(request);
     }
 

@@ -64,6 +64,9 @@ public class ReservationServiceImpl implements ReservationService
 
   public void addNewReservation(ReservationRequest request)
   {
+    Date startDate = request.startDate(),
+        endDate = request.endDate();
+
 
   }
 }

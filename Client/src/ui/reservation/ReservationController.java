@@ -3,7 +3,8 @@ package ui.reservation;
 import javafx.scene.control.*;
 
 import javafx.fxml.FXML;
-import persistence.daos.vehicle.VehiclePostgresDao;
+import javafx.scene.control.cell.PropertyValueFactory;
+import model.entities.vehicles.Vehicle;
 import startup.ViewHandler;
 import startup.ViewType;
 import ui.common.Controller;
@@ -11,11 +12,11 @@ import ui.common.Controller;
 public class ReservationController implements Controller
 {
   @FXML private TableView<VehicleFx> vehicleTable;
-  @FXML private TableColumn<VehicleFx, String> typeColumn;
-  @FXML private TableColumn<VehicleFx, String> brandColumn;
-  @FXML private TableColumn<VehicleFx, String> modelColumn;
-  @FXML private TableColumn<VehicleFx, Double> priceColumn;
-  @FXML private TableColumn<VehicleFx, String> stateColumn;
+  @FXML private TableColumn<Vehicle, String> typeColumn;
+  @FXML private TableColumn<Vehicle, String> brandColumn;
+  @FXML private TableColumn<Vehicle, String> modelColumn;
+  @FXML private TableColumn<Vehicle, Double> priceColumn;
+  @FXML private TableColumn<Vehicle, String> stateColumn;
 
   @FXML private TextField conditionField;
   @FXML private TextField colorField;
@@ -28,6 +29,7 @@ public class ReservationController implements Controller
   @FXML private Label rangeLabel;
   @FXML private TextField priceField;
   @FXML private Button reserveButton;
+  @FXML private Button backButton;
 
 
  private final ReservationVM viewModel;
@@ -44,14 +46,16 @@ public class ReservationController implements Controller
     vehicleTable.setItems(viewModel.getVehicleList());
     vehicleTable.setEditable(false);
     vehicleTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-    typeColumn.setCellValueFactory(param -> param.getValue().typePropProperty());
-    brandColumn.setCellValueFactory(param -> param.getValue().brandPropProperty());
-    modelColumn.setCellValueFactory(param -> param.getValue().modelPropProperty());
-    priceColumn.setCellValueFactory(param -> param.getValue().pricePerDayPropProperty().asObject());
-    stateColumn.setCellValueFactory(param -> param.getValue().statePropProperty());
+    typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
+    brandColumn.setCellValueFactory(new PropertyValueFactory<>("brand"));
+    modelColumn.setCellValueFactory(new PropertyValueFactory<>("model"));
+    priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+    stateColumn.setCellValueFactory(new PropertyValueFactory<>("state"));
+
+    backButton.setOnAction(e -> onBackButton());
   }
 
-  public void onBack()
+  public void onBackButton()
   {
     ViewHandler.showView(ViewType.WELCOME);
   }

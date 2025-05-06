@@ -1,14 +1,11 @@
 package ui.reservation;
 
-import dtos.user.ViewUsers;
 import dtos.vehicle.VehicleDisplayDto;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import networking.reservation.ReservationClient;
-import services.reservation.ReservationService;
 import startup.ViewHandler;
 import ui.popup.MessageType;
-import ui.viewusers.UserFx;
 
 import java.util.List;
 
@@ -20,12 +17,13 @@ public class ReservationVM
   public ReservationVM(ReservationClient reservationService)
   {
     this.reservationService = reservationService;
+
+    loadVehicles();
   }
 
   public void addReservations()
   {
-
-
+    //reservationService.addNewReservation();
   }
   public void loadVehicles()
   {
@@ -47,5 +45,6 @@ public class ReservationVM
   {
     return vehicles;
   }
+
 
 }
