@@ -1,38 +1,90 @@
 package ui.reservation;
 
-import dtos.vehicle.VehicleDisplayDto;
+import dtos.vehicle.*;
 import javafx.beans.property.*;
 
 public class VehicleFx
 {
+  // Related to table view
   private final StringProperty typeProp = new SimpleStringProperty();
   private final StringProperty brandProp = new SimpleStringProperty();
   private final StringProperty modelProp = new SimpleStringProperty();
   private final DoubleProperty pricePerDayProp = new SimpleDoubleProperty();
   private final StringProperty stateProp = new SimpleStringProperty();
 
-  public VehicleFx(VehicleDisplayDto vehicle)
+  // Related to fields
+  private final StringProperty conditionProp    = new SimpleStringProperty();
+  private final StringProperty colorProp        = new SimpleStringProperty();
+  private final StringProperty ownerProp        = new SimpleStringProperty();
+  private final StringProperty bikeTypeProp     = new SimpleStringProperty();
+  private final StringProperty maxSpeedProp     = new SimpleStringProperty();
+  private final StringProperty rangeProp     = new SimpleStringProperty();
+
+    public VehicleFx(VehicleDisplayDto vehicle)
   {
+    /*typeProp.set(vehicle.type());
+    brandProp.set(vehicle.brand());
+    modelProp.set(vehicle.model());
+    pricePerDayProp.set(vehicle.pricePerDay());
+    stateProp.set(vehicle.state());
+    switch (typeProp.get())
+    {
+      case "bike" ->{
+        conditionProp.set(String.valueOf(((AddNewBikeDto) data).condition()));
+        colorProp.set(String.valueOf(((AddNewBikeDto)data).color()));
+        ownerProp.set(String.valueOf(((AddNewBikeDto)data).ownerEmail()));
+        //bike specific
+        bikeTypeProp.set(String.valueOf(((AddNewBikeDto) data).bikeType()));
+      }
+      case "e-bike" ->{
+        conditionProp.set(String.valueOf(((AddNewEBikeDto) data).condition()));
+        colorProp.set(String.valueOf(((AddNewEBikeDto)data).color()));
+        ownerProp.set(String.valueOf(((AddNewEBikeDto)data).ownerEmail()));
+        //e-bike specific
+        bikeTypeProp.set(String.valueOf(((AddNewEBikeDto) data).bikeType()));
+        maxSpeedProp.set(String.valueOf(((AddNewEBikeDto) data).maxSpeed()));
+        rangeProp.set(String.valueOf(((AddNewEBikeDto)data).oneChargeRange()));
+      }
+      case "scooter" ->{
+        conditionProp.set(String.valueOf(((AddNewScooterDto) data).condition()));
+        colorProp.set(String.valueOf(((AddNewScooterDto)data).color()));
+        ownerProp.set(String.valueOf(((AddNewScooterDto)data).ownerEmail()));
+        //scooter specific
+        maxSpeedProp.set(String.valueOf(((AddNewScooterDto)data).maxSpeed()));
+        rangeProp.set(String.valueOf(((AddNewScooterDto)data).oneChargeRange()));
+      }
+    }*/
     typeProp.set(vehicle.type());
     brandProp.set(vehicle.brand());
     modelProp.set(vehicle.model());
     pricePerDayProp.set(vehicle.pricePerDay());
     stateProp.set(vehicle.state());
+    conditionProp.set(vehicle.condition());
+    colorProp.set(vehicle.color());
+    ownerProp.set(vehicle.ownerEmail());
+
+    switch (vehicle.type()) {
+      case "bike" -> {
+        bikeTypeProp.set(((BikeDisplayDto) vehicle).bikeType());
+      }
+      case "e-bike" -> {
+        EBikeDisplayDto ebike = (EBikeDisplayDto) vehicle;
+        bikeTypeProp.set(ebike.bikeType());
+        maxSpeedProp.set(String.valueOf(ebike.maxSpeed()));
+        rangeProp.set(String.valueOf(ebike.oneChargeRange()));
+      }
+      case "scooter" -> {
+        ScooterDisplayDto scooter = (ScooterDisplayDto) vehicle;
+        maxSpeedProp.set(String.valueOf(scooter.maxSpeed()));
+        rangeProp.set(String.valueOf(scooter.oneChargeRange()));
+      }
+    }
   }
 
-  public String getTypeProp()
-  {
-    return typeProp.get();
-  }
-
+  // Table view related
   public StringProperty typePropProperty()
   {
     return typeProp;
-  }
-
-  public String getBrandProp()
-  {
-    return brandProp.get();
   }
 
   public StringProperty brandPropProperty()
@@ -40,19 +92,9 @@ public class VehicleFx
     return brandProp;
   }
 
-  public String getModelProp()
-  {
-    return modelProp.get();
-  }
-
   public StringProperty modelPropProperty()
   {
     return modelProp;
-  }
-
-  public double getPricePerDayProp()
-  {
-    return pricePerDayProp.get();
   }
 
   public DoubleProperty pricePerDayPropProperty()
@@ -60,13 +102,16 @@ public class VehicleFx
     return pricePerDayProp;
   }
 
-  public String getStateProp()
-  {
-    return stateProp.get();
-  }
-
   public StringProperty statePropProperty()
   {
     return stateProp;
   }
+
+  // Field related
+  public StringProperty conditionPropProperty()   { return conditionProp; }
+  public StringProperty colorPropProperty()       { return colorProp; }
+  public StringProperty ownerPropProperty()       { return ownerProp; }
+  public StringProperty bikeTypePropProperty()    { return bikeTypeProp; }
+  public StringProperty maxSpeedPropProperty()    { return maxSpeedProp; }
+  public StringProperty rangeProperty() {return rangeProp;}
 }

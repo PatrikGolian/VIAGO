@@ -49,9 +49,9 @@ public class AddNewVM
 
   public void add()
   {
-    // logic for adding to the system ig
+
     String email = AppState.getCurrentUser().email();
-    messageProp.set(""); // clear potential existing message
+    messageProp.set("");
     try
     {
       switch (typeProp.get())

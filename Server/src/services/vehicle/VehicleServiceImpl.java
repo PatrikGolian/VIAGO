@@ -106,7 +106,7 @@ public class VehicleServiceImpl implements VehicleService
     }
 
   }
-  public List<VehicleDisplayDto> getVehiclesOverview()
+ /* public List<VehicleDisplayDto> getVehiclesOverview()
       throws SQLException
   {
     List<Vehicle> vehicles = vehicleDao.getAll();
@@ -114,11 +114,68 @@ public class VehicleServiceImpl implements VehicleService
 
     for (Vehicle vehicle : vehicles)
     {
-      VehicleDisplayDto dto = new VehicleDisplayDto(vehicle.getType(), vehicle.getBrand(), vehicle.getModel(), vehicle.getPricePerDay(),vehicle.getState());
+      switch ()
+      VehicleDisplayDto dto = new VehicleDisplayDto(vehicle.getId(), vehicle.getType(), vehicle.getBrand(), vehicle.getModel(), vehicle.getPricePerDay(),vehicle.getState());
       result.add(dto);
     }
     return result;
-  }
+  } */
+ @Override
+ public List<VehicleDisplayDto> getVehiclesOverview() throws SQLException {
+   List<Vehicle> vehicles = vehicleDao.getAll();
+   List<VehicleDisplayDto> result = new ArrayList<>();
+
+   for (Vehicle vehicle : vehicles) {
+     if (vehicle instanceof Bike bike) {
+       result.add(new BikeDisplayDto(
+           bike.getId(),
+           bike.getType(),
+           bike.getBrand(),
+           bike.getModel(),
+           bike.getPricePerDay(),
+           bike.getState(),
+           bike.getCondition(),
+           bike.getColor(),
+           bike.getOwnerEmail(),
+           bike.getBikeType()
+       ));
+     } else if (vehicle instanceof EBike ebike) {
+       result.add(new EBikeDisplayDto(
+           ebike.getId(),
+           ebike.getType(),
+           ebike.getBrand(),
+           ebike.getModel(),
+           ebike.getPricePerDay(),
+           ebike.getState(),
+           ebike.getCondition(),
+           ebike.getColor(),
+           ebike.getOwnerEmail(),
+           ebike.getBikeType(),
+           ebike.getMaxSpeed(),
+           ebike.getOneChargeRange()
+       ));
+     } else if (vehicle instanceof Scooter scooter) {
+       result.add(new ScooterDisplayDto(
+           scooter.getId(),
+           scooter.getType(),
+           scooter.getBrand(),
+           scooter.getModel(),
+           scooter.getPricePerDay(),
+           scooter.getState(),
+           scooter.getCondition(),
+           scooter.getColor(),
+           scooter.getOwnerEmail(),
+           scooter.getMaxSpeed(),
+           scooter.getOneChargeRange()
+       ));
+     } else {
+       throw new IllegalStateException("Unknown vehicle subtype: " + vehicle.getClass().getName());
+     }
+   }
+
+   return result;
+ }
+
 
   private static void typeValidation(String type)
   {
