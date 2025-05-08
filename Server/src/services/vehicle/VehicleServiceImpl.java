@@ -117,7 +117,6 @@ public class VehicleServiceImpl implements VehicleService
       VehicleDisplayDto dto = new VehicleDisplayDto(vehicle.getType(), vehicle.getBrand(), vehicle.getModel(), vehicle.getPricePerDay(),vehicle.getState());
       result.add(dto);
     }
-
     return result;
   }
 

@@ -1,6 +1,7 @@
 package networking.reservation;
 
 import dtos.Request;
+import dtos.Response;
 import dtos.reservation.ReservationRequest;
 import dtos.vehicle.AddNewVehicleRequest;
 import dtos.vehicle.VehicleDisplayDto;
@@ -19,9 +20,7 @@ public class SocketReservationClient implements ReservationClient
 
   @Override public List<VehicleDisplayDto> getVehicles()
   {
-    Request request = new Request("reservation", "view_vehicles", new AddNewVehicleRequest()
-    {
-    });
+    Request request = new Request("reservation", "view_vehicles", null);
     //return (List<VehicleDisplayDto>) SocketService.sendRequest(request);
 
     List<VehicleDisplayDto> response = (List<VehicleDisplayDto>) SocketService.sendRequest(request);

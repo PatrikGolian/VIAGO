@@ -37,6 +37,7 @@ public class ReservationVM
     }
     catch (Exception e)
     {
+      e.printStackTrace();
       ViewHandler.popupMessage(MessageType.ERROR, e.getMessage());
     }
   }

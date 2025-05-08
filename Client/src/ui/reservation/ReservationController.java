@@ -41,18 +41,18 @@ public class ReservationController implements Controller
 
   public void initialize()
   {
-    viewModel.loadVehicles();
-
     vehicleTable.setItems(viewModel.getVehicleList());
     vehicleTable.setEditable(false);
     vehicleTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-    typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
-    brandColumn.setCellValueFactory(new PropertyValueFactory<>("brand"));
-    modelColumn.setCellValueFactory(new PropertyValueFactory<>("model"));
-    priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
-    stateColumn.setCellValueFactory(new PropertyValueFactory<>("state"));
+    typeColumn.setCellValueFactory(new PropertyValueFactory<>("typeProp"));
+    brandColumn.setCellValueFactory(new PropertyValueFactory<>("brandProp"));
+    modelColumn.setCellValueFactory(new PropertyValueFactory<>("modelProp"));
+    priceColumn.setCellValueFactory(new PropertyValueFactory<>("pricePerDayProp"));
+    stateColumn.setCellValueFactory(new PropertyValueFactory<>("stateProp"));
 
     backButton.setOnAction(e -> onBackButton());
+
+    //conditionField.textProperty().bind();
   }
 
   public void onBackButton()

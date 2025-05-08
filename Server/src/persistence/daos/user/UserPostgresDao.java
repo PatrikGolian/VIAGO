@@ -1,6 +1,7 @@
 package persistence.daos.user;
 
 import model.entities.User;
+import persistence.daos.reservation.ReservationPostgresDao;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -8,11 +9,26 @@ import java.util.List;
 
 public class UserPostgresDao implements UserDao
 {
+  private static UserPostgresDao instance;
+
+  private UserPostgresDao() throws SQLException
+  {
+    DriverManager.registerDriver(new org.postgresql.Driver());
+  }
   private static Connection getConnection() throws SQLException
   {
     return DriverManager.getConnection(
         "jdbc:postgresql://localhost:5432/postgres?currentSchema=viago",
         "postgres", "password");
+  }
+
+  public static synchronized UserPostgresDao getInstance() throws SQLException
+  {
+    if (instance == null)
+    {
+      instance = new UserPostgresDao();
+    }
+    return instance;
   }
 
 

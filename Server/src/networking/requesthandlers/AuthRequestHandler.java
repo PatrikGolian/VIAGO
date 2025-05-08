@@ -28,7 +28,6 @@ public class AuthRequestHandler implements RequestHandler
             }
             default -> throw new InvalidActionException("auth", action);
         }
-        ;
         return null;
     }
 }

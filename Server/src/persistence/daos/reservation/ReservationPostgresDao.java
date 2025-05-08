@@ -8,12 +8,26 @@ import java.util.Date;
 
 public class ReservationPostgresDao implements ReservationDao
 {
+  private static ReservationPostgresDao instance;
 
+  private ReservationPostgresDao() throws SQLException
+  {
+    DriverManager.registerDriver(new org.postgresql.Driver());
+  }
   private static Connection getConnection() throws SQLException
   {
     return DriverManager.getConnection(
         "jdbc:postgresql://localhost:5432/postgres?currentSchema=viago",
         "postgres", "password");
+  }
+
+  public static synchronized ReservationPostgresDao getInstance() throws SQLException
+  {
+    if (instance == null)
+    {
+      instance = new ReservationPostgresDao();
+    }
+    return instance;
   }
 
   public Reservation create(Reservation reservation) throws SQLException

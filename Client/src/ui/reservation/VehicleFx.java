@@ -13,11 +13,11 @@ public class VehicleFx
 
   public VehicleFx(VehicleDisplayDto vehicle)
   {
-  typeProp.set(vehicle.type());
-  brandProp.set(vehicle.brand());
-  modelProp.set(vehicle.model());
-  pricePerDayProp.set(vehicle.pricePerDay());
-  stateProp.set(vehicle.state());
+    typeProp.set(vehicle.type());
+    brandProp.set(vehicle.brand());
+    modelProp.set(vehicle.model());
+    pricePerDayProp.set(vehicle.pricePerDay());
+    stateProp.set(vehicle.state());
   }
 
   public String getTypeProp()

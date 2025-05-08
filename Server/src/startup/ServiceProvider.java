@@ -22,6 +22,7 @@ import utilities.logging.Logger;
 import persistence.daos.vehicle.VehicleDao;
 import persistence.daos.vehicle.VehiclePostgresDao;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -79,18 +80,38 @@ public class ServiceProvider
 
     private static UserDao getUserDao()
     {
-        return new UserPostgresDao();
-        //return new UserJsonFileDao();
+        try
+        {
+            return UserPostgresDao.getInstance();
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException("Failed to initialize DAO", e); // or handle as needed
+        }
     }
 
     private static VehicleDao getVehicleDao()
     {
-        return new VehiclePostgresDao();
+        try
+        {
+            return VehiclePostgresDao.getInstance();
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException("Failed to initialize DAO", e); // or handle as needed
+        }
     }
 
     private static ReservationDao getReservationDao()
     {
-        return new ReservationPostgresDao();
+        try
+        {
+            return ReservationPostgresDao.getInstance();
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException("Failed to initialize DAO", e); // or handle as needed
+        }
     }
 
     static ReservationService getReservationService()

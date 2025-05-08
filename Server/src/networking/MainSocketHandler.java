@@ -92,10 +92,11 @@ public class MainSocketHandler implements Runnable
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             logger.log(Arrays.toString(e.getStackTrace()), LogLevel.ERROR);
             ErrorResponse payload = new ErrorResponse(e.getMessage());
             Response error = new Response("SERVER_FAILURE", payload);
-            outgoingData.writeObject(error);
+            outgoingData.writeObject(error.toString());
         }
     }
 
@@ -115,6 +116,7 @@ public class MainSocketHandler implements Runnable
         };
 
         Object result = handler.handle(request.action(), request.payload());
+        //System.out.println("response from server" + result.toString());
         Response response = new Response("SUCCESS", result);
         outgoingData.writeObject(response);
     }

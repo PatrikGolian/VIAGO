@@ -4,17 +4,34 @@ import model.entities.vehicles.Bike;
 import model.entities.vehicles.EBike;
 import model.entities.vehicles.Scooter;
 import model.entities.vehicles.Vehicle;
+import persistence.daos.reservation.ReservationPostgresDao;
 
 import java.sql.*;
 import java.util.ArrayList;
 
 public class VehiclePostgresDao implements VehicleDao
 {
+  private static VehiclePostgresDao instance;
+
+  private VehiclePostgresDao() throws SQLException
+  {
+    DriverManager.registerDriver(new org.postgresql.Driver());
+  }
+
   private static Connection getConnection() throws SQLException
   {
     return DriverManager.getConnection(
         "jdbc:postgresql://localhost:5432/postgres?currentSchema=viago",
         "postgres", "password");
+  }
+
+  public static synchronized VehiclePostgresDao getInstance() throws SQLException
+  {
+    if (instance == null)
+    {
+      instance = new VehiclePostgresDao();
+    }
+    return instance;
   }
 
   public Vehicle create(Vehicle vehicle) throws SQLException
@@ -223,7 +240,7 @@ public class VehiclePostgresDao implements VehicleDao
 
   @Override public ArrayList<Vehicle> getAll() throws SQLException
   {
-    ArrayList<Vehicle> vehicles = null;
+    ArrayList<Vehicle> vehicles = new ArrayList<>();
 
     try (Connection connection = getConnection())
     {
@@ -248,7 +265,7 @@ public class VehiclePostgresDao implements VehicleDao
 
   private ArrayList<Vehicle> getBike(Connection connection) throws SQLException
   {
-    ArrayList<Vehicle> vehicles = null;
+    ArrayList<Vehicle> vehicles = new ArrayList<>();
     PreparedStatement statement = connection.prepareStatement("SELECT* FROM bike");
     ResultSet resultSet = statement.executeQuery();
     while(resultSet.next())
@@ -272,7 +289,7 @@ public class VehiclePostgresDao implements VehicleDao
   }
   private ArrayList<Vehicle> getEBike(Connection connection) throws SQLException
   {
-    ArrayList<Vehicle> vehicles = null;
+    ArrayList<Vehicle> vehicles = new ArrayList<>();
     PreparedStatement statement = connection.prepareStatement("SELECT* FROM eBike");
     ResultSet resultSet = statement.executeQuery();
     while(resultSet.next())
@@ -299,7 +316,7 @@ public class VehiclePostgresDao implements VehicleDao
   private ArrayList<Vehicle> getScooter(Connection connection)
       throws SQLException
   {
-    ArrayList<Vehicle> vehicles = null;
+    ArrayList<Vehicle> vehicles = new ArrayList<>();
     PreparedStatement statement = connection.prepareStatement("SELECT* FROM scooter");
     ResultSet resultSet = statement.executeQuery();
     while(resultSet.next())
