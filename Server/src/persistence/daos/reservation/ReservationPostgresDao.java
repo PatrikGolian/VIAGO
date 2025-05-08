@@ -4,7 +4,6 @@ import model.entities.reservation.Reservation;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class ReservationPostgresDao implements ReservationDao
 {
@@ -33,27 +32,28 @@ public class ReservationPostgresDao implements ReservationDao
   public Reservation create(Reservation reservation) throws SQLException
   {
     int vehicleId = reservation.getVehicleId();
-    String ownerEmail = reservation.getOwnerEmail(), reservedByEmail = reservation.getReservedByEmail();
-    model.Date startDate = reservation.getStartDate(), endDate = reservation.getEndDate();
+    String ownerEmail = reservation.getOwnerEmail(), reservedByEmail = reservation.getReservedByEmail(), vehicleType = reservation.getVehicleType();
     double price = reservation.getPrice();
     PreparedStatement statement;
+    java.sql.Date sqlStartDate = reservation.getStartDate().toSQLDate();
+    java.sql.Date sqlEndDate = reservation.getEndDate().toSQLDate();
+
 
     try (Connection connection = getConnection())
     {
       statement = connection.prepareStatement(
-          "INSERT INTO reservation(vehicleId, ownerEmail, reservedByEmail, startDate, endDate, price) VALUES(?,?,?,?,?,?)" );
+          "INSERT INTO reservation(vehicleId, vehicleType, ownerEmail, reservedByEmail, startDate, endDate, price) VALUES(?,?,?,?,?,?,?)" );
 
       statement.setInt(1,vehicleId);
-      statement.setString(2,ownerEmail);
-      statement.setString(3,reservedByEmail);
-      java.sql.Date date = new java.sql.Date(startDate.getYear(),startDate.getMonth(),startDate.getDay());
-      statement.setDate(4,date);
-      java.sql.Date date2 = new java.sql.Date(endDate.getYear(),endDate.getMonth(),endDate.getDay());
-      statement.setDate(5,date2);
-      statement.setDouble(6,price);
+      statement.setString(2,vehicleType);
+      statement.setString(3,ownerEmail);
+      statement.setString(4,reservedByEmail);
+      statement.setDate(5,sqlStartDate);
+      statement.setDate(6,sqlEndDate);
+      statement.setDouble(7,price);
 
       statement.executeUpdate();
-      return new Reservation(vehicleId, ownerEmail, reservedByEmail, startDate, endDate, price);
+      return new Reservation(vehicleId,vehicleType, ownerEmail, reservedByEmail, reservation.getStartDate(), reservation.getEndDate(), price);
 
     }
   }
@@ -63,11 +63,11 @@ public class ReservationPostgresDao implements ReservationDao
     create(reservation);
   }
 
-  public ArrayList<Reservation> getByDate(Date date)
+  public ArrayList<Reservation> getByDate(model.Date date)
   {
     try(Connection connection = getConnection()){
-      PreparedStatement statement = connection.prepareStatement("SELECT* FROM reservation WHERE startDate = ? OR endDate = ?");
-      java.sql.Date dated = new java.sql.Date(date.getYear(), date.getMonth(), date.getDay());
+      PreparedStatement statement = connection.prepareStatement("SELECT * FROM reservation WHERE startDate = ? OR endDate = ?");
+      java.sql.Date dated = date.toSQLDate();
       statement.setDate(1,dated);
       statement.setDate(2 ,dated);
       ResultSet resultSet = statement.executeQuery();
@@ -75,13 +75,14 @@ public class ReservationPostgresDao implements ReservationDao
       while (resultSet.next()){
         int vehicleId = resultSet.getInt("vehicleId");
         String ownerEmail = resultSet.getString("ownerEmail"),
-            reservedByEmail = resultSet.getString("reservedByEmail");
+            reservedByEmail = resultSet.getString("reservedByEmail"),
+        vehicleType = resultSet.getString("vehicleType");
         double price = resultSet.getDouble("price");
         java.sql.Date date1 = resultSet.getDate("startDate"),
             date2 = resultSet.getDate("endDate");
         model.Date startDate = new model.Date(date1.getYear(),date1.getMonth(),date1.getDay());
         model.Date endDate = new model.Date(date2.getYear(),date2.getMonth(),date2.getDay());
-        result.add(new Reservation(vehicleId, ownerEmail, reservedByEmail, startDate, endDate, price));
+        result.add(new Reservation(vehicleId, vehicleType, ownerEmail, reservedByEmail, startDate, endDate, price));
       }
       return result;
     }
@@ -94,13 +95,13 @@ public class ReservationPostgresDao implements ReservationDao
   {
     int vId = reservation.getVehicleId();
     model.Date startDate = reservation.getStartDate(), endDate = reservation.getEndDate();
-    java.sql.Date date = new java.sql.Date(startDate.getYear(),startDate.getMonth(),startDate.getDay());
-    java.sql.Date date2 = new java.sql.Date(endDate.getYear(),endDate.getMonth(),endDate.getDay());
+    java.sql.Date date = startDate.toSQLDate();
+    java.sql.Date date2 = endDate.toSQLDate();
 
     PreparedStatement statement;
     try(Connection connection = getConnection())
     {
-      statement = connection.prepareStatement("DELETE FROM reservation WHERE vehicleId = ?, startDate = ?, endDate = ?");
+      statement = connection.prepareStatement("DELETE FROM reservation WHERE vehicleId = ? AND startDate = ? AND endDate = ?");
       statement.setInt(1, vId);
       statement.setDate(2, date);
       statement.setDate(3,date2);
@@ -116,47 +117,46 @@ public class ReservationPostgresDao implements ReservationDao
   {
     int vehicleId = reservation.getVehicleId(), oldVehicleId = oldReservation.getVehicleId();
     String ownerEmail = reservation.getOwnerEmail(),
-        reservedByEmail = reservation.getReservedByEmail();
+        reservedByEmail = reservation.getReservedByEmail(),
+    vehicleType = reservation.getVehicleType();
     double price = reservation.getPrice();
-    model.Date startDate = reservation.getStartDate(),
-        endDate = reservation.getEndDate(),
-        oldStartDate = oldReservation.getStartDate(),
-        oldEndDate = oldReservation.getEndDate();
+    java.sql.Date sqlStartDate = reservation.getStartDate().toSQLDate();
+    java.sql.Date sqlEndDate = reservation.getEndDate().toSQLDate();
+    java.sql.Date oldSqlStartDate = oldReservation.getStartDate().toSQLDate();
+    java.sql.Date oldSqlEndDate = oldReservation.getEndDate().toSQLDate();
 
     try(Connection connection = getConnection())
     {
-      PreparedStatement statement = connection.prepareStatement("UPDATE reservation SET vehicleId = ?, ownerEmail = ?, reservedByEmail = ?, startDate = ?, endDate = ?, price = ?  WHERE vehicleId = ?, startDate = ?, endDate = ?");
+      PreparedStatement statement = connection.prepareStatement("UPDATE reservation SET vehicleId = ?, vehicleType = ?, ownerEmail = ?, reservedByEmail = ?, startDate = ?, endDate = ?, price = ?  WHERE vehicleId = ? AND startDate = ? AND endDate = ?");
       statement.setInt(1,vehicleId);
-      statement.setString(2,ownerEmail);
-      statement.setString(3,reservedByEmail);
-      java.sql.Date date = new java.sql.Date(startDate.getYear(),startDate.getMonth(),startDate.getDay());
-      statement.setDate(4,date);
-      java.sql.Date date2 = new java.sql.Date(endDate.getYear(),endDate.getMonth(),endDate.getDay());
-      statement.setDate(5,date2);
-      statement.setDouble(6,price);
+      statement.setString(2, vehicleType);
+      statement.setString(3,ownerEmail);
+      statement.setString(4,reservedByEmail);
+      statement.setDate(5,sqlStartDate);
+      statement.setDate(6,sqlEndDate);
+      statement.setDouble(7,price);
 
-      statement.setInt(1,oldVehicleId);
-      java.sql.Date date3 = new java.sql.Date(oldStartDate.getYear(),oldStartDate.getMonth(),oldStartDate.getDay());
-      statement.setDate(4,date3);
-      java.sql.Date date4 = new java.sql.Date(oldEndDate.getYear(),oldEndDate.getMonth(),oldEndDate.getDay());
-      statement.setDate(5,date4);
+      statement.setInt(8,oldVehicleId);
+      statement.setDate(9,oldSqlStartDate);
+      statement.setDate(10,oldSqlEndDate);
       statement.executeUpdate();
     }
   }
 
-  public ArrayList<Reservation> getByReservEmail(String reservedByEmail) throws SQLException
+  public ArrayList<Reservation> getByReserveEmail(String reservedByEmail) throws SQLException
   {
 
-    ArrayList<Reservation> reservations = null;
+    ArrayList<Reservation> reservations = new ArrayList<>();
 
     try (Connection connection = getConnection())
     {
-      PreparedStatement statement = connection.prepareStatement("SELECT* FROM reservation where reservedByEmail = ?");
+      PreparedStatement statement = connection.prepareStatement("SELECT * FROM reservation where reservedByEmail = ?");
       statement.setString(1, reservedByEmail);
       ResultSet resultSet = statement.executeQuery();
       while (resultSet.next())
       {
-        String ownerEmail = resultSet.getString("ownerEmail");
+        String ownerEmail = resultSet.getString("ownerEmail"),
+        vehicleType = resultSet.getString("vehicleType");
         int vehicleId = resultSet.getInt("vehicleId");
         java.sql.Date date1 = resultSet.getDate("startDate");
         model.Date startDate = new model.Date(date1.getYear(),date1.getMonth(),date1.getDay());
@@ -164,7 +164,7 @@ public class ReservationPostgresDao implements ReservationDao
         model.Date endDate = new model.Date(date2.getYear(),date2.getMonth(),date2.getDay());
         double price = resultSet.getDouble("price");
 
-        reservations.add(new Reservation(vehicleId, ownerEmail, reservedByEmail, startDate, endDate, price));
+        reservations.add(new Reservation(vehicleId, vehicleType, ownerEmail, reservedByEmail, startDate, endDate, price));
       }
     }
 
@@ -173,15 +173,16 @@ public class ReservationPostgresDao implements ReservationDao
 
   public ArrayList<Reservation> getAll() throws SQLException
   {
-    ArrayList<Reservation> reservations = null;
+    ArrayList<Reservation> reservations = new ArrayList<>();
 
     try (Connection connection = getConnection())
     {
-      PreparedStatement statement = connection.prepareStatement("SELECT* FROM reservation");
+      PreparedStatement statement = connection.prepareStatement("SELECT * FROM reservation");
       ResultSet resultSet = statement.executeQuery();
       while (resultSet.next())
       {
         String ownerEmail = resultSet.getString("ownerEmail"),
+        vehicleType= resultSet.getString("vehicleType"),
         reservedByEmail = resultSet.getString("reservedByEmail");
         int vehicleId = resultSet.getInt("vehicleId");
         java.sql.Date date1 = resultSet.getDate("startDate");
@@ -190,7 +191,7 @@ public class ReservationPostgresDao implements ReservationDao
         model.Date endDate = new model.Date(date2.getYear(),date2.getMonth(),date2.getDay());
         double price = resultSet.getDouble("price");
 
-        reservations.add(new Reservation(vehicleId, ownerEmail, reservedByEmail, startDate, endDate, price));
+        reservations.add(new Reservation(vehicleId, vehicleType, ownerEmail, reservedByEmail, startDate, endDate, price));
       }
     }
 

@@ -64,9 +64,23 @@ public class ReservationServiceImpl implements ReservationService
 
   public void addNewReservation(ReservationRequest request)
   {
-    Date startDate = request.startDate(),
-        endDate = request.endDate();
+    Reservation reservation = new Reservation(
+        request.vehicleId(),
+        request.vehicleType(),
+        request.ownerEmail(),
+        request.reservedByEmail(),
+        request.startDate(),
+        request.endDate(),
+        request.price()
+    );
 
-
+    try
+    {
+      reservationDao.add(reservation);
+    }
+    catch (SQLException e)
+    {
+      throw new RuntimeException(e);
+    }
   }
 }

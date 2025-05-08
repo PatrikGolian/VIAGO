@@ -92,11 +92,11 @@ public class MainSocketHandler implements Runnable
         }
         catch (Exception e)
         {
-            e.printStackTrace();
             logger.log(Arrays.toString(e.getStackTrace()), LogLevel.ERROR);
             ErrorResponse payload = new ErrorResponse(e.getMessage());
             Response error = new Response("SERVER_FAILURE", payload);
-            outgoingData.writeObject(error.toString());
+            System.out.println(e.getMessage());
+            outgoingData.writeObject(error);
         }
     }
 

@@ -12,9 +12,10 @@ public class Reservation
   private Date endDate;
   private double price;
 
-  public Reservation(int vehicleId, String ownerEmail, String reservedByEmail, Date startDate, Date endDate, double price)
+  public Reservation(int vehicleId, String vehicleType , String ownerEmail, String reservedByEmail, Date startDate, Date endDate, double price)
   {
     this.vehicleId = vehicleId;
+    this.vehicleType = vehicleType;
     this.ownerEmail = ownerEmail;
     this.reservedByEmail = reservedByEmail;
     this.startDate = startDate;

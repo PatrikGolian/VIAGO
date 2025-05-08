@@ -25,6 +25,13 @@ public class SocketService
       outputStream.writeObject(request);
       System.out.println("Wating for server response...");
       Response response = (Response) inputStream.readObject();
+      /*Object raw = inputStream.readObject();
+      System.out.println("⮞ DEBUG: received raw object of type: " + raw.getClass().getName());
+
+      if (!(raw instanceof Response response)) {
+        throw new RuntimeException(
+            "Protocol error: expected dtos.Response, got " + raw.getClass().getSimpleName());
+      }*/
       switch (response.status())
       {
         case "SUCCESS" ->

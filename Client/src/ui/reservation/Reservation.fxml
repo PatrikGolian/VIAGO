@@ -35,7 +35,7 @@
       <TextField fx:id="speedField" layoutX="500.0" layoutY="254.0" />
       <TextField fx:id="rangeField" layoutX="500.0" layoutY="285.0" />
       <DatePicker fx:id="datePicker" layoutX="486.0" layoutY="345.0" prefHeight="25.0" prefWidth="134.0" />
-      <Label layoutX="511.0" layoutY="327.0" prefHeight="18.0" prefWidth="84.0" text="Choose period:" />
+      <Label fx:id="datePickerLabel" layoutX="511.0" layoutY="327.0" prefHeight="18.0" prefWidth="84.0" text="Choose period:" />
       <Label fx:id="priceLabel" layoutX="450.0" layoutY="408.0" text="Price:" />
       <TextField fx:id="priceField" layoutX="517.0" layoutY="404.0" />
    </children>

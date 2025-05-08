@@ -19,7 +19,8 @@ public class VehicleFx
   private final StringProperty bikeTypeProp     = new SimpleStringProperty();
   private final StringProperty maxSpeedProp     = new SimpleStringProperty();
   private final StringProperty rangeProp     = new SimpleStringProperty();
-
+  // Related to reservation
+  private final IntegerProperty idProp = new SimpleIntegerProperty();
     public VehicleFx(VehicleDisplayDto vehicle)
   {
     /*typeProp.set(vehicle.type());
@@ -54,6 +55,7 @@ public class VehicleFx
         rangeProp.set(String.valueOf(((AddNewScooterDto)data).oneChargeRange()));
       }
     }*/
+    idProp.set(vehicle.id());
     typeProp.set(vehicle.type());
     brandProp.set(vehicle.brand());
     modelProp.set(vehicle.model());
@@ -114,4 +116,7 @@ public class VehicleFx
   public StringProperty bikeTypePropProperty()    { return bikeTypeProp; }
   public StringProperty maxSpeedPropProperty()    { return maxSpeedProp; }
   public StringProperty rangeProperty() {return rangeProp;}
+
+  // Reservation related
+  public IntegerProperty idPropProperty() {return idProp;}
 }

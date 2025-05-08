@@ -6,6 +6,7 @@ import dtos.vehicle.VehicleDisplayDto;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import model.Date;
 import networking.reservation.ReservationClient;
 import startup.ViewHandler;
@@ -20,6 +21,9 @@ public class ReservationVM
   private final ObservableList<VehicleFx> vehicles = FXCollections.observableArrayList();
   private final ObjectProperty<VehicleFx> selectedVehicle = new SimpleObjectProperty<>();
 
+  private final FilteredList<VehicleFx> filteredVehicles = new FilteredList<>(
+      vehicles, p -> true);
+
   // Realated to fields
   private final StringProperty conditionProp = new SimpleStringProperty();
   private final StringProperty colorProp = new SimpleStringProperty();
@@ -31,10 +35,12 @@ public class ReservationVM
       LocalDate.now());
   private final StringProperty finalPriceProp = new SimpleStringProperty();
 
-
   // Additional info
   private final StringProperty reservedEmailProp = new SimpleStringProperty();
   private final IntegerProperty idProp = new SimpleIntegerProperty();
+
+  // Search query
+  private final StringProperty searchQuery = new SimpleStringProperty("");
 
   // Visibility properties
   private final BooleanProperty conditionFieldVisibility = new SimpleBooleanProperty();
@@ -50,6 +56,12 @@ public class ReservationVM
   private final BooleanProperty speedFieldVisibility = new SimpleBooleanProperty();
   private final BooleanProperty rangeFieldVisibility = new SimpleBooleanProperty();
   private final BooleanProperty bikeTypeFieldVisibility = new SimpleBooleanProperty();
+  private final BooleanProperty datePickerVisibility = new SimpleBooleanProperty();
+  private final BooleanProperty priceFieldVisibility = new SimpleBooleanProperty();
+  private final BooleanProperty priceLabelVisibility = new SimpleBooleanProperty();
+  private final BooleanProperty datePickerLabelVisibility = new SimpleBooleanProperty();
+  private ObjectProperty<LocalDate> startDate = new SimpleObjectProperty<>();
+  private ObjectProperty<LocalDate> endDate = new SimpleObjectProperty<>();
 
   private final ReservationClient reservationService;
 
@@ -63,19 +75,22 @@ public class ReservationVM
   public void addReservation()
   {
     VehicleFx v = selectedVehicle.get();
-    if (v == null)
+    if (v == null || startDate == null || endDate == null)
     {
       return;
     }
+    LocalDate start = startDate.get();
+    LocalDate end = endDate.get();
     String reservedEmail = AppState.getCurrentUser().email();
     double price = Double.parseDouble(finalPriceProp.get());
     ReservationRequest request = new ReservationRequest(idProp.get(),
         v.typePropProperty().get(), ownerEmailProp.get(), reservedEmail,
-        new Date(),
-        new Date(),
+        new Date(start.getDayOfMonth(), start.getMonth().getValue(),
+            start.getYear()),
+        new Date(end.getDayOfMonth(), end.getMonth().getValue(), end.getYear()),
         price);
 
-    //reservationService.addNewReservation(new ReservationRequest());
+    reservationService.addNewReservation(request);
   }
 
   public void loadVehicles()
@@ -83,10 +98,8 @@ public class ReservationVM
     try
     {
       List<VehicleDisplayDto> loadedVehicles = reservationService.getVehicles();
-      //List<VehicleDataDto> vehicleDataDtos = reservationService.getVehicleDatas();
-//      if (vehicleDataDtos.size()!= vehicleDataDtos.size())
-//      { System.out.println("DTO sizes do not match!");}
-      for (VehicleDisplayDto vehicle : loadedVehicles) //(int i = 0; i < loadedVehicles.size(); i++)
+      vehicles.clear();
+      for (VehicleDisplayDto vehicle : loadedVehicles) // (int i = 0; i < loadedVehicles.size(); i++)
       {
         vehicles.add(new VehicleFx(vehicle));
       }
@@ -120,6 +133,10 @@ public class ReservationVM
     {
       case "scooter" ->
       {
+        datePickerLabelVisibility.set(true);
+        priceFieldVisibility.set(true);
+        priceLabelVisibility.set(true);
+        datePickerVisibility.set(true);
         conditionFieldVisibility.set(true);
         conditionLabelVisibility.set(true);
         colorFieldVisibility.set(true);
@@ -135,6 +152,10 @@ public class ReservationVM
       }
       case "bike" ->
       {
+        datePickerLabelVisibility.set(true);
+        priceFieldVisibility.set(true);
+        priceLabelVisibility.set(true);
+        datePickerVisibility.set(true);
         conditionFieldVisibility.set(true);
         conditionLabelVisibility.set(true);
         colorFieldVisibility.set(true);
@@ -150,6 +171,10 @@ public class ReservationVM
       }
       case "e-bike" ->
       {
+        datePickerLabelVisibility.set(true);
+        priceFieldVisibility.set(true);
+        priceLabelVisibility.set(true);
+        datePickerVisibility.set(true);
         conditionFieldVisibility.set(true);
         conditionLabelVisibility.set(true);
         colorFieldVisibility.set(true);
@@ -165,6 +190,10 @@ public class ReservationVM
       }
       default ->
       {
+        datePickerLabelVisibility.set(false);
+        priceFieldVisibility.set(false);
+        priceLabelVisibility.set(false);
+        datePickerVisibility.set(false);
         conditionFieldVisibility.set(false);
         conditionLabelVisibility.set(false);
         colorFieldVisibility.set(false);
@@ -183,6 +212,8 @@ public class ReservationVM
 
   private void clearFields()
   {
+    finalPriceProp.set("");
+    ownerEmailProp.set("");
     conditionProp.set("");
     colorProp.set("");
     speedProp.set("");
@@ -236,6 +267,7 @@ public class ReservationVM
   {
     return reservationDateProp;
   }
+
   public StringProperty finalPriceProperty()
   {
     return finalPriceProp;
@@ -301,5 +333,45 @@ public class ReservationVM
   public BooleanProperty ownerEmailLabelVisibilityProperty()
   {
     return ownerEmailLabelVisibility;
+  }
+
+  public BooleanProperty datePickerVisibility()
+  {
+    return datePickerVisibility;
+  }
+
+  public BooleanProperty datePickerLabelVisibility()
+  {
+    return datePickerLabelVisibility;
+  }
+
+  public BooleanProperty priceFieldVisibility()
+  {
+    return priceFieldVisibility;
+  }
+
+  public BooleanProperty priceLabelVisibility()
+  {
+    return priceLabelVisibility;
+  }
+
+  public StringProperty searchQueryProperty()
+  {
+    return searchQuery;
+  }
+
+  public FilteredList<VehicleFx> getFilteredVehicles()
+  {
+    return filteredVehicles;
+  }
+
+  public ObjectProperty<LocalDate> startDateProperty()
+  {
+    return startDate;
+  }
+
+  public ObjectProperty<LocalDate> endDateProperty()
+  {
+    return endDate;
   }
 }

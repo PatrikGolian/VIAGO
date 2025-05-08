@@ -64,6 +64,16 @@ public class Date implements Serializable
     this.minute = minute;
   }
 
+  private LocalDate toLocalDate()
+  {
+    return LocalDate.of(year,month,day);
+  }
+
+  public java.sql.Date toSQLDate()
+  {
+    return java.sql.Date.valueOf(toLocalDate());
+  }
+
   /**
    * Creates a Date object representing current date and time.
    * @return a Date object initialized to current date and time

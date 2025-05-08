@@ -24,7 +24,7 @@ public class ReservationListDao implements ReservationDao
   {
     reservations.add(reservation);
   }
-  public ArrayList<Reservation> getByDate(Date date)
+  public ArrayList<Reservation> getByDate(model.Date date)
   {
     ArrayList<Reservation> results = new ArrayList<>();
     for (Reservation reservation : reservations)
@@ -47,7 +47,7 @@ public class ReservationListDao implements ReservationDao
     System.out.println("updated: " + reservation);
   }
 
-  public ArrayList<Reservation> getByReservEmail(String reservedEmail)
+  public ArrayList<Reservation> getByReserveEmail(String reservedEmail)
   {
     ArrayList<Reservation> results = new ArrayList<>();
     for (Reservation reservation : reservations)
