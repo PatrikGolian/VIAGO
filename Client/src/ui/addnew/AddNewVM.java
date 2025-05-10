@@ -28,7 +28,8 @@ public class AddNewVM
   private final BooleanProperty speedFieldVisibility = new SimpleBooleanProperty();
   private final BooleanProperty rangeFieldVisibility = new SimpleBooleanProperty();
   private final BooleanProperty bikeTypeFieldVisibility = new SimpleBooleanProperty();
-  private final BooleanProperty disableAddButtonProp = new SimpleBooleanProperty(true);
+  private final BooleanProperty disableAddButtonProp = new SimpleBooleanProperty(
+      true);
 
   private final AddNewVehicleClient addNewService;
 
@@ -61,7 +62,10 @@ public class AddNewVM
           double price = Double.parseDouble(priceProp.get());
           int speed = Integer.parseInt(speedProp.get());
           int range = Integer.parseInt(rangeProp.get());
-          addNewService.addNewVehicle(new AddNewScooterRequest(idProp.get(),typeProp.get(), brandProp.get(), modelProp.get(), conditionProp.get(), colorProp.get(), price, speed, range, email, "Available"));
+          addNewService.addNewVehicle(
+              new AddNewScooterRequest(idProp.get(), typeProp.get(),
+                  brandProp.get(), modelProp.get(), conditionProp.get(),
+                  colorProp.get(), price, speed, range, email, "Available"));
 
           messageProp.set("Success");
           // clear fields
@@ -71,7 +75,11 @@ public class AddNewVM
         case "bike" ->
         {
           double price = Double.parseDouble(priceProp.get());
-          addNewService.addNewVehicle(new AddNewBikeRequest(idProp.get(),typeProp.get(), brandProp.get(), modelProp.get(), conditionProp.get(), colorProp.get(), price, bikeTypeProp.get(), email, "Available"));
+          addNewService.addNewVehicle(
+              new AddNewBikeRequest(idProp.get(), typeProp.get(),
+                  brandProp.get(), modelProp.get(), conditionProp.get(),
+                  colorProp.get(), price, bikeTypeProp.get(), email,
+                  "Available"));
 
           messageProp.set("Success");
           // clear fields
@@ -83,7 +91,11 @@ public class AddNewVM
           double price = Double.parseDouble(priceProp.get());
           int speed = Integer.parseInt(speedProp.get());
           int range = Integer.parseInt(rangeProp.get());
-          addNewService.addNewVehicle(new AddNewEBikeRequest(idProp.get(),typeProp.get(), brandProp.get(), modelProp.get(), conditionProp.get(), colorProp.get(), price, speed, range, bikeTypeProp.get(), email, "Available"));
+          addNewService.addNewVehicle(
+              new AddNewEBikeRequest(idProp.get(), typeProp.get(),
+                  brandProp.get(), modelProp.get(), conditionProp.get(),
+                  colorProp.get(), price, speed, range, bikeTypeProp.get(),
+                  email, "Available"));
 
           messageProp.set("Success");
           // clear fields
@@ -216,27 +228,27 @@ public class AddNewVM
 
   public BooleanProperty getSpeedFieldVisibility()
   {
-    return  speedFieldVisibility;
+    return speedFieldVisibility;
   }
 
   public BooleanProperty getRangeLabelVisibility()
   {
-    return  rangeLabelVisibility;
+    return rangeLabelVisibility;
   }
 
   public BooleanProperty getRangeFieldVisibility()
   {
-    return  rangeFieldVisibility;
+    return rangeFieldVisibility;
   }
 
   public BooleanProperty getBikeTypeLabelVisibility()
   {
-    return  bikeTypeLabelVisibility;
+    return bikeTypeLabelVisibility;
   }
 
   public BooleanProperty getBikeTypeFieldVisibility()
   {
-    return  bikeTypeFieldVisibility;
+    return bikeTypeFieldVisibility;
   }
 
   public StringProperty messageProperty()
@@ -252,31 +264,30 @@ public class AddNewVM
   private void updateAddButtonState(Observable observable)
   {
     boolean shouldDisable =
-        StringUtils.isNullOrEmpty(typeProp.get()) ||
-            StringUtils.isNullOrEmpty(brandProp.get()) ||
-            StringUtils.isNullOrEmpty(modelProp.get()) ||
-            StringUtils.isNullOrEmpty(conditionProp.get()) ||
-            StringUtils.isNullOrEmpty(colorProp.get()) ||
-            StringUtils.isNullOrEmpty(priceProp.get());
+        StringUtils.isNullOrEmpty(typeProp.get()) || StringUtils.isNullOrEmpty(
+            brandProp.get()) || StringUtils.isNullOrEmpty(modelProp.get())
+            || StringUtils.isNullOrEmpty(conditionProp.get())
+            || StringUtils.isNullOrEmpty(colorProp.get())
+            || StringUtils.isNullOrEmpty(priceProp.get());
 
     // Additional fields depending on the selected type
     if ("scooter".equals(typeProp.get()))
     {
-      shouldDisable = shouldDisable ||
-          StringUtils.isNullOrEmpty(speedProp.get()) ||
-          StringUtils.isNullOrEmpty(rangeProp.get());
+      shouldDisable =
+          shouldDisable || StringUtils.isNullOrEmpty(speedProp.get())
+              || StringUtils.isNullOrEmpty(rangeProp.get());
     }
     else if ("bike".equals(typeProp.get()))
     {
-      shouldDisable = shouldDisable ||
-          StringUtils.isNullOrEmpty(bikeTypeProp.get());
+      shouldDisable =
+          shouldDisable || StringUtils.isNullOrEmpty(bikeTypeProp.get());
     }
     else if ("e-bike".equals(typeProp.get()))
     {
-      shouldDisable = shouldDisable ||
-          StringUtils.isNullOrEmpty(speedProp.get()) ||
-          StringUtils.isNullOrEmpty(rangeProp.get()) ||
-          StringUtils.isNullOrEmpty(bikeTypeProp.get());
+      shouldDisable =
+          shouldDisable || StringUtils.isNullOrEmpty(speedProp.get())
+              || StringUtils.isNullOrEmpty(rangeProp.get())
+              || StringUtils.isNullOrEmpty(bikeTypeProp.get());
     }
     disableAddButtonProp.set(shouldDisable);
   }

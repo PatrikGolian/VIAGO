@@ -1,7 +1,6 @@
-package persistence.daos.vehicle;
+package persistence.vehicle;
 
 import model.entities.vehicles.Vehicle;
-import utils.StringUtils;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -11,17 +10,15 @@ import java.util.List;
 public class VehicleListDao implements VehicleDao
 {
 
-  private final static List<Vehicle> vehicles = new ArrayList<>(Arrays.asList(
-
-  ));
+  private final static List<Vehicle> vehicles = new ArrayList<>(
+      Arrays.asList());
 
   public VehicleListDao()
   {
 
   }
 
-  @Override
-  public void add(Vehicle vehicle)
+  @Override public void add(Vehicle vehicle)
   {
     vehicles.add(vehicle);
   }
@@ -40,8 +37,7 @@ public class VehicleListDao implements VehicleDao
    * @param type
    * @return
    */
-  @Override
-  public ArrayList<Vehicle> getByType(String type)
+  @Override public ArrayList<Vehicle> getByType(String type)
   {
     ArrayList<Vehicle> returns = null;
     for (Vehicle vehicle : vehicles)
@@ -78,19 +74,16 @@ public class VehicleListDao implements VehicleDao
     return returns;
   }
 
-  @Override
-  public void delete(Vehicle vehicle)
+  @Override public void delete(Vehicle vehicle)
   {
     vehicles.remove(vehicle);
     // Will implement later. Just remove from list.
   }
 
-  @Override
-  public void save(Vehicle vehicle, Vehicle oldVehicle)
+  @Override public void save(Vehicle vehicle, Vehicle oldVehicle)
   {
     vehicles.remove(oldVehicle);
     System.out.println("updated: " + vehicle);
     vehicles.add(vehicle);
   }
-
 }

@@ -4,8 +4,12 @@ public class Scooter extends Vehicle
 {
   private int maxSpeed, oneChargeRange;
 
-  public Scooter(int id,String type, String brand, String model, String condition, String color, double pricePerDay, int maxSpeed, int oneChargeRange, String ownerEmail, String state){
-    super(id,type, brand, model, condition, color, pricePerDay, ownerEmail,state);
+  public Scooter(int id, String type, String brand, String model,
+      String condition, String color, double pricePerDay, int maxSpeed,
+      int oneChargeRange, String ownerEmail, String state)
+  {
+    super(id, type, brand, model, condition, color, pricePerDay, ownerEmail,
+        state);
 
     this.maxSpeed = maxSpeed;
     this.oneChargeRange = oneChargeRange;

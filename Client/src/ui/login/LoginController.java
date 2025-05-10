@@ -10,33 +10,33 @@ import ui.common.Controller;
 
 public class LoginController implements Controller
 {
-    public Label messageLabel;
-    public PasswordField passwordInput;
-    public TextField emailInput;
-    public Button buttonLogin;
+  public Label messageLabel;
+  public PasswordField passwordInput;
+  public TextField emailInput;
+  public Button buttonLogin;
 
-    private final LoginVM vm;
+  private final LoginVM vm;
 
-    public LoginController(LoginVM vm)
-    {
-        this.vm = vm;
-    }
+  public LoginController(LoginVM vm)
+  {
+    this.vm = vm;
+  }
 
-    public void initialize()
-    {
-        messageLabel.textProperty().bind(vm.messageProperty());
-        emailInput.textProperty().bindBidirectional(vm.emailProperty());
-        passwordInput.textProperty().bindBidirectional(vm.passwordProperty());
-        buttonLogin.disableProperty().bind(vm.enableLoginButtonProperty());
-    }
+  public void initialize()
+  {
+    messageLabel.textProperty().bind(vm.messageProperty());
+    emailInput.textProperty().bindBidirectional(vm.emailProperty());
+    passwordInput.textProperty().bindBidirectional(vm.passwordProperty());
+    buttonLogin.disableProperty().bind(vm.enableLoginButtonProperty());
+  }
 
-    public void onBack()
-    {
-        ViewHandler.showView(ViewType.WELCOME);
-    }
+  public void onBack()
+  {
+    ViewHandler.showView(ViewType.WELCOME);
+  }
 
-    public void onLogin()
-    {
-        vm.login();
-    }
+  public void onLogin()
+  {
+    vm.login();
+  }
 }

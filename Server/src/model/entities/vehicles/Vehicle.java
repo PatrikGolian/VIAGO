@@ -9,7 +9,9 @@ public class Vehicle
   private String brand, model, color;
   private String state;
 
-  public Vehicle(int id, String type, String brand, String model, String condition, String color, double pricePerDay, String ownerEmail, String state)
+  public Vehicle(int id, String type, String brand, String model,
+      String condition, String color, double pricePerDay, String ownerEmail,
+      String state)
   {
     this.id = id;
     this.type = type;
@@ -21,7 +23,6 @@ public class Vehicle
     this.ownerEmail = ownerEmail;
     this.state = state;
   }
-
 
   public String getType()
   {
@@ -67,10 +68,12 @@ public class Vehicle
   {
     return ownerEmail;
   }
+
   public String getState()
   {
     return state;
   }
+
   public void setState(String state)
   {
     this.state = state;

@@ -6,6 +6,6 @@ import dtos.user.UserDataDto;
 
 public interface AuthenticationClient
 {
-    void registerUser(RegisterUserRequest user);
-    UserDataDto login(LoginRequest loginRequest);
+  void registerUser(RegisterUserRequest user);
+  UserDataDto login(LoginRequest loginRequest);
 }

@@ -6,7 +6,7 @@ import dtos.vehicle.AddNewEBikeRequest;
 import dtos.vehicle.AddNewScooterRequest;
 import networking.SocketService;
 
-public class  SocketAddNewVehicleClient implements AddNewVehicleClient
+public class SocketAddNewVehicleClient implements AddNewVehicleClient
 {
   @Override public void addNewVehicle(AddNewBikeRequest newVehicle)
   {

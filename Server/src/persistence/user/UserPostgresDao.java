@@ -1,7 +1,6 @@
-package persistence.daos.user;
+package persistence.user;
 
 import model.entities.User;
-import persistence.daos.reservation.ReservationPostgresDao;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -15,6 +14,7 @@ public class UserPostgresDao implements UserDao
   {
     DriverManager.registerDriver(new org.postgresql.Driver());
   }
+
   private static Connection getConnection() throws SQLException
   {
     return DriverManager.getConnection(
@@ -31,41 +31,45 @@ public class UserPostgresDao implements UserDao
     return instance;
   }
 
-
   public User create(String email, String password, String firstname,
       String lastname, boolean isAdmin, boolean isBlackListed,
       String blackListReason) throws SQLException
   {
     try (Connection connection = getConnection())
     {
-      PreparedStatement statement =
-          connection.prepareStatement("INSERT INTO account(email, password, firstname, lastname, isAdmin, isBlackListed, blackListReason) VALUES(?,?,?,?,?,?,?)");
-      statement.setString(1,email);
-      statement.setString(2,password);
-      statement.setString(3,firstname);
-      statement.setString(4,lastname);
-      statement.setBoolean(5,isAdmin);
-      statement.setBoolean(6,isBlackListed);
-      statement.setString(7,blackListReason);
+      PreparedStatement statement = connection.prepareStatement(
+          "INSERT INTO account(email, password, firstname, lastname, isAdmin, isBlackListed, blackListReason) VALUES(?,?,?,?,?,?,?)");
+      statement.setString(1, email);
+      statement.setString(2, password);
+      statement.setString(3, firstname);
+      statement.setString(4, lastname);
+      statement.setBoolean(5, isAdmin);
+      statement.setBoolean(6, isBlackListed);
+      statement.setString(7, blackListReason);
       statement.executeUpdate();
 
-        return new User(email, password, firstname, lastname, isAdmin, isBlackListed, blackListReason);
-      }
+      return new User(email, password, firstname, lastname, isAdmin,
+          isBlackListed, blackListReason);
+    }
 
   }
 
   @Override public void add(User user) throws SQLException
   {
-    create(user.getEmail(),user.getPassword(),user.getFirstName(),user.getLastName(),user.isAdmin(),user.isBlacklisted(),user.getBlacklistReason());
+    create(user.getEmail(), user.getPassword(), user.getFirstName(),
+        user.getLastName(), user.isAdmin(), user.isBlacklisted(),
+        user.getBlacklistReason());
   }
 
   @Override public User getSingle(String email) throws SQLException
   {
-    try(Connection connection = getConnection()){
-      PreparedStatement statement = connection.prepareStatement("SELECT* FROM account WHERE email =?");
-      statement.setString(1,email);
+    try (Connection connection = getConnection())
+    {
+      PreparedStatement statement = connection.prepareStatement(
+          "SELECT* FROM account WHERE email =?");
+      statement.setString(1, email);
       ResultSet resultSet = statement.executeQuery();
-      if(resultSet.next())
+      if (resultSet.next())
       {
         String password = resultSet.getString("password");
         String firstName = resultSet.getString("firstname");
@@ -73,19 +77,23 @@ public class UserPostgresDao implements UserDao
         boolean isAdmin = resultSet.getBoolean("isAdmin");
         boolean isBlackListed = resultSet.getBoolean("isBlackListed");
         String blacklistReason = resultSet.getString("blackListReason");
-        return new User(email, password, firstName, lastName, isAdmin, isBlackListed, blacklistReason);
+        return new User(email, password, firstName, lastName, isAdmin,
+            isBlackListed, blacklistReason);
 
-      } else{
-        return  null;
+      }
+      else
+      {
+        return null;
       }
     }
   }
 
   @Override public void delete(String email) throws SQLException
   {
-    try(Connection connection = getConnection())
+    try (Connection connection = getConnection())
     {
-      PreparedStatement statement = connection.prepareStatement("DELETE FROM account WHERE email = ?");
+      PreparedStatement statement = connection.prepareStatement(
+          "DELETE FROM account WHERE email = ?");
       statement.setString(1, email);
       statement.executeUpdate();
     }
@@ -93,9 +101,10 @@ public class UserPostgresDao implements UserDao
 
   @Override public void save(User user) throws SQLException
   {
-    try(Connection connection = getConnection())
+    try (Connection connection = getConnection())
     {
-      PreparedStatement statement = connection.prepareStatement("UPDATE account SET firstname = ?, lastname = ?, isBlackListed = ?, blackListReason = ? WHERE email = ?");
+      PreparedStatement statement = connection.prepareStatement(
+          "UPDATE account SET firstname = ?, lastname = ?, isBlackListed = ?, blackListReason = ? WHERE email = ?");
       statement.setString(1, user.getFirstName());
       statement.setString(2, user.getLastName());
       statement.setBoolean(3, user.isBlacklisted());
@@ -105,15 +114,18 @@ public class UserPostgresDao implements UserDao
     }
   }
 
-  @Override public List<User> getMany(
-      String firstNameContains) throws SQLException
+  @Override public List<User> getMany(String firstNameContains)
+      throws SQLException
   {
-    try(Connection connection = getConnection()){
-      PreparedStatement statement = connection.prepareStatement("SELECT* FROM account WHERE firstname LIKE ?");
-      statement.setString(1,"%" + firstNameContains + "%");
+    try (Connection connection = getConnection())
+    {
+      PreparedStatement statement = connection.prepareStatement(
+          "SELECT* FROM account WHERE firstname LIKE ?");
+      statement.setString(1, "%" + firstNameContains + "%");
       ResultSet resultSet = statement.executeQuery();
       ArrayList<User> result = new ArrayList<>();
-      while (resultSet.next()){
+      while (resultSet.next())
+      {
         String email = resultSet.getString("email");
         String password = resultSet.getString("password");
         String firstName = resultSet.getString("firstname");
@@ -121,7 +133,8 @@ public class UserPostgresDao implements UserDao
         boolean isAdmin = resultSet.getBoolean("isAdmin");
         boolean isBlackListed = resultSet.getBoolean("isBlackListed");
         String blacklistReason = resultSet.getString("blackListReason");
-        result.add(new User(email, password, firstName, lastName, isAdmin, isBlackListed, blacklistReason));
+        result.add(new User(email, password, firstName, lastName, isAdmin,
+            isBlackListed, blacklistReason));
       }
       return result;
     }

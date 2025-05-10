@@ -53,7 +53,6 @@ public class ReservationController implements Controller
   // Added Richard
   private DateCell iniCell = null;
   private DateCell endCell = null;
-  private String newVal = "";
 
   private LocalDate iniDate;
   private LocalDate endDate;
@@ -70,13 +69,18 @@ public class ReservationController implements Controller
   public void initialize()
   {
     searchField.setOnKeyPressed(event -> {
-      if (event.getCode().toString().equals("ENTER")) {
+      if (event.getCode().toString().equals("ENTER"))
+      {
         String input = searchField.getText();
         String newVal = (input == null) ? "" : input.toLowerCase();
 
         viewModel.getFilteredVehicles().setPredicate(vehicle -> {
-          String type = (vehicle.typePropProperty().get() != null) ? vehicle.typePropProperty().get().toLowerCase() : "";
-          String condition = (vehicle.conditionPropProperty().get() != null) ? vehicle.conditionPropProperty().get().toLowerCase() : "";
+          String type = (vehicle.typePropProperty().get() != null) ?
+              vehicle.typePropProperty().get().toLowerCase() :
+              "";
+          String condition = (vehicle.conditionPropProperty().get() != null) ?
+              vehicle.conditionPropProperty().get().toLowerCase() :
+              "";
 
           return type.contains(newVal) || condition.contains(newVal);
         });
@@ -95,6 +99,7 @@ public class ReservationController implements Controller
       viewModel.setVisibility();
       if (newV != null)
       {
+        viewModel.getIdProp().set(newV.idPropProperty().get());
         viewModel.conditionProperty().set(newV.conditionPropProperty().get());
         viewModel.colorProperty().set(newV.colorPropProperty().get());
         viewModel.getOwnerEmailProp().set(newV.ownerPropProperty().get());
@@ -119,7 +124,8 @@ public class ReservationController implements Controller
             viewModel.bikeTypeProperty().set(newV.bikeTypePropProperty().get());
           }
 
-      }}
+        }
+      }
     });
 
     typeColumn.setCellValueFactory(new PropertyValueFactory<>("typeProp"));

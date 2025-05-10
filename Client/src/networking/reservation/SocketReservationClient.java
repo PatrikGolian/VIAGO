@@ -21,33 +21,24 @@ public class SocketReservationClient implements ReservationClient
 
   @Override public List<VehicleDisplayDto> getVehicles()
   {
-    /*Request request = new Request("reservation", "view_vehicles", null);
-    //return (List<VehicleDisplayDto>) SocketService.sendRequest(request);
-
-    List<VehicleDisplayDto> response = (List<VehicleDisplayDto>) SocketService.sendRequest(request);
-
-    System.out.println("Received object: " + response);
-    System.out.println("Received type: " + (response != null ? response.getClass().getName() : "null"));
-
-    if (response instanceof List<?>) {
-      return response;
-    } else {
-      throw new RuntimeException("Unexpected response: " + response);
-    }*/
-
     Request request = new Request("reservation", "view_vehicles", null);
     Object rawResponse = SocketService.sendRequest(request);
 
-    if (!(rawResponse instanceof List<?> rawList)) {
+    if (!(rawResponse instanceof List<?> rawList))
+    {
       throw new RuntimeException("Expected List, got: " + rawResponse);
     }
 
     List<VehicleDisplayDto> vehicles = new ArrayList<>();
 
-    for (Object obj : rawList) {
-      if (obj instanceof VehicleDisplayDto dto) {
+    for (Object obj : rawList)
+    {
+      if (obj instanceof VehicleDisplayDto dto)
+      {
         vehicles.add(dto);
-      } else {
+      }
+      else
+      {
         throw new RuntimeException("Unexpected item in vehicle list: " + obj);
       }
     }

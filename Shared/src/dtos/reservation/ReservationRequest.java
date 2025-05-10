@@ -4,13 +4,10 @@ import model.Date;
 
 import java.io.Serializable;
 
-public record ReservationRequest(int vehicleId,
-                                 String vehicleType,
-                                 String ownerEmail,
-                                 String reservedByEmail,
-                                 Date startDate,
-                                 Date endDate,
-                                 double price) implements Serializable
+public record ReservationRequest(int vehicleId, String vehicleType,
+                                 String ownerEmail, String reservedByEmail,
+                                 Date startDate, Date endDate, double price)
+    implements Serializable
 {
   @Override public String toString()
   {

@@ -9,5 +9,4 @@ public interface ReservationService
 {
   void updateVehicleState();
   void addNewReservation(ReservationRequest request);
-
 }

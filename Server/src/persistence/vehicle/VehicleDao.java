@@ -1,4 +1,4 @@
-package persistence.daos.vehicle;
+package persistence.vehicle;
 
 import model.entities.vehicles.Vehicle;
 

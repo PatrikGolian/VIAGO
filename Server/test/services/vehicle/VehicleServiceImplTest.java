@@ -29,26 +29,26 @@ class VehicleServiceImplTest
 
   @BeforeEach void setUp() throws Exception
   {
-//    Mockito
-//        .when(service.fetchAllVehicles())
-//        .thenReturn(List.of(
-//            new Bike(1, "Type", "Brand", "Model",
-//                "Condition", "Color", 20,
-//                "bikeType","owner@via.dk","Available"),
-//            new EBike(2, "Type", "Brand", "Model",
-//                "Condition","Color",60,"bikeType",
-//                50, 1000, "owner@via.dk", "Available"),
-//            new Scooter(3, "Type", "Brand", "Model",
-//                "Condition", "Color", 30, 20,
-//                30,"owner@via.dk", "Available")
-//        ));
+    //    Mockito
+    //        .when(service.fetchAllVehicles())
+    //        .thenReturn(List.of(
+    //            new Bike(1, "Type", "Brand", "Model",
+    //                "Condition", "Color", 20,
+    //                "bikeType","owner@via.dk","Available"),
+    //            new EBike(2, "Type", "Brand", "Model",
+    //                "Condition","Color",60,"bikeType",
+    //                50, 1000, "owner@via.dk", "Available"),
+    //            new Scooter(3, "Type", "Brand", "Model",
+    //                "Condition", "Color", 30, 20,
+    //                30,"owner@via.dk", "Available")
+    //        ));
   }
 
   @Test public void testGetVehiclesOverview()
   {
     try
     {
-      VehicleService service = new VehicleServiceImpl();
+      //VehicleService service = new VehicleServiceImpl();
       var list = service.getVehiclesOverview();
       assertNotNull(list);
       list.forEach(System.out::println);

@@ -6,7 +6,8 @@ import dtos.user.UserDataDto;
 
 import java.sql.SQLException;
 
-public interface AuthenticationService {
-    void registerUser(RegisterUserRequest request) throws SQLException;
-    UserDataDto login(LoginRequest request) throws SQLException;
+public interface AuthenticationService
+{
+  void registerUser(RegisterUserRequest request) throws SQLException;
+  UserDataDto login(LoginRequest request) throws SQLException;
 }

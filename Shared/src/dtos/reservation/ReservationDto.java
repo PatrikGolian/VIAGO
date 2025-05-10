@@ -1,15 +1,13 @@
 package dtos.reservation;
 
 import java.io.Serializable;
+
 import model.Date;
 
-public record ReservationDto(int vehicleId,
-                             String vehicleType,
-                             String ownerEmail,
-                             String reservedByEmail,
-                             Date startDate,
-                             Date endDate,
-                             double price) implements Serializable
+public record ReservationDto(int vehicleId, String vehicleType,
+                             String ownerEmail, String reservedByEmail,
+                             Date startDate, Date endDate, double price)
+    implements Serializable
 {
   @Override public String toString()
   {

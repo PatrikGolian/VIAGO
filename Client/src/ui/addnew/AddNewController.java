@@ -25,7 +25,6 @@ public class AddNewController implements Controller
   @FXML Label messageLabel;
   @FXML Button addButton;
 
-
   private final AddNewVM viewModel;
 
   public AddNewController(AddNewVM vm)
@@ -43,19 +42,23 @@ public class AddNewController implements Controller
     typeField.textProperty().bindBidirectional(viewModel.typeProperty());
     brandField.textProperty().bindBidirectional(viewModel.brandProperty());
     modelField.textProperty().bindBidirectional(viewModel.modelProperty());
-    conditionField.textProperty().bindBidirectional(viewModel.conditionProperty());
+    conditionField.textProperty()
+        .bindBidirectional(viewModel.conditionProperty());
     colorField.textProperty().bindBidirectional(viewModel.colorProperty());
     priceField.textProperty().bindBidirectional(viewModel.priceProperty());
     speedField.textProperty().bindBidirectional(viewModel.speedProperty());
     rangeField.textProperty().bindBidirectional(viewModel.rangeProperty());
-    bikeTypeField.textProperty().bindBidirectional(viewModel.bikeTypeProperty());
+    bikeTypeField.textProperty()
+        .bindBidirectional(viewModel.bikeTypeProperty());
 
     speedLabel.visibleProperty().bind(viewModel.getSpeedLabelVisibility());
     speedField.visibleProperty().bind(viewModel.getSpeedFieldVisibility());
     rangeLabel.visibleProperty().bind(viewModel.getRangeLabelVisibility());
     rangeField.visibleProperty().bind(viewModel.getRangeFieldVisibility());
-    bikeTypeLabel.visibleProperty().bind(viewModel.getBikeTypeLabelVisibility());
-    bikeTypeField.visibleProperty().bind(viewModel.getBikeTypeFieldVisibility());
+    bikeTypeLabel.visibleProperty()
+        .bind(viewModel.getBikeTypeLabelVisibility());
+    bikeTypeField.visibleProperty()
+        .bind(viewModel.getBikeTypeFieldVisibility());
 
     messageLabel.textProperty().bind(viewModel.messageProperty());
 

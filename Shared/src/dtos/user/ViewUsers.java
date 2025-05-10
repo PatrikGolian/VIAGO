@@ -7,21 +7,18 @@ import java.io.Serializable;
 // If you plan on re-using the UserDto other places, maybe it should be moved to its own file.
 public abstract class ViewUsers
 {
-    public record Request(String firstNameContains) implements Serializable
+  public record Request(String firstNameContains) implements Serializable
+  {
+    @Override public String toString()
     {
-        @Override
-        public String toString()
-        {
-            return "Request{" +
-                    ", firstNameContains='" + firstNameContains + '\'' +
-                    '}';
-        }
+      return "Request{" + ", firstNameContains='" + firstNameContains + '\''
+          + '}';
     }
+  }
 
-    public record UserDisplayDto(String email, String firstName, String lastName, boolean isBlacklisted)
-            implements Serializable
-    {
-    }
-
+  public record UserDisplayDto(String email, String firstName, String lastName,
+                               boolean isBlacklisted) implements Serializable
+  {
+  }
 }
 

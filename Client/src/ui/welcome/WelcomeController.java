@@ -6,13 +6,13 @@ import ui.common.Controller;
 
 public class WelcomeController implements Controller
 {
-    public void openLoginView()
-    {
-        ViewHandler.showView(ViewType.LOGIN);
-    }
+  public void openLoginView()
+  {
+    ViewHandler.showView(ViewType.LOGIN);
+  }
 
-    public void openRegisterView()
-    {
-        ViewHandler.showView(ViewType.REGISTER);
-    }
+  public void openRegisterView()
+  {
+    ViewHandler.showView(ViewType.REGISTER);
+  }
 }

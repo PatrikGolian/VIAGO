@@ -227,11 +227,6 @@ public class ReservationVM
     return idProp;
   }
 
-  public StringProperty getFinalPriceProp()
-  {
-    return finalPriceProp;
-  }
-
   // Related to fields
   public StringProperty conditionProperty()
   {

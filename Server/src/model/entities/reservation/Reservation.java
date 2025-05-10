@@ -12,7 +12,8 @@ public class Reservation
   private Date endDate;
   private double price;
 
-  public Reservation(int vehicleId, String vehicleType , String ownerEmail, String reservedByEmail, Date startDate, Date endDate, double price)
+  public Reservation(int vehicleId, String vehicleType, String ownerEmail,
+      String reservedByEmail, Date startDate, Date endDate, double price)
   {
     this.vehicleId = vehicleId;
     this.vehicleType = vehicleType;
@@ -63,16 +64,11 @@ public class Reservation
     return price;
   }
 
-  @Override
-  public String toString()
+  @Override public String toString()
   {
-    return "Reservation{" +
-        "vehicleId=" + vehicleId + '\'' +
-        ", ownerEmail='" + ownerEmail + '\'' +
-        ", reservedByEmail='" + reservedByEmail + '\'' +
-        ", startDate=" + startDate +
-        ", endDate=" + endDate +
-        ", price=" + price +
-        '}';
+    return "Reservation{" + "vehicleId=" + vehicleId + '\'' + ", ownerEmail='"
+        + ownerEmail + '\'' + ", reservedByEmail='" + reservedByEmail + '\''
+        + ", startDate=" + startDate + ", endDate=" + endDate + ", price="
+        + price + '}';
   }
 }

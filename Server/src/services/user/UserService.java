@@ -10,12 +10,12 @@ import java.util.List;
 
 public interface UserService
 {
-    void promoteToAdmin(PromoteUserRequest request) throws SQLException;
+  void promoteToAdmin(PromoteUserRequest request) throws SQLException;
 
-    void blacklistUser(BlacklistUserRequest request) throws SQLException;
+  void blacklistUser(BlacklistUserRequest request) throws SQLException;
 
-    List<ViewUsers.UserDisplayDto> getUsersOverview(ViewUsers.Request request)
-        throws SQLException;
+  List<ViewUsers.UserDisplayDto> getUsersOverview(ViewUsers.Request request)
+      throws SQLException;
 
-    void updatePassword(UpdatePasswordRequest request) throws SQLException;
+  void updatePassword(UpdatePasswordRequest request) throws SQLException;
 }

@@ -13,48 +13,18 @@ public class VehicleFx
   private final StringProperty stateProp = new SimpleStringProperty();
 
   // Related to fields
-  private final StringProperty conditionProp    = new SimpleStringProperty();
-  private final StringProperty colorProp        = new SimpleStringProperty();
-  private final StringProperty ownerProp        = new SimpleStringProperty();
-  private final StringProperty bikeTypeProp     = new SimpleStringProperty();
-  private final StringProperty maxSpeedProp     = new SimpleStringProperty();
-  private final StringProperty rangeProp     = new SimpleStringProperty();
+  private final StringProperty conditionProp = new SimpleStringProperty();
+  private final StringProperty colorProp = new SimpleStringProperty();
+  private final StringProperty ownerProp = new SimpleStringProperty();
+  private final StringProperty bikeTypeProp = new SimpleStringProperty();
+  private final StringProperty maxSpeedProp = new SimpleStringProperty();
+  private final StringProperty rangeProp = new SimpleStringProperty();
+
   // Related to reservation
   private final IntegerProperty idProp = new SimpleIntegerProperty();
-    public VehicleFx(VehicleDisplayDto vehicle)
+
+  public VehicleFx(VehicleDisplayDto vehicle)
   {
-    /*typeProp.set(vehicle.type());
-    brandProp.set(vehicle.brand());
-    modelProp.set(vehicle.model());
-    pricePerDayProp.set(vehicle.pricePerDay());
-    stateProp.set(vehicle.state());
-    switch (typeProp.get())
-    {
-      case "bike" ->{
-        conditionProp.set(String.valueOf(((AddNewBikeDto) data).condition()));
-        colorProp.set(String.valueOf(((AddNewBikeDto)data).color()));
-        ownerProp.set(String.valueOf(((AddNewBikeDto)data).ownerEmail()));
-        //bike specific
-        bikeTypeProp.set(String.valueOf(((AddNewBikeDto) data).bikeType()));
-      }
-      case "e-bike" ->{
-        conditionProp.set(String.valueOf(((AddNewEBikeDto) data).condition()));
-        colorProp.set(String.valueOf(((AddNewEBikeDto)data).color()));
-        ownerProp.set(String.valueOf(((AddNewEBikeDto)data).ownerEmail()));
-        //e-bike specific
-        bikeTypeProp.set(String.valueOf(((AddNewEBikeDto) data).bikeType()));
-        maxSpeedProp.set(String.valueOf(((AddNewEBikeDto) data).maxSpeed()));
-        rangeProp.set(String.valueOf(((AddNewEBikeDto)data).oneChargeRange()));
-      }
-      case "scooter" ->{
-        conditionProp.set(String.valueOf(((AddNewScooterDto) data).condition()));
-        colorProp.set(String.valueOf(((AddNewScooterDto)data).color()));
-        ownerProp.set(String.valueOf(((AddNewScooterDto)data).ownerEmail()));
-        //scooter specific
-        maxSpeedProp.set(String.valueOf(((AddNewScooterDto)data).maxSpeed()));
-        rangeProp.set(String.valueOf(((AddNewScooterDto)data).oneChargeRange()));
-      }
-    }*/
     idProp.set(vehicle.id());
     typeProp.set(vehicle.type());
     brandProp.set(vehicle.brand());
@@ -65,17 +35,21 @@ public class VehicleFx
     colorProp.set(vehicle.color());
     ownerProp.set(vehicle.ownerEmail());
 
-    switch (vehicle.type()) {
-      case "bike" -> {
+    switch (vehicle.type())
+    {
+      case "bike" ->
+      {
         bikeTypeProp.set(((BikeDisplayDto) vehicle).bikeType());
       }
-      case "e-bike" -> {
+      case "e-bike" ->
+      {
         EBikeDisplayDto ebike = (EBikeDisplayDto) vehicle;
         bikeTypeProp.set(ebike.bikeType());
         maxSpeedProp.set(String.valueOf(ebike.maxSpeed()));
         rangeProp.set(String.valueOf(ebike.oneChargeRange()));
       }
-      case "scooter" -> {
+      case "scooter" ->
+      {
         ScooterDisplayDto scooter = (ScooterDisplayDto) vehicle;
         maxSpeedProp.set(String.valueOf(scooter.maxSpeed()));
         rangeProp.set(String.valueOf(scooter.oneChargeRange()));
@@ -110,13 +84,39 @@ public class VehicleFx
   }
 
   // Field related
-  public StringProperty conditionPropProperty()   { return conditionProp; }
-  public StringProperty colorPropProperty()       { return colorProp; }
-  public StringProperty ownerPropProperty()       { return ownerProp; }
-  public StringProperty bikeTypePropProperty()    { return bikeTypeProp; }
-  public StringProperty maxSpeedPropProperty()    { return maxSpeedProp; }
-  public StringProperty rangeProperty() {return rangeProp;}
+  public StringProperty conditionPropProperty()
+  {
+    return conditionProp;
+  }
+
+  public StringProperty colorPropProperty()
+  {
+    return colorProp;
+  }
+
+  public StringProperty ownerPropProperty()
+  {
+    return ownerProp;
+  }
+
+  public StringProperty bikeTypePropProperty()
+  {
+    return bikeTypeProp;
+  }
+
+  public StringProperty maxSpeedPropProperty()
+  {
+    return maxSpeedProp;
+  }
+
+  public StringProperty rangeProperty()
+  {
+    return rangeProp;
+  }
 
   // Reservation related
-  public IntegerProperty idPropProperty() {return idProp;}
+  public IntegerProperty idPropProperty()
+  {
+    return idProp;
+  }
 }

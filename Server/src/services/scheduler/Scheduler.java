@@ -9,11 +9,14 @@ import java.util.concurrent.TimeUnit;
 
 public class Scheduler
 {
-  private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+  private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(
+      1);
 
-  public void startHourlyExecutorServiceCheck(ReservationService reservationService)
+  public void startHourlyExecutorServiceCheck(
+      ReservationService reservationService)
   {
-    scheduler.scheduleAtFixedRate(reservationService::updateVehicleState,0,1, TimeUnit.HOURS);
+    scheduler.scheduleAtFixedRate(reservationService::updateVehicleState, 0, 1,
+        TimeUnit.HOURS);
   }
 
   public void stop()

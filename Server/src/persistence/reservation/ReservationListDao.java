@@ -1,19 +1,16 @@
-package persistence.daos.reservation;
+package persistence.reservation;
 
-import model.entities.User;
 import model.entities.reservation.Reservation;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 public class ReservationListDao implements ReservationDao
 {
 
-  private final static List<Reservation> reservations = new ArrayList<>(Arrays.asList(
-  ));
+  private final static List<Reservation> reservations = new ArrayList<>(
+      Arrays.asList());
 
   public ReservationListDao()
   {
@@ -24,22 +21,26 @@ public class ReservationListDao implements ReservationDao
   {
     reservations.add(reservation);
   }
+
   public ArrayList<Reservation> getByDate(model.Date date)
   {
     ArrayList<Reservation> results = new ArrayList<>();
     for (Reservation reservation : reservations)
     {
-      if (reservation.getStartDate().equals(date)|| reservation.getEndDate().equals(date))
+      if (reservation.getStartDate().equals(date) || reservation.getEndDate()
+          .equals(date))
       {
         results.add(reservation);
       }
     }
     return results;
   }
+
   public void delete(Reservation reservation)
   {
     reservations.remove(reservation);
   }
+
   public void save(Reservation reservation, Reservation oldReservation)
   {
     delete(oldReservation);
@@ -65,7 +66,7 @@ public class ReservationListDao implements ReservationDao
     ArrayList<Reservation> results = new ArrayList<>();
     for (Reservation reservation : reservations)
     {
-        results.add(reservation);
+      results.add(reservation);
     }
     return results;
   }
