@@ -13,7 +13,7 @@ public class RunServer
   {
     ServiceProvider serviceLocator = new ServiceProvider();
     Scheduler scheduler = new Scheduler();
-    scheduler.startHourlyExecutorServiceCheck(
+    scheduler.startSecondlyExecutorServiceCheck(
         ServiceProvider.getReservationService());
     Server server = new Server(serviceLocator);
     server.start();

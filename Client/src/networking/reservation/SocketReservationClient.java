@@ -2,7 +2,9 @@ package networking.reservation;
 
 import dtos.Request;
 import dtos.Response;
+import dtos.reservation.ReservationDto;
 import dtos.reservation.ReservationRequest;
+import dtos.reservation.ReservationRequestByIdType;
 import dtos.vehicle.AddNewVehicleRequest;
 import dtos.vehicle.VehicleDisplayDto;
 import model.entities.reservation.Reservation;
@@ -13,6 +15,11 @@ import java.util.List;
 
 public class SocketReservationClient implements ReservationClient
 {
+@Override public void updateVehicleState()
+{
+  Request request = new Request("reservation","update_state",null);
+  SocketService.sendRequest(request);
+}
   @Override public void addNewReservation(ReservationRequest newReservation)
   {
     Request request = new Request("reservation", "reserve", newReservation);
@@ -43,5 +50,34 @@ public class SocketReservationClient implements ReservationClient
       }
     }
     return vehicles;
+  }
+
+  @Override public List<ReservationDto> getReservationsByTypeAndId(
+      ReservationRequestByIdType payload)
+  {
+    Request request = new Request("reservation", "getReservations", payload);
+    Object rawResponse = SocketService.sendRequest(request);
+
+    if (!(rawResponse instanceof List<?> rawList))
+    {
+      throw new RuntimeException("Expected List, got: " + rawResponse);
+    }
+
+    List<ReservationDto> reservations = new ArrayList<>();
+    for (Object obj : rawList)
+    {
+      if (obj instanceof ReservationDto dto)
+      {
+        if (((ReservationDto) obj).vehicleId() == payload.vehicleId())
+        {
+          reservations.add(dto);
+        }
+      }
+      else
+      {
+        throw new RuntimeException("Unexpected item in vehicle list: " + obj);
+      }
+    }
+    return reservations;
   }
 }

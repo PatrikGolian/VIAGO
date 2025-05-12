@@ -38,5 +38,6 @@
       <Label fx:id="datePickerLabel" layoutX="511.0" layoutY="327.0" prefHeight="18.0" prefWidth="84.0" text="Choose period:" />
       <Label fx:id="priceLabel" layoutX="450.0" layoutY="408.0" text="Price:" />
       <TextField fx:id="priceField" layoutX="517.0" layoutY="404.0" />
+      <Label fx:id="messageLabel" layoutX="24.0" layoutY="361.0" prefHeight="18.0" prefWidth="386.0" />
    </children>
 </AnchorPane>

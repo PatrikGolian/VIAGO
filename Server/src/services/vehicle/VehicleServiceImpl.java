@@ -1,5 +1,6 @@
 package services.vehicle;
 
+import dtos.reservation.ReservationDto;
 import dtos.vehicle.*;
 import model.entities.vehicles.Bike;
 import model.entities.vehicles.EBike;
@@ -144,6 +145,7 @@ public class VehicleServiceImpl implements VehicleService
 
     return result;
   }
+
 
   private static void typeValidation(String type)
   {

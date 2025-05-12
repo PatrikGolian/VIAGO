@@ -1,6 +1,7 @@
 package networking.requesthandlers;
 
 import dtos.reservation.ReservationRequest;
+import dtos.reservation.ReservationRequestByIdType;
 import dtos.vehicle.VehicleDisplayDto;
 import services.reservation.ReservationService;
 import services.vehicle.VehicleService;
@@ -31,6 +32,11 @@ public class ReservationRequestHandler implements RequestHandler
       {
         return vehicleService.getVehiclesOverview();
       }
+      case "getReservations" ->
+      {
+        return reservationService.getReservationsByTypeAndId((ReservationRequestByIdType) payload);
+      }
+      case "update_state" -> reservationService.updateVehicleState();
     }
     return  null;
   }

@@ -12,6 +12,7 @@ public interface VehicleDao
   Vehicle getByIdAndType(int id, String vehicleType) throws SQLException;
   ArrayList<Vehicle> getByType(String type) throws SQLException;
   ArrayList<Vehicle> getByState(String state) throws SQLException;
+  ArrayList<Vehicle> getByOwnerEmail(String ownerEmail) throws SQLException;
   ArrayList<Vehicle> getAll() throws SQLException;
   void delete(Vehicle vehicle) throws SQLException;
   void save(Vehicle vehicle, Vehicle oldVehicle) throws SQLException;

@@ -24,6 +24,19 @@ public class Vehicle
     this.state = state;
   }
 
+  public Vehicle(Vehicle vehicle)
+  {
+    this.id = vehicle.id;
+    this.type = vehicle.type;
+    this.condition = vehicle.condition;
+    this.pricePerDay = vehicle.pricePerDay;
+    this.brand = vehicle.brand;
+    this.model = vehicle.model;
+    this.color = vehicle.color;
+    this.ownerEmail = vehicle.ownerEmail;
+    this.state = vehicle.state;
+  }
+
   public String getType()
   {
     return type;

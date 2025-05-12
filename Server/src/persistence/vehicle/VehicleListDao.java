@@ -86,4 +86,10 @@ public class VehicleListDao implements VehicleDao
     System.out.println("updated: " + vehicle);
     vehicles.add(vehicle);
   }
+
+  @Override public ArrayList<Vehicle> getByOwnerEmail(String ownerEmail)
+      throws SQLException
+  {
+    return null;
+  }
 }

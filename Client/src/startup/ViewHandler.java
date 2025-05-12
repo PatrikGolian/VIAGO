@@ -9,6 +9,8 @@ import networking.authentication.AuthenticationClient;
 import networking.authentication.SocketAuthenticationClient;
 import networking.reservation.ReservationClient;
 import networking.reservation.SocketReservationClient;
+import networking.studentaccount.SocketStudentAccountClient;
+import networking.studentaccount.StudentAccountClient;
 import networking.user.SocketUsersClient;
 import networking.user.UsersClient;
 import ui.addnew.AddNewController;
@@ -22,6 +24,8 @@ import ui.register.RegisterController;
 import ui.register.RegisterVM;
 import ui.reservation.ReservationController;
 import ui.reservation.ReservationVM;
+import ui.studentaccount.StudentAccountController;
+import ui.studentaccount.StudentAccountVM;
 import ui.viewusers.ViewUsersController;
 import ui.viewusers.ViewUsersVM;
 import ui.welcome.WelcomeController;
@@ -39,7 +43,7 @@ public class ViewHandler
 
   public void start()
   {
-    showView(ViewType.WELCOME);
+    showView(ViewType.LOGIN);
     stage.show();
   }
 
@@ -55,6 +59,7 @@ public class ViewHandler
         case VIEWUSERS -> openUsersOverview();
         case ADDNEW -> openAddNewView();
         case RESERVATION -> openReservationView();
+        case STUDENTACCOUNT -> openStudentAccountView();
         default -> throw new RuntimeException("View not found.");
       }
     }
@@ -145,6 +150,16 @@ public class ViewHandler
     ReservationController controller = new ReservationController(vm);
     String viewTitle = "Reservation";
     String viewSubPath = "reservation/Reservation.fxml";
+    openView(viewTitle, viewSubPath, controller);
+  }
+
+  private static void openStudentAccountView() throws IOException
+  {
+    StudentAccountClient studentAccountClient = new SocketStudentAccountClient();
+    StudentAccountVM vm = new StudentAccountVM(studentAccountClient);
+    StudentAccountController controller = new StudentAccountController(vm);
+    String viewTitle = "Student Account";
+    String viewSubPath = "studentaccount/StudentAccount.fxml";
     openView(viewTitle, viewSubPath, controller);
   }
 

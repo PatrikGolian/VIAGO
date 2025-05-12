@@ -1,6 +1,8 @@
 package ui.reservation;
 
+import dtos.reservation.ReservationDto;
 import dtos.reservation.ReservationRequest;
+import dtos.reservation.ReservationRequestByIdType;
 import dtos.vehicle.VehicleDataDto;
 import dtos.vehicle.VehicleDisplayDto;
 import javafx.beans.property.*;
@@ -8,12 +10,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import model.Date;
+import model.entities.reservation.Reservation;
+import model.entities.vehicles.Vehicle;
 import networking.reservation.ReservationClient;
 import startup.ViewHandler;
 import state.AppState;
 import ui.popup.MessageType;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ReservationVM
@@ -34,6 +41,8 @@ public class ReservationVM
   private final ObjectProperty<LocalDate> reservationDateProp = new SimpleObjectProperty<>(
       LocalDate.now());
   private final StringProperty finalPriceProp = new SimpleStringProperty();
+  private final StringProperty messageProp = new SimpleStringProperty();
+  private final BooleanProperty reservationSuccess = new SimpleBooleanProperty(false);
 
   // Additional info
   private final StringProperty reservedEmailProp = new SimpleStringProperty();
@@ -44,7 +53,6 @@ public class ReservationVM
 
   // Visibility properties
   private final BooleanProperty conditionFieldVisibility = new SimpleBooleanProperty();
-
   private final BooleanProperty colorFieldVisibility = new SimpleBooleanProperty();
   private final BooleanProperty ownerEmailFieldVisibility = new SimpleBooleanProperty();
   private final BooleanProperty conditionLabelVisibility = new SimpleBooleanProperty();
@@ -65,6 +73,7 @@ public class ReservationVM
 
   private final ReservationClient reservationService;
 
+
   public ReservationVM(ReservationClient reservationService)
   {
     this.reservationService = reservationService;
@@ -74,23 +83,35 @@ public class ReservationVM
 
   public void addReservation()
   {
+    messageProp.set("");
     VehicleFx v = selectedVehicle.get();
     if (v == null || startDate == null || endDate == null)
     {
       return;
     }
-    LocalDate start = startDate.get();
-    LocalDate end = endDate.get();
-    String reservedEmail = AppState.getCurrentUser().email();
-    double price = Double.parseDouble(finalPriceProp.get());
-    ReservationRequest request = new ReservationRequest(idProp.get(),
-        v.typePropProperty().get(), ownerEmailProp.get(), reservedEmail,
-        new Date(start.getDayOfMonth(), start.getMonth().getValue(),
-            start.getYear()),
-        new Date(end.getDayOfMonth(), end.getMonth().getValue(), end.getYear()),
-        price);
+    try
+    {
+      LocalDate start = startDate.get();
+      LocalDate end = endDate.get();
+      String reservedEmail = AppState.getCurrentUser().email();
+      double price = Double.parseDouble(finalPriceProp.get());
+      ReservationRequest request = new ReservationRequest(idProp.get(),
+          v.typePropProperty().get(), ownerEmailProp.get(), reservedEmail,
+          new Date(start.getDayOfMonth(), start.getMonth().getValue(),
+              start.getYear()),
+          new Date(end.getDayOfMonth(), end.getMonth().getValue(),
+              end.getYear()), price);
 
-    reservationService.addNewReservation(request);
+      reservationService.addNewReservation(request);
+      reservationSuccess.set(true);
+
+      messageProp.set("Success");
+    }
+    catch (Exception e)
+    {
+      messageProp.set(e.getMessage());
+      reservationSuccess.set(false);
+    }
   }
 
   public void loadVehicles()
@@ -221,7 +242,7 @@ public class ReservationVM
     bikeTypeProp.set("");
   }
 
-  // Addtional info
+  // Additional info
   public IntegerProperty getIdProp()
   {
     return idProp;
@@ -360,6 +381,11 @@ public class ReservationVM
     return filteredVehicles;
   }
 
+  public StringProperty messageProperty()
+  {
+    return messageProp;
+  }
+
   public ObjectProperty<LocalDate> startDateProperty()
   {
     return startDate;
@@ -369,4 +395,55 @@ public class ReservationVM
   {
     return endDate;
   }
-}
+  public BooleanProperty reservationSuccessProperty() {
+    return reservationSuccess;
+  }
+
+  public void setFinalPrice()
+  {
+    Date date1 = new Date(startDate.get().getDayOfMonth(), startDate.get().getMonthValue(), startDate.get().getYear());
+    Date date2 = new Date(endDate.get().getDayOfMonth(), endDate.get().getMonthValue(), endDate.get().getYear());
+    int period = Date.calculatePeriod(date1,date2);
+    double totalPrice = period * selectedVehicle.get().pricePerDayPropProperty().get();
+    finalPriceProp.set(Double.toString(totalPrice));
+  }
+
+  public ArrayList<Reservation> getReservationsByTypeAndId(
+      ReservationRequestByIdType request)
+  {
+    List<ReservationDto> reservationDtos = reservationService.getReservationsByTypeAndId(request);
+    ArrayList<Reservation> reservations = new ArrayList<>();
+    ReservationDto temp;
+    for (int i = 0; i < reservationDtos.size(); i++)
+    {
+      temp = reservationDtos.get(i);
+      reservations.add(new Reservation(temp.vehicleId(), temp.vehicleType(), temp.ownerEmail(), temp.reservedByEmail(), temp.startDate(), temp.endDate(), temp.price()));
+    }
+    return reservations;
+  }
+
+  public void refreshVehicleTable() {
+    try
+    {
+      List<VehicleDisplayDto> updatedVehicles = reservationService.getVehicles(); // or getVehiclesOverview()
+      ObservableList<VehicleFx> updatedFxList = FXCollections.observableArrayList();
+
+      for (VehicleDisplayDto dto : updatedVehicles)
+      {
+        updatedFxList.add(
+            new VehicleFx(dto)); // assuming you have a VehicleFx constructor
+      }
+    }
+      catch (Exception e)
+      {
+        e.printStackTrace();
+        ViewHandler.popupMessage(MessageType.ERROR, e.getMessage());
+      }
+    }
+    public void update()
+    {
+      reservationService.updateVehicleState();
+    }
+
+  }
+

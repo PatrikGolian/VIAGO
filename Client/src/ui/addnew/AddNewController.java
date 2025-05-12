@@ -2,6 +2,7 @@ package ui.addnew;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.shape.Rectangle;
 import startup.ViewHandler;
 import startup.ViewType;
 import ui.common.Controller;
@@ -10,6 +11,10 @@ import javafx.scene.control.TextField;
 
 public class AddNewController implements Controller
 {
+  @FXML Label rentRedirect;
+  @FXML Label myVehiclesRedirect;
+  @FXML Rectangle profileShapeRedirect;
+  @FXML Label profileTextRedirect;
   @FXML TextField typeField;
   @FXML TextField brandField;
   @FXML TextField modelField;
@@ -60,6 +65,10 @@ public class AddNewController implements Controller
     bikeTypeField.visibleProperty()
         .bind(viewModel.getBikeTypeFieldVisibility());
 
+    profileTextRedirect.textProperty().bindBidirectional(
+        viewModel.profileTextRedirectProperty());
+    viewModel.setProfileInitials();
+
     messageLabel.textProperty().bind(viewModel.messageProperty());
 
     addButton.disableProperty().bind(viewModel.enableAddButtonProperty());
@@ -73,5 +82,20 @@ public class AddNewController implements Controller
   public void onAddButton()
   {
     viewModel.add();
+  }
+
+  public void onRentRedirect()
+  {
+    ViewHandler.showView(ViewType.RESERVATION);
+  }
+
+  public void onMyVehiclesRedirect()
+  {
+    ViewHandler.showView(ViewType.WELCOME);
+  }
+
+  public void onProfileRedirect()
+  {
+    ViewHandler.showView(ViewType.STUDENTACCOUNT);
   }
 }

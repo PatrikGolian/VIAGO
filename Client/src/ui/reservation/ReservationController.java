@@ -1,5 +1,8 @@
 package ui.reservation;
 
+import dtos.reservation.ReservationRequestByIdType;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 
@@ -7,7 +10,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.skin.DatePickerSkin;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import javafx.util.StringConverter;
+import model.Date;
+import model.entities.reservation.Reservation;
+import services.reservation.ReservationService;
 import startup.ViewHandler;
 import startup.ViewType;
 import ui.common.Controller;
@@ -47,9 +54,10 @@ public class ReservationController implements Controller
   @FXML private Label ownerLabel;
   @FXML private Label priceLabel;
   @FXML private Label datePickerLabel;
+  @FXML private Label messageLabel;
 
   @FXML private DatePicker datePicker;
-
+    ReservationService service;
   // Added Richard
   private DateCell iniCell = null;
   private DateCell endCell = null;
@@ -68,6 +76,30 @@ public class ReservationController implements Controller
 
   public void initialize()
   {
+
+    // Text fields uneditable and unfocusable
+    conditionField.setEditable(false);
+    conditionField.setFocusTraversable(false);
+
+    colorField.setEditable(false);
+    colorField.setFocusTraversable(false);
+
+    ownerField.setEditable(false);
+    ownerField.setFocusTraversable(false);
+
+    bikeTypeField.setEditable(false);
+    bikeTypeField.setFocusTraversable(false);
+
+    speedField.setEditable(false);
+    speedField.setFocusTraversable(false);
+
+    rangeField.setEditable(false);
+    rangeField.setFocusTraversable(false);
+
+    priceField.setEditable(false);
+    priceField.setFocusTraversable(false);
+
+    // Search bar
     searchField.setOnKeyPressed(event -> {
       if (event.getCode().toString().equals("ENTER"))
       {
@@ -89,6 +121,7 @@ public class ReservationController implements Controller
       }
     });
 
+    // Table view
     vehicleTable.setItems(viewModel.getVehicleList());
     vehicleTable.setEditable(false);
     vehicleTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -149,6 +182,7 @@ public class ReservationController implements Controller
     speedField.textProperty().bindBidirectional(viewModel.speedProperty());
     rangeField.textProperty().bindBidirectional(viewModel.rangeProperty());
     priceField.textProperty().bindBidirectional(viewModel.finalPriceProperty());
+    messageLabel.textProperty().bind(viewModel.messageProperty());
 
     // Visibility
     conditionField.visibleProperty()
@@ -179,6 +213,18 @@ public class ReservationController implements Controller
     searchField.textProperty()
         .bindBidirectional(viewModel.searchQueryProperty());
     vehicleTable.setItems(viewModel.getVehicleList());
+
+
+    viewModel.reservationSuccessProperty().addListener((obs, oldVal, newVal) -> {
+      if (newVal) {
+        viewModel.update();
+        viewModel.loadVehicles();
+        vehicleTable.refresh();
+
+        // Reset the flag to avoid repeated triggers
+        viewModel.reservationSuccessProperty().set(false);
+      }
+    });
 
     // Date Picker
     datePicker.setValue(LocalDate.now());
@@ -215,6 +261,61 @@ public class ReservationController implements Controller
     datePicker.showingProperty().addListener((obs, oldValue, newValue) -> {
       if (newValue)
       {
+        ReservationRequestByIdType request = new ReservationRequestByIdType(
+            viewModel.selectedVehicleProperty().get().idPropProperty().get(),
+            viewModel.selectedVehicleProperty().get().typePropProperty().get());
+        List<Reservation> reservations = viewModel.getReservationsByTypeAndId(
+            request);
+        datePicker.setDayCellFactory(dp -> new DateCell()
+        {
+          @Override public void updateItem(LocalDate item, boolean empty)
+          {
+            if (!(empty || item == null))
+            {
+              if (reservations != null)
+              {
+                boolean met = false;
+                for (Reservation res : reservations)
+                {
+                  Date s = res.getStartDate();
+                  Date e = res.getEndDate();
+                  LocalDate starts = LocalDate.of(s.getYear(), s.getMonth(),
+                      s.getDay());
+                  LocalDate ends = LocalDate.of(e.getYear(), e.getMonth(),
+                      e.getDay());
+
+                  if ((item.isEqual(starts) || item.isEqual(ends) || (
+                      item.isAfter(starts) && item.isBefore(ends))))
+                  {
+                    //System.out.println(starts);
+                    met = true;
+                    break;
+                  }
+                }
+
+                if (!met)
+                {
+                  //System.out.println("set disable false");
+                  setDisable(false);
+                }
+                else
+                {
+                  setDisable(true);
+                  //System.out.println("set for "+item);
+                  //System.out.println("empty: "+empty);
+                  setStyle("-fx-background-color: #ffc0cb;");
+                }
+              }
+              if (item.isBefore(LocalDate.now()))
+              {
+                setDisable(true);
+                setStyle("-fx-background-color: #D3D3D3;");
+              }
+            }
+            super.updateItem(item, empty);
+          }
+        });
+
         // Get the DatePicker's Skin to access its content
         DatePickerSkin skin = (DatePickerSkin) datePicker.getSkin();
         Node content = skin.getPopupContent();
@@ -296,8 +397,12 @@ public class ReservationController implements Controller
           }
           endCell = null;
           iniCell = null;
-          viewModel.startDateProperty().set(iniDate);
-          viewModel.endDateProperty().set(endDate);
+          if (iniDate != null && endDate != null)
+          {
+            viewModel.startDateProperty().set(iniDate);
+            viewModel.endDateProperty().set(endDate);
+            viewModel.setFinalPrice();
+          }
         });
       }
     });
@@ -310,7 +415,30 @@ public class ReservationController implements Controller
 
   public void onReserveButton()
   {
+    if (viewModel.selectedVehicleProperty().get() == null || iniDate == null
+        || endDate == null)
+    {
+      Alert alert = new Alert(Alert.AlertType.WARNING);
+      alert.setTitle("Reservation Error");
+      alert.setHeaderText(null);
+      alert.setContentText("Select vehicle and choose rental period.");
+      alert.showAndWait();
+      return;
+    }
     viewModel.addReservation();
+
   }
 
+  public void startAutoRefresh()
+  {
+    Timeline timeline = new Timeline(
+        new KeyFrame(Duration.seconds(10), event -> {
+
+          viewModel.loadVehicles();
+          vehicleTable.refresh();
+        }));
+    timeline.setCycleCount(Timeline.INDEFINITE);
+    timeline.play();
+  }
 }
+

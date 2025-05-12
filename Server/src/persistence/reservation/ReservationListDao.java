@@ -2,6 +2,7 @@ package persistence.reservation;
 
 import model.entities.reservation.Reservation;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -69,5 +70,23 @@ public class ReservationListDao implements ReservationDao
       results.add(reservation);
     }
     return results;
+  }
+  public ArrayList<Reservation> getByType(String vehicleType)
+  {
+    ArrayList<Reservation> results = new ArrayList<>();
+    for (Reservation reservation : reservations)
+    {
+      if (reservation.getVehicleType().equals(vehicleType))
+      {
+        results.add(reservation);
+      }
+    }
+    return results;
+  }
+
+  @Override public ArrayList<Reservation> getByTypeAndId(int vehicleId,
+      String vehicleType) throws SQLException
+  {
+    return null;
   }
 }

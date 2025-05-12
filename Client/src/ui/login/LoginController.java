@@ -1,15 +1,18 @@
 package ui.login;
 
+import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 import startup.ViewHandler;
 import startup.ViewType;
 import ui.common.Controller;
 
 public class LoginController implements Controller
 {
+  @FXML public Label registerTextRedirect;
   public Label messageLabel;
   public PasswordField passwordInput;
   public TextField emailInput;
@@ -30,9 +33,9 @@ public class LoginController implements Controller
     buttonLogin.disableProperty().bind(vm.enableLoginButtonProperty());
   }
 
-  public void onBack()
+  public void onRegisterText()
   {
-    ViewHandler.showView(ViewType.WELCOME);
+    ViewHandler.showView(ViewType.REGISTER);
   }
 
   public void onLogin()

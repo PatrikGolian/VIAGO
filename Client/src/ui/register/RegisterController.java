@@ -12,6 +12,8 @@ import ui.common.Controller;
 public class RegisterController implements Controller
 {
     @FXML
+    private Label loginTextRedirect;
+    @FXML
     private TextField emailInput;
     @FXML
     private PasswordField passwordInput;
@@ -51,9 +53,9 @@ public class RegisterController implements Controller
         viewModel.registerUser();
     }
 
-    public void onBack()
+    public void onLoginText()
     {
-        ViewHandler.showView(ViewType.WELCOME);
+        ViewHandler.showView(ViewType.LOGIN);
     }
 
 }

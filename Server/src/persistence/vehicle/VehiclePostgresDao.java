@@ -238,6 +238,81 @@ public class VehiclePostgresDao implements VehicleDao
     }
     return vehicles;
   }
+  @Override public ArrayList<Vehicle> getByOwnerEmail(String ownerEmail)
+    throws SQLException
+{
+  ArrayList<Vehicle> vehicles = null;
+  try (Connection connection = getConnection())
+  {
+    //for bike
+    PreparedStatement statement = connection.prepareStatement(
+        "SELECT* FROM bike where ownerEmail = ?");
+    statement.setString(1, ownerEmail);
+    ResultSet resultSet = statement.executeQuery();
+    while (resultSet.next())
+    {
+      int id = resultSet.getInt("id"), maxSpeed, oneChargeRange;
+      String brand = resultSet.getString(
+          "brand"), model = resultSet.getString(
+          "model"), condition = resultSet.getString(
+          "condition"), color = resultSet.getString(
+          "color"), bikeType,  type = resultSet.getString("type"),
+        state = resultSet.getString("state");
+      double pricePerDay = resultSet.getDouble("pricePerDay");
+      bikeType = resultSet.getString("bikeType");
+      Bike bike = new Bike(id, type, brand, model, condition, color,
+          pricePerDay, bikeType, ownerEmail, state);
+      bike.setId(id);
+      vehicles.add(bike);
+    }
+    //for eBike
+    statement = connection.prepareStatement(
+        "SELECT* FROM eBike where ownerEmail = ?");
+    statement.setString(1, ownerEmail);
+    resultSet = statement.executeQuery();
+    while (resultSet.next())
+    {
+      int id = resultSet.getInt("id"), maxSpeed, oneChargeRange;
+      String brand = resultSet.getString(
+          "brand"), model = resultSet.getString(
+          "model"), condition = resultSet.getString(
+          "condition"), color = resultSet.getString(
+          "color"), bikeType = resultSet.getString(
+          "biketype"), type = resultSet.getString("type"),
+          state = resultSet.getString("state");
+      double pricePerDay = resultSet.getDouble("pricePerDay");
+      maxSpeed = resultSet.getInt("maxSpeed");
+      oneChargeRange = resultSet.getInt("oneChargeRange");
+      EBike eBike = new EBike(id, type, brand, model, condition, color,
+          pricePerDay, bikeType, maxSpeed, oneChargeRange, ownerEmail, state);
+      eBike.setId(id);
+      vehicles.add(eBike);
+    }
+    //for Scooter
+    statement = connection.prepareStatement(
+        "SELECT* FROM scooter where ownerEmail = ?");
+    statement.setString(1, ownerEmail);
+    resultSet = statement.executeQuery();
+    while (resultSet.next())
+    {
+      int id = resultSet.getInt("id"), maxSpeed = resultSet.getInt(
+          "maxSpeed"), oneChargeRange = resultSet.getInt("oneChargeRange");
+      ;
+      String brand = resultSet.getString(
+          "brand"), model = resultSet.getString(
+          "model"), condition = resultSet.getString(
+          "condition"), color = resultSet.getString(
+          "color"), type = resultSet.getString("type"),
+          state = resultSet.getString("state");
+      double pricePerDay = resultSet.getDouble("pricePerDay");
+      Scooter scooter = new Scooter(id, type, brand, model, condition, color,
+          pricePerDay, maxSpeed, oneChargeRange, ownerEmail, state);
+      scooter.setId(id);
+      vehicles.add(scooter);
+    }
+  }
+  return vehicles;
+}
 
   @Override public ArrayList<Vehicle> getAll() throws SQLException
   {

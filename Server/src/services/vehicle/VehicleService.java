@@ -1,5 +1,6 @@
 package services.vehicle;
 
+import dtos.reservation.ReservationDto;
 import dtos.vehicle.AddNewVehicleRequest;
 import dtos.vehicle.VehicleDisplayDto;
 

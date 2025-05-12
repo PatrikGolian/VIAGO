@@ -3,6 +3,7 @@ package persistence.reservation;
 import model.entities.reservation.Reservation;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class ReservationPostgresDao implements ReservationDao
@@ -87,10 +88,12 @@ public class ReservationPostgresDao implements ReservationDao
         double price = resultSet.getDouble("price");
         java.sql.Date date1 = resultSet.getDate(
             "startDate"), date2 = resultSet.getDate("endDate");
-        model.Date startDate = new model.Date(date1.getYear(), date1.getMonth(),
-            date1.getDay());
-        model.Date endDate = new model.Date(date2.getYear(), date2.getMonth(),
-            date2.getDay());
+        LocalDate temp = date1.toLocalDate();
+        model.Date startDate = new model.Date(temp.getDayOfMonth(), temp.getMonthValue(),
+            temp.getYear());
+        temp = date2.toLocalDate();
+        model.Date endDate = new model.Date(temp.getDayOfMonth(), temp.getMonthValue(),
+            temp.getYear());
         result.add(
             new Reservation(vehicleId, vehicleType, ownerEmail, reservedByEmail,
                 startDate, endDate, price));
@@ -174,11 +177,48 @@ public class ReservationPostgresDao implements ReservationDao
             "ownerEmail"), vehicleType = resultSet.getString("vehicleType");
         int vehicleId = resultSet.getInt("vehicleId");
         java.sql.Date date1 = resultSet.getDate("startDate");
-        model.Date startDate = new model.Date(date1.getYear(), date1.getMonth(),
-            date1.getDay());
+        LocalDate temp = date1.toLocalDate();
+        model.Date startDate = new model.Date(temp.getDayOfMonth(), temp.getMonthValue(),
+            temp.getYear());
         java.sql.Date date2 = resultSet.getDate("endDate");
-        model.Date endDate = new model.Date(date2.getYear(), date2.getMonth(),
-            date2.getDay());
+        temp = date2.toLocalDate();
+        model.Date endDate = new model.Date(temp.getDayOfMonth(), temp.getMonthValue(),
+            temp.getYear());
+        double price = resultSet.getDouble("price");
+
+        reservations.add(
+            new Reservation(vehicleId, vehicleType, ownerEmail, reservedByEmail,
+                startDate, endDate, price));
+      }
+    }
+    return reservations;
+  }
+
+  public ArrayList<Reservation> getByTypeAndId(int vehicleId, String vehicleType)
+      throws SQLException
+  {
+
+    ArrayList<Reservation> reservations = new ArrayList<>();
+
+    try (Connection connection = getConnection())
+    {
+      PreparedStatement statement = connection.prepareStatement(
+          "SELECT * FROM reservation where vehicleId = ? AND vehicleType = ?");
+      statement.setInt(1, vehicleId);
+      statement.setString(2, vehicleType);
+      ResultSet resultSet = statement.executeQuery();
+      while (resultSet.next())
+      {
+        String ownerEmail = resultSet.getString(
+            "ownerEmail"), reservedByEmail = resultSet.getString("reservedByEmail");
+        java.sql.Date date1 = resultSet.getDate("startDate");
+        LocalDate temp = date1.toLocalDate();
+        model.Date startDate = new model.Date(temp.getDayOfMonth(), temp.getMonthValue(),
+            temp.getYear());
+        java.sql.Date date2 = resultSet.getDate("endDate");
+        temp = date2.toLocalDate();
+        model.Date endDate = new model.Date(temp.getDayOfMonth(), temp.getMonthValue(),
+            temp.getYear());
         double price = resultSet.getDouble("price");
 
         reservations.add(
@@ -206,11 +246,13 @@ public class ReservationPostgresDao implements ReservationDao
             "reservedByEmail");
         int vehicleId = resultSet.getInt("vehicleId");
         java.sql.Date date1 = resultSet.getDate("startDate");
-        model.Date startDate = new model.Date(date1.getYear(), date1.getMonth(),
-            date1.getDay());
+        LocalDate temp = date1.toLocalDate();
+        model.Date startDate = new model.Date(temp.getDayOfMonth(), temp.getMonthValue(),
+            temp.getYear());
         java.sql.Date date2 = resultSet.getDate("endDate");
-        model.Date endDate = new model.Date(date2.getYear(), date2.getMonth(),
-            date2.getDay());
+        temp = date2.toLocalDate();
+        model.Date endDate = new model.Date(temp.getDayOfMonth(), temp.getMonthValue(),
+            temp.getYear());
         double price = resultSet.getDouble("price");
 
         reservations.add(

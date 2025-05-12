@@ -1,0 +1,26 @@
+.root
+{
+  -fx-background-color : #ffffff;
+}
+
+.text-field
+{
+  -fx-background-color : #ffffff;
+  -fx-border-radius : 0px;
+  -fx-background-radius : 0px;
+  -fx-border-color : black;
+  -fx-border-width : 0.5px;
+  -fx-border-style : solid;
+}
+
+.button
+{
+  -fx-border-radius : 0px;
+  -fx-background-radius : 0px;
+  -fx-background-color : #912F40;
+}
+
+.button:hover
+{
+  -fx-background-color : #702632;
+}

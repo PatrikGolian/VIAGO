@@ -11,6 +11,7 @@ import utils.StringUtils;
 
 public class AddNewVM
 {
+  private final StringProperty profileTextRedirectProp = new SimpleStringProperty();
   private final StringProperty typeProp = new SimpleStringProperty();
   private final IntegerProperty idProp = new SimpleIntegerProperty();
   private final StringProperty brandProp = new SimpleStringProperty();
@@ -251,6 +252,11 @@ public class AddNewVM
     return bikeTypeFieldVisibility;
   }
 
+  public StringProperty profileTextRedirectProperty()
+  {
+    return profileTextRedirectProp;
+  }
+
   public StringProperty messageProperty()
   {
     return messageProp;
@@ -259,6 +265,13 @@ public class AddNewVM
   public BooleanProperty enableAddButtonProperty()
   {
     return disableAddButtonProp;
+  }
+
+  public void setProfileInitials()
+  {
+    String firstname = AppState.getCurrentUser().firstName();
+    String lastname = AppState.getCurrentUser().lastName();
+    profileTextRedirectProp.set("" + firstname.charAt(0) + lastname.charAt(0));
   }
 
   private void updateAddButtonState(Observable observable)

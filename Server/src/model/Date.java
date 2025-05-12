@@ -67,7 +67,7 @@ public class Date implements Serializable
     this.minute = minute;
   }
 
-  private LocalDate toLocalDate()
+  public LocalDate toLocalDate()
   {
     return LocalDate.of(year, month, day);
   }
@@ -414,9 +414,9 @@ public class Date implements Serializable
       return false;
     }
     Date other = (Date) obj;
-    return this.day == other.day && this.month == other.month
-        && this.year == other.month && this.hour == other.hour
-        && this.minute == other.minute;
+    return this.day == other.day &&
+        this.month == other.month &&
+        this.year == other.year;
   }
 
   /**

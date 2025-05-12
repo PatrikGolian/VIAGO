@@ -1,4 +1,4 @@
-package services.vehicle;
+/*package services.vehicle;
 
 import model.entities.vehicles.Bike;
 import model.entities.vehicles.EBike;
@@ -57,5 +57,123 @@ class VehicleServiceImplTest
     {
       fail("Exception occurred: " + e.getMessage());
     }
+  }
+}*/
+
+package services.vehicle;
+
+import dtos.vehicle.AddNewBikeRequest;
+import dtos.vehicle.AddNewEBikeRequest;
+import dtos.vehicle.AddNewScooterRequest;
+import model.entities.vehicles.Bike;
+import model.entities.vehicles.EBike;
+import model.entities.vehicles.Scooter;
+import model.exceptions.ValidationException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import persistence.vehicle.VehicleDao;
+
+import java.sql.SQLException;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+class VehicleServiceImplTest {
+
+  private VehicleDao mockDao;
+  private VehicleServiceImpl service;
+
+  @BeforeEach
+  void setUp() {
+    mockDao = mock(VehicleDao.class);
+    service = new VehicleServiceImpl(mockDao);
+  }
+
+  @Test
+  void addNewBike_validRequest_callsDaoAddWithBike() throws SQLException {
+    var req = new AddNewBikeRequest(
+         1,
+         "bike",
+         "BrandCo",
+         "X100",
+         "good",
+         "Blue",
+         15.0,
+         "Mountain",
+         "owner@example.com",
+         "Available"
+    );
+
+    service.addNew(req);
+
+    // verify that we handed off a Bike instance to the DAO
+    verify(mockDao, times(1)).add(any(Bike.class));
+  }
+
+  @Test
+  void addNewEBike_validRequest_callsDaoAddWithEBike() throws SQLException {
+    var req = new AddNewEBikeRequest(
+        2,
+        "e-bike",
+        "eBrand",
+        "E200",
+        "new",
+        "Green",
+        25.5,
+        30,
+        80,
+        "mountain",
+        "ebike-owner@example.com",
+        "Available"
+    );
+
+    service.addNew(req);
+
+    verify(mockDao, times(1)).add(any(EBike.class));
+  }
+
+  @Test
+  void addNewScooter_validRequest_callsDaoAddWithScooter() throws SQLException {
+    var req = new AddNewScooterRequest(
+        3,
+        "scooter",
+        "ScootCo",
+        "S300",
+        "used",
+        "Red",
+        12.0,
+        20,
+        50,
+        "scooter-owner@example.com",
+        "Available"
+    );
+
+    service.addNew(req);
+
+    verify(mockDao, times(1)).add(any(Scooter.class));
+  }
+
+  @Test
+  void addNewBike_invalidBrand_throwsValidationException() {
+    // brand contains digits ----> invalid
+    var req = new AddNewBikeRequest(
+        4,
+        "bike",
+        "Brand123",
+        "ModelX",
+        "good",
+        "Black",
+        10.0,
+        "Road",
+        "owner@example.com",
+        "Available"
+    );
+
+    ValidationException ex = assertThrows(ValidationException.class, () -> {
+      service.addNew(req);
+    });
+    assertTrue(ex.getMessage().contains("Brand can contain only letters"));
+    verifyNoInteractions(mockDao);
   }
 }
