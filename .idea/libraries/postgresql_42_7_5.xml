@@ -2,8 +2,11 @@
   <library name="postgresql-42.7.5">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/../../postgresql-42.7.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../XmlJsonParser-1.4 (2).jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../XmlJsonParser-1.4 (2).jar!/" />
+    </SOURCES>
   </library>
 </component>

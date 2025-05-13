@@ -1,4 +1,4 @@
-package ui.viewusers;
+package ui.adminaccount;
 
 import dtos.user.ViewUsers;
 import javafx.beans.property.BooleanProperty;

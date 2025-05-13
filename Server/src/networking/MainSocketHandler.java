@@ -103,6 +103,7 @@ public class MainSocketHandler implements Runnable
     logger.log("Incoming request: " + request.handler() + "/" + request.action()
         + ". Body: " + request.payload(), LogLevel.INFO);
 
+    logger.log("Handler requested: "+request.handler()+"/"+request.action(), LogLevel.INFO);
     RequestHandler handler = switch (request.handler())
     {
       case "auth" -> serviceProvider.getAuthenticationRequestHandler();
@@ -110,8 +111,19 @@ public class MainSocketHandler implements Runnable
       case "addVehicle" -> serviceProvider.getAddNewVehicleRequestHandler();
       case "reservation" -> serviceProvider.getReservationRequestHandler();
       case "student" -> serviceProvider.getStudentAccountRequestHandler();
-      default -> throw new IllegalStateException(
-          "Unexpected value: " + request.handler());
+      case "yourVehicles" -> serviceProvider.getMyVehiclesRequestHandler();
+      default -> {
+        String msg = String.format(
+            "❌ Unknown action '%s' for handler %s; payload was: %s",
+            request.action(),
+            this.getClass().getSimpleName(),
+            request.payload());
+        // print to stderr (or use your logger)
+        System.err.println(msg);
+        // Optionally dump a stack trace here to see the call path:
+        new Exception("Stack trace for unknown action").printStackTrace();
+        throw new IllegalStateException(
+          "Unexpected value: " + request.handler());}
     };
 
     Object result = handler.handle(request.action(), request.payload());

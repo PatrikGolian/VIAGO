@@ -142,7 +142,7 @@ public class VehiclePostgresDao implements VehicleDao
 
   @Override public ArrayList<Vehicle> getByType(String type) throws SQLException
   {
-    ArrayList<Vehicle> vehicles = null;
+    ArrayList<Vehicle> vehicles = new ArrayList<>();
     try (Connection connection = getConnection())
     {
       switch (type)
@@ -166,7 +166,7 @@ public class VehiclePostgresDao implements VehicleDao
   @Override public ArrayList<Vehicle> getByState(String state)
       throws SQLException
   {
-    ArrayList<Vehicle> vehicles = null;
+    ArrayList<Vehicle> vehicles = new ArrayList<>();
     try (Connection connection = getConnection())
     {
       //for bike
@@ -241,12 +241,12 @@ public class VehiclePostgresDao implements VehicleDao
   @Override public ArrayList<Vehicle> getByOwnerEmail(String ownerEmail)
     throws SQLException
 {
-  ArrayList<Vehicle> vehicles = null;
+  ArrayList<Vehicle> vehicles = new ArrayList<>();
   try (Connection connection = getConnection())
   {
     //for bike
     PreparedStatement statement = connection.prepareStatement(
-        "SELECT* FROM bike where ownerEmail = ?");
+        "SELECT * FROM bike where ownerEmail = ?");
     statement.setString(1, ownerEmail);
     ResultSet resultSet = statement.executeQuery();
     while (resultSet.next())
@@ -267,7 +267,7 @@ public class VehiclePostgresDao implements VehicleDao
     }
     //for eBike
     statement = connection.prepareStatement(
-        "SELECT* FROM eBike where ownerEmail = ?");
+        "SELECT * FROM eBike where ownerEmail = ?");
     statement.setString(1, ownerEmail);
     resultSet = statement.executeQuery();
     while (resultSet.next())
@@ -290,7 +290,7 @@ public class VehiclePostgresDao implements VehicleDao
     }
     //for Scooter
     statement = connection.prepareStatement(
-        "SELECT* FROM scooter where ownerEmail = ?");
+        "SELECT * FROM scooter where ownerEmail = ?");
     statement.setString(1, ownerEmail);
     resultSet = statement.executeQuery();
     while (resultSet.next())

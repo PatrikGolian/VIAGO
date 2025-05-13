@@ -1,6 +1,7 @@
 package networking.studentaccount;
 
 import dtos.reservation.ReservationDto;
+import dtos.reservation.ReservationRequest;
 import dtos.reservation.ReservationReserveRequest;
 import dtos.studentAuth.ChangeUserRequest;
 import dtos.studentAuth.GetPasswordRequest;
@@ -13,4 +14,5 @@ public interface StudentAccountClient
   List<ReservationDto> getReservations(ReservationReserveRequest request);
   void changeUser(ChangeUserRequest request);
   String getPassword(GetPasswordRequest request);
+  void delete(ReservationRequest request);
 }

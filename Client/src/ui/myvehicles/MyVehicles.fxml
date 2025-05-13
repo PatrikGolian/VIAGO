@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Rectangle?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.myvehicles.MyVehiclesController">
+   <children>
+      <TableView fx:id="vehiclesTable" layoutY="81.0" prefHeight="200.0" prefWidth="523.0">
+        <columns>
+          <TableColumn fx:id="typeColumn" prefWidth="75.0" text="Type" />
+          <TableColumn fx:id="brandColumn" prefWidth="75.0" text="Brand" />
+            <TableColumn fx:id="modelColumn" prefWidth="75.0" text="Model" />
+            <TableColumn fx:id="priceColumn" prefWidth="75.0" text="PPD" />
+            <TableColumn fx:id="conditionColumn" prefWidth="75.0" text="Condition" />
+            <TableColumn fx:id="colorColumn" prefWidth="75.0" text="Color" />
+            <TableColumn fx:id="stateColumn" prefWidth="75.0" text="State" />
+        </columns>
+      </TableView>
+      <Button fx:id="addButton" layoutX="348.0" layoutY="23.0" mnemonicParsing="false" text="Add New" />
+      <TextField fx:id="speedField" layoutX="199.0" layoutY="289.0" />
+      <TextField fx:id="rangeField" layoutX="199.0" layoutY="327.0" />
+      <TextField fx:id="bikeTypeField" layoutX="199.0" layoutY="360.0" />
+      <Label fx:id="speedLabel" layoutX="65.0" layoutY="293.0" text="Speed:" />
+      <Label fx:id="rangeLabel" layoutX="65.0" layoutY="331.0" text="Range:" />
+      <Label fx:id="bikeTypeLabel" layoutX="65.0" layoutY="364.0" text="Bike type:" />
+      <StackPane layoutX="523.0" layoutY="14.0" prefHeight="67.0" prefWidth="65.0">
+         <children>
+            <Rectangle fx:id="profileShapeRedirect" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="59.0" stroke="BLACK" strokeType="INSIDE" width="47.0">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Rectangle>
+            <Label fx:id="profileTextRedirect" text="Label">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Label>
+         </children>
+      </StackPane>
+   </children>
+</AnchorPane>

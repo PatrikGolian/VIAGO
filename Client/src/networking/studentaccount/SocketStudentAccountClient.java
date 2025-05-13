@@ -3,6 +3,7 @@ package networking.studentaccount;
 import dtos.Request;
 import dtos.auth.RegisterUserRequest;
 import dtos.reservation.ReservationDto;
+import dtos.reservation.ReservationRequest;
 import dtos.reservation.ReservationReserveRequest;
 import dtos.studentAuth.ChangeUserRequest;
 import dtos.studentAuth.GetPasswordRequest;
@@ -27,6 +28,12 @@ public class SocketStudentAccountClient implements StudentAccountClient
     Request request = new Request("student","getPassword", email);
 
     return (String) SocketService.sendRequest(request);
+  }
+
+  @Override public void delete(ReservationRequest payload)
+  {
+    Request request = new Request("student","delete",payload);
+    SocketService.sendRequest(request);
   }
 
   @Override

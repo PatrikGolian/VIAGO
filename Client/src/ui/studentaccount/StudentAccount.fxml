@@ -1,127 +1,160 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="520.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.studentaccount.StudentAccountController">
+<AnchorPane prefHeight="673.0" prefWidth="752.0" stylesheets="@../../resources/studentAccountCSS/studentAccountStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.studentaccount.StudentAccountController">
    <children>
-      <VBox layoutX="14.0" layoutY="154.0" prefHeight="347.0" prefWidth="282.0">
-         <children>
-            <Label prefHeight="27.0" prefWidth="82.0" text="Welcome,">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
-            <Label fx:id="nameLabel" prefHeight="27.0" prefWidth="205.0" text="Name">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
-            <Label fx:id="emailLabel" prefHeight="27.0" prefWidth="185.0" text="Email">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
-            <Button fx:id="editButton" mnemonicParsing="false" onAction="#onEditButton" text="Edit">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <VBox.margin>
-                  <Insets top="10.0" />
-               </VBox.margin>
-            </Button>
-            <HBox prefHeight="138.0" prefWidth="274.0">
-               <children>
-                  <VBox prefHeight="138.0" prefWidth="128.0" spacing="2.0">
-                     <children>
-                        <Label fx:id="firstLabel" prefHeight="25.0" prefWidth="99.0" text="First name:">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="lastLabel" prefHeight="25.0" prefWidth="99.0" text="Last name:">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="oldLabel" prefHeight="25.0" prefWidth="131.0" text="Old password:">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="newLabel" prefHeight="25.0" prefWidth="131.0" text="New password:">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="confirmLabel" prefHeight="25.0" prefWidth="158.0" text="Confirm password:">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Label>
-                     </children>
-                  </VBox>
-                  <VBox prefHeight="138.0" prefWidth="150.0" spacing="2.0">
-                     <children>
-                        <TextField fx:id="firstNameField" prefHeight="25.0" />
-                        <TextField fx:id="lastNameField" prefHeight="25.0" />
-                        <TextField fx:id="oldPasswordField" prefHeight="25.0" promptText="Enter old password" />
-                        <TextField fx:id="newPasswordField" prefHeight="25.0" promptText="Enter new password" />
-                        <TextField fx:id="confirmPasswordField" prefHeight="25.0" promptText="Confirm new password" />
-                     </children>
-                  </VBox>
-               </children>
-            </HBox>
-            <Label fx:id="messageLabel" prefHeight="18.0" prefWidth="285.0" textFill="#dc0606">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <Button fx:id="confirmButton" mnemonicParsing="false" onAction="#onConfirmButton" text="Confirm">
-               <VBox.margin>
-                  <Insets top="10.0" />
-               </VBox.margin>
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Button>
-         </children>
-      </VBox>
-      <TableView fx:id="reservationTable" layoutX="322.0" layoutY="150.0" prefHeight="273.0" prefWidth="396.0">
-        <columns>
-            <TableColumn fx:id="typeColumn" prefWidth="96.0" text="Vehicle Type" />
-          <TableColumn fx:id="startDateColumn" prefWidth="81.5999755859375" text="Start Date" />
-          <TableColumn fx:id="endDateColumn" prefWidth="72.800048828125" text="End Date" />
-            <TableColumn fx:id="priceColumn" prefWidth="53.60003662109375" text="Price" />
-            <TableColumn fx:id="ownerEmail" prefWidth="91.20001220703125" text="Owner email" />
-        </columns>
+      <TableView fx:id="reservationTable" layoutX="294.0" layoutY="150.0" prefHeight="458.0" prefWidth="449.0">
+         <columns>
+            <TableColumn fx:id="typeColumn" editable="false" prefWidth="84.79998779296875" text="Vehicle Type" />
+            <TableColumn fx:id="startDateColumn" editable="false" prefWidth="91.199951171875" text="Start Date" />
+            <TableColumn fx:id="endDateColumn" editable="false" prefWidth="76.00006103515625" text="End Date" />
+            <TableColumn fx:id="priceColumn" editable="false" prefWidth="53.60003662109375" text="Price" />
+            <TableColumn fx:id="ownerEmail" editable="false" prefWidth="143.20003662109377" text="Owner email" />
+         </columns>
       </TableView>
-      <Button fx:id="deleteButton" layoutX="642.0" layoutY="441.0" mnemonicParsing="false" text="Delete">
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e0e0e0" height="601.0" layoutX="-5.0" layoutY="75.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="286.0" />
+      <Button fx:id="deleteButton" layoutX="294.0" layoutY="641.0" mnemonicParsing="false" onAction="#onDeleteReservation" prefHeight="30.0" prefWidth="450.0" text="DELETE" textFill="WHITE">
          <font>
-            <Font size="16.0" />
+            <Font size="14.0" />
          </font>
       </Button>
-      <Label layoutX="322.0" layoutY="115.0" prefHeight="27.0" prefWidth="143.0" text="My Reservations:">
+      <Label layoutX="454.0" layoutY="114.0" prefHeight="27.0" prefWidth="131.0" text="My Reservations">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="rentRedirect" layoutX="322.0" layoutY="31.0" onMouseClicked="#onRentRedirect" text="Rent Vehicle">
+      <Label fx:id="rentRedirect" layoutX="214.0" layoutY="21.0" onMouseClicked="#onRentRedirect" text="RENT VEHICLE">
          <font>
-            <Font size="28.0" />
+            <Font name="System Bold" size="24.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Label>
+      <Label fx:id="myVehiclesRedirect" layoutX="394.0" layoutY="21.0" onMouseClicked="#onMyVehiclesRedirect" text="MY VEHICLES">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Label>
+      <Line endX="649.0000610351562" layoutX="101.0" layoutY="74.0" startX="-100.0" stroke="#912f40" strokeWidth="3.0" />
+      <ImageView fitHeight="72.0" fitWidth="119.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../resources/logo.png" />
+         </image>
+      </ImageView>
+      <StackPane layoutX="686.0" layoutY="6.0" prefHeight="60.0" prefWidth="60.0">
+         <children>
+            <Rectangle fx:id="profileShapeRedirect" arcHeight="5.0" arcWidth="5.0" fill="#912f40" height="60.0" onMouseClicked="#onProfileRedirect" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="60.0">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Rectangle>
+            <Label fx:id="profileTextRedirect" onMouseClicked="#onProfileRedirect" text="MR" textFill="#e0e0e0">
+               <font>
+                  <Font name="System Bold" size="25.0" />
+               </font>
+            </Label>
+         </children>
+      </StackPane>
+      <TextField fx:id="confirmPasswordField" layoutX="82.0" layoutY="607.0" prefHeight="26.0" prefWidth="186.0" promptText="Confirm new password" />
+      <TextField fx:id="newPasswordField" layoutX="113.0" layoutY="574.0" prefHeight="26.0" prefWidth="156.0" promptText="Enter new password" />
+      <TextField fx:id="oldPasswordField" layoutX="106.0" layoutY="541.0" prefHeight="26.0" prefWidth="163.0" promptText="Enter old password" />
+      <TextField fx:id="lastNameField" layoutX="90.0" layoutY="482.0" prefHeight="26.0" prefWidth="182.0" />
+      <TextField fx:id="firstNameField" layoutX="90.0" layoutY="451.0" prefHeight="26.0" prefWidth="182.0" />
+      <Label fx:id="firstLabel" layoutX="12.0" layoutY="451.0" prefHeight="26.0" prefWidth="78.0" text="First name">
+         <font>
+            <Font size="15.0" />
          </font>
       </Label>
-      <Label fx:id="myVehiclesRedirect" layoutX="494.0" layoutY="31.0" onMouseClicked="#onMyVehiclesRedirect" text="My Vehicles">
+      <Label fx:id="lastLabel" layoutX="12.0" layoutY="482.0" prefHeight="25.0" prefWidth="99.0" text="Last name">
          <font>
-            <Font size="28.0" />
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <Label fx:id="oldLabel" layoutX="12.0" layoutY="541.0" prefHeight="25.0" prefWidth="131.0" text="Old password">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <Label fx:id="newLabel" layoutX="12.0" layoutY="574.0" prefHeight="25.0" prefWidth="131.0" text="New password">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <Label fx:id="confirmLabel" layoutX="11.0" layoutY="608.0" prefHeight="25.0" prefWidth="158.0" text="Confirm it">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <Button fx:id="confirmButton" layoutX="9.0" layoutY="641.0" mnemonicParsing="false" onAction="#onConfirmButton" prefHeight="30.0" prefWidth="258.0" text="CONFIRM" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="editButton" layoutX="12.0" layoutY="387.0" mnemonicParsing="false" onAction="#onEditButton" prefHeight="30.0" prefWidth="258.0" text="EDIT" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Label fx:id="emailLabel" layoutX="13.0" layoutY="362.0" prefHeight="20.0" prefWidth="257.0" text="email" textFill="#912f40">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="nameLabel" layoutX="112.0" layoutY="336.0" prefHeight="27.0" prefWidth="163.0" text="Name" textFill="#702632">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="16.0" layoutY="336.0" prefHeight="27.0" prefWidth="99.0" text="WELCOME, " textFill="#702632">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="messageLabel" alignment="CENTER" layoutX="294.0" layoutY="616.0" prefHeight="20.0" prefWidth="450.0" textFill="#dc0606">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <StackPane layoutX="13.0" layoutY="84.0" prefHeight="217.0" prefWidth="222.0">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#912f40" height="244.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="257.0" />
+            <ImageView fitHeight="244.0" fitWidth="255.0" opacity="0.12" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../resources/studentAccountCSS/viaGOWireframeslogo-06.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="coverLabel" text="IN" textFill="#e0e0e0">
+               <font>
+                  <Font name="System Bold" size="110.0" />
+               </font>
+            </Label>
+         </children>
+      </StackPane>
+      <Label fx:id="changeNameLabel" layoutX="12.0" layoutY="426.0" text="Change name" textFill="#912f40">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label fx:id="changePasswordLabel" layoutX="13.0" layoutY="514.0" text="Change password" textFill="#912f40">
+         <font>
+            <Font name="System Bold" size="12.0" />
          </font>
       </Label>
    </children>

@@ -1,5 +1,6 @@
 package networking.requesthandlers;
 
+import dtos.reservation.ReservationRequest;
 import dtos.reservation.ReservationRequestByIdType;
 import dtos.reservation.ReservationReserveRequest;
 import dtos.studentAuth.ChangeUserRequest;
@@ -30,8 +31,17 @@ public class StudentAccountRequestHandler implements RequestHandler
       {
         return studentAccountService.getReservationsOverview((ReservationReserveRequest) payload);
       }
-      case "changeUser" -> studentAccountService.changeUser((ChangeUserRequest) payload);
-      case "getPassword" -> studentAccountService.getPassword((GetPasswordRequest) payload);
+      case "delete" -> {
+        studentAccountService.delete((ReservationRequest) payload);
+        return Boolean.TRUE;
+      }
+      case "changeUser" -> {
+        studentAccountService.changeUser((ChangeUserRequest) payload);
+        return Boolean.TRUE;
+      }
+      case "getPassword" -> {
+        return studentAccountService.getPassword((GetPasswordRequest) payload);
+      }
     }
     return null; // just a default return value. Some actions above may return stuff.
   }

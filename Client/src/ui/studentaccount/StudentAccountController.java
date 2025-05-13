@@ -3,14 +3,21 @@ package ui.studentaccount;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.shape.Rectangle;
 import model.Date;
 import startup.ViewHandler;
 import startup.ViewType;
 import ui.common.Controller;
+import ui.popup.MessageType;
 import ui.reservation.ReservationFx;
 
 public class StudentAccountController implements Controller
 {
+  @FXML Label changeNameLabel;
+  @FXML Label changePasswordLabel;
+  @FXML Label coverLabel;
+  @FXML Label profileTextRedirect;
+  @FXML Rectangle profileShapeRedirect;
   @FXML TextField firstNameField;
   @FXML TextField lastNameField;
   @FXML TextField oldPasswordField;
@@ -90,6 +97,10 @@ public class StudentAccountController implements Controller
         .bind(viewModel.confirmPasswordFieldVisibilityProperty());
     confirmLabel.visibleProperty()
         .bind(viewModel.confirmPasswordLabelVisibilityProperty());
+    changeNameLabel.visibleProperty()
+        .bind(viewModel.changeNameLabelVisibility());
+    changePasswordLabel.visibleProperty()
+        .bind(viewModel.changePasswordLabelVisibility());
 
     setFieldsAndLabels();
     reservationTable.setItems(viewModel.getReservationList());
@@ -106,6 +117,9 @@ public class StudentAccountController implements Controller
     ownerEmail.setCellValueFactory(
         new PropertyValueFactory<>("ownerEmailProp"));
 
+    profileTextRedirect.textProperty().bindBidirectional(viewModel.profileTextRedirectProperty());
+    coverLabel.textProperty().bindBidirectional(viewModel.coverLabelProperty());
+    viewModel.setProfileInitials();
     // Sets editable fields' visibility
     viewModel.setVisibility();
   }
@@ -114,7 +128,7 @@ public class StudentAccountController implements Controller
   {
     viewModel.toggleEditMode();
   }
-  public void onConfirmButton(){viewModel.ConfirmEdit();}
+  public void onConfirmButton(){viewModel.confirmEdit();}
 
   public void onRentRedirect()
   {
@@ -122,10 +136,28 @@ public class StudentAccountController implements Controller
   }
   public void onMyVehiclesRedirect()
   {
-    ViewHandler.showView(ViewType.WELCOME);
+    ViewHandler.showView(ViewType.ADDNEW);
   }
   public void onProfileRedirect()
   {
     ViewHandler.showView(ViewType.STUDENTACCOUNT);
+  }
+  public void onDeleteReservation()
+  {
+    ReservationFx selected = reservationTable.getSelectionModel().getSelectedItem();
+    if (selected != null)
+    {
+      viewModel.deleteReservation(selected);
+      clearTable();
+      viewModel.loadReservations();
+
+    }
+    else
+    {
+      ViewHandler.popupMessage(MessageType.WARNING, "Please select a reservation to delete.");
+    }
+  }
+  public void clearTable() {
+    reservationTable.getItems().clear();
   }
 }

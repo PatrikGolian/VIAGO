@@ -1,41 +1,32 @@
 package ui.studentaccount;
 
-import dtos.auth.RegisterUserRequest;
 import dtos.reservation.ReservationDto;
+import dtos.reservation.ReservationRequest;
 import dtos.reservation.ReservationReserveRequest;
 import dtos.studentAuth.ChangeUserRequest;
 import dtos.studentAuth.GetPasswordRequest;
-import dtos.user.ViewUsers;
-import dtos.vehicle.VehicleDisplayDto;
+import dtos.user.UserDataDto;
 import javafx.beans.property.*;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import networking.authentication.AuthenticationClient;
-import networking.authentication.SocketAuthenticationClient;
 import networking.studentaccount.StudentAccountClient;
 import startup.ViewHandler;
 import state.AppState;
 import ui.popup.MessageType;
-import ui.register.RegisterVM;
 import ui.reservation.ReservationFx;
-import ui.reservation.VehicleFx;
-import ui.viewusers.UserFx;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class StudentAccountVM
 {
   private final StudentAccountClient studentAccountService;
+  private final ObjectProperty<ReservationFx> selectedReservation = new SimpleObjectProperty<>();
   private final ObservableList<ReservationFx> reservations = FXCollections.observableArrayList();
 
-  public StudentAccountVM(StudentAccountClient studentAccountService)
-  {
-    this.studentAccountService = studentAccountService;
-    loadReservations();
-  }
-
   // Editable Fields
+  private final StringProperty profileTextRedirectProperty = new SimpleStringProperty();
+  private final StringProperty coverLabelProperty = new SimpleStringProperty();
   private final StringProperty firstNameProp = new SimpleStringProperty();
   private final StringProperty lastNameProp = new SimpleStringProperty();
   private final StringProperty oldPasswordProp = new SimpleStringProperty();
@@ -44,8 +35,11 @@ public class StudentAccountVM
   private final StringProperty emailProp = new SimpleStringProperty();
   private final StringProperty nameProp = new SimpleStringProperty();
   private final StringProperty messageProp = new SimpleStringProperty();
+  private final StringProperty messageProp2 = new SimpleStringProperty();
 
   // Visiblity bind
+  private final BooleanProperty changeNameLabelVisibility = new SimpleBooleanProperty();
+  private final BooleanProperty changePasswordLabelVisibility = new SimpleBooleanProperty();
   private final BooleanProperty firstNameFieldVisibility = new SimpleBooleanProperty();
   private final BooleanProperty lastNameFieldVisibility = new SimpleBooleanProperty();
   private final BooleanProperty oldPasswordFieldVisibility = new SimpleBooleanProperty();
@@ -59,8 +53,22 @@ public class StudentAccountVM
   private final BooleanProperty confirmPasswordLabelVisibility = new SimpleBooleanProperty();
   private final BooleanProperty messageLabelVisibility = new SimpleBooleanProperty();
 
+  private ObjectProperty<LocalDate> startDate = new SimpleObjectProperty<>();
+  private ObjectProperty<LocalDate> endDate = new SimpleObjectProperty<>();
+
+
+  public StudentAccountVM(StudentAccountClient studentAccountService)
+  {
+    this.studentAccountService = studentAccountService;
+    loadReservations();
+  }
+
+
+
   public void resetInfo()
   {
+    AppState.setCurrentUser(AppState.getCurrentUser());
+
     String firstName = AppState.getCurrentUser().firstName();
     String lastName = AppState.getCurrentUser().lastName();
 
@@ -89,6 +97,66 @@ public class StudentAccountVM
         ViewHandler.popupMessage(MessageType.ERROR, e.getMessage());
       }
   }
+  public void deleteReservation(ReservationFx reservationFx)
+  {
+    if (reservationFx == null) {
+      return;
+    }
+
+    try
+    {
+      int id = reservationFx.idPropProperty().get();
+      String type = reservationFx.typePropProperty().get();
+      String startDateStr = reservationFx.startDatePropProperty().get();
+      String endDateStr = reservationFx.endDatePropProperty().get();
+      double price = reservationFx.pricePropProperty().get();
+      String ownerEmail = reservationFx.ownerEmailPropProperty().get();
+      String reservedByEmail = reservationFx.getReservedByProp().get();
+
+      // Parse start date
+      String[] startParts = startDateStr.split("/");
+      int startDay = Integer.parseInt(startParts[0]);
+      int startMonth = Integer.parseInt(startParts[1]);
+      int startYear = Integer.parseInt(startParts[2]);
+      model.Date start = new model.Date(startDay, startMonth, startYear);
+
+      // Parse end date
+      String[] endParts = endDateStr.split("/");
+      int endDay = Integer.parseInt(endParts[0]);
+      int endMonth = Integer.parseInt(endParts[1]);
+      int endYear = Integer.parseInt(endParts[2]);
+      model.Date end = new model.Date(endDay, endMonth, endYear);
+
+
+      LocalDate today = LocalDate.now();
+      LocalDate startLocal = LocalDate.of(startYear, startMonth, startDay);
+
+      if (!today.isBefore(startLocal)) {
+        messageProp.set("You cannot delete past or current reservations.");
+        return;
+      }
+
+      ReservationRequest request = new ReservationRequest(
+          id,
+          type,
+          ownerEmail,
+          reservedByEmail,
+          start,
+          end,
+          price
+      );
+
+
+      studentAccountService.delete(request);
+      messageProp.set("Success");
+    }
+    catch (Exception e)
+    {
+      messageProp.set("An error occurred while trying to delete the reservation.");
+      e.printStackTrace();
+    }
+  }
+
 
   public ObservableList<ReservationFx> getReservationList()
   {
@@ -111,6 +179,9 @@ public class StudentAccountVM
 
     newPasswordLabelVisibility.set(false);
     newPasswordFieldVisibility.set(false);
+
+    changeNameLabelVisibility.set(false);
+    changePasswordLabelVisibility.set(false);
   }
 
   public void toggleEditMode()
@@ -132,16 +203,103 @@ public class StudentAccountVM
 
     newPasswordLabelVisibility.set(newVisibility);
     newPasswordFieldVisibility.set(newVisibility);
+
+    changePasswordLabelVisibility.set(newVisibility);
+    changeNameLabelVisibility.set(newVisibility);
+
     messageLabelVisibility.set(newVisibility);
   }
 
-  public void ConfirmEdit()
+  public void confirmEdit()
   {
     validateInfo();
     resetInfo();
   }
 
-  private void validateInfo()
+  private void validateInfo() {
+    String first = firstNameProp.get().trim();
+    String last  = lastNameProp.get().trim();
+
+    // --- 1) Name validation (always) ---
+    if (first.isEmpty()) {
+      messageProp.set("First name cannot be empty");
+      return;
+    }
+    if (first.length() < 2 || !first.matches("[a-zA-Z ]+")) {
+      messageProp.set("First name must be at least 2 letters and only letters");
+      return;
+    }
+    if (last.isEmpty()) {
+      messageProp.set("Last name cannot be empty");
+      return;
+    }
+    if (last.length() < 2 || !last.matches("[a-zA-Z ]+")) {
+      messageProp.set("Last name must be at least 2 letters and only letters");
+      return;
+    }
+
+    // --- 2) Password branch (only if they filled in “newPassword”) ---
+    String finalPassword;
+    boolean wantsPasswordChange =
+        newPasswordProp.get() != null && !newPasswordProp.get().isBlank();
+
+    if (wantsPasswordChange) {
+      String oldPwd     = oldPasswordProp.get();
+      String newPwd     = newPasswordProp.get();
+      String confirmPwd = confirmPasswordProp.get();
+      // must supply old
+      if (oldPwd == null || oldPwd.isBlank()) {
+        messageProp.set("Please enter your old password to change it");
+        return;
+      }
+      // verify old matches what’s on the server
+      String oldPwds           = oldPasswordProp.get();
+      String currentOnServerU  = getOldPassword(new GetPasswordRequest(emailProp.get()));
+
+      System.out.println("⏱ Typed oldPwd    = [" + oldPwds + "]");
+      System.out.println("⏱ Server password= [" + currentOnServerU + "]");
+      String currentOnServer = getOldPassword(new GetPasswordRequest(emailProp.get()));
+      if (!oldPwd.equals(currentOnServer)) {
+        messageProp.set("Old password is not correct");
+        return;
+      }
+      // new/confirm must match
+      if (!newPwd.equals(confirmPwd)) {
+        messageProp.set("New passwords do not match");
+        return;
+      }
+      finalPassword = newPwd;
+    } else {
+      // no password change requested → keep the existing
+      finalPassword = getOldPassword(new GetPasswordRequest(emailProp.get()));
+    }
+
+    // --- 3) Send a single ChangeUserRequest with the name + finalPassword ---
+    try {
+      ChangeUserRequest req = new ChangeUserRequest(
+          first, last, emailProp.get(), finalPassword
+      );
+      changeUser(req);
+      ChangeUserRequest request = new ChangeUserRequest(first, last, emailProp.get(), finalPassword);
+      changeUser(request);
+
+      var oldDto = AppState.getCurrentUser();
+      var updatedDto = new UserDataDto(
+          oldDto.email(),
+          first,
+          last, oldDto.isBlacklisted(),
+          oldDto.isAdmin()
+      );
+      AppState.setCurrentUser(updatedDto);
+
+      resetInfo();
+      messageProp.set("Success!");
+    }
+    catch (Exception ex) {
+      messageProp.set("Update failed: " + ex.getMessage());
+    }
+  }
+  /*private void validateInfo()
   {
     if (oldPasswordProp.get().isEmpty()&&newPasswordProp.get().isEmpty()&&confirmPasswordProp.get().isEmpty())
     {
@@ -224,7 +382,7 @@ public class StudentAccountVM
         messageProp.set(e.getMessage());
       }
     }
-  }
+  }*/
 
   private String getOldPassword(GetPasswordRequest request)
   {
@@ -266,6 +424,7 @@ public class StudentAccountVM
   {
     return messageProp;
   }
+
 
   // Visibilty of editable fields
   public BooleanProperty firstNameFieldVisibilityProperty()
@@ -332,4 +491,34 @@ public class StudentAccountVM
   {
     return nameProp;
   }
+
+
+  public BooleanProperty changeNameLabelVisibility()
+  {
+    return  changeNameLabelVisibility;
+  }
+
+  public BooleanProperty changePasswordLabelVisibility()
+  {
+    return changePasswordLabelVisibility;
+  }
+
+  public StringProperty profileTextRedirectProperty()
+  {
+    return profileTextRedirectProperty;
+  }
+
+  public  StringProperty coverLabelProperty()
+  {
+    return coverLabelProperty;
+  }
+
+  public void setProfileInitials()
+  {
+    String firstname = AppState.getCurrentUser().firstName();
+    String lastname = AppState.getCurrentUser().lastName();
+    profileTextRedirectProperty.set("" + firstname.charAt(0) + lastname.charAt(0));
+    coverLabelProperty.set("" + firstname.charAt(0) + lastname.charAt(0));
+  }
+
 }

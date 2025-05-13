@@ -7,6 +7,8 @@ import networking.addnew.AddNewVehicleClient;
 import networking.addnew.SocketAddNewVehicleClient;
 import networking.authentication.AuthenticationClient;
 import networking.authentication.SocketAuthenticationClient;
+import networking.myvehicles.MyVehiclesClient;
+import networking.myvehicles.SocketMyVehiclesClient;
 import networking.reservation.ReservationClient;
 import networking.reservation.SocketReservationClient;
 import networking.studentaccount.SocketStudentAccountClient;
@@ -18,6 +20,8 @@ import ui.addnew.AddNewVM;
 import ui.common.Controller;
 import ui.login.LoginController;
 import ui.login.LoginVM;
+import ui.myvehicles.MyVehiclesController;
+import ui.myvehicles.MyVehiclesVM;
 import ui.popup.MessageType;
 import ui.popup.PopupController;
 import ui.register.RegisterController;
@@ -26,8 +30,8 @@ import ui.reservation.ReservationController;
 import ui.reservation.ReservationVM;
 import ui.studentaccount.StudentAccountController;
 import ui.studentaccount.StudentAccountVM;
-import ui.viewusers.ViewUsersController;
-import ui.viewusers.ViewUsersVM;
+import ui.adminaccount.ViewUsersController;
+import ui.adminaccount.ViewUsersVM;
 import ui.welcome.WelcomeController;
 
 import java.io.IOException;
@@ -60,6 +64,7 @@ public class ViewHandler
         case ADDNEW -> openAddNewView();
         case RESERVATION -> openReservationView();
         case STUDENTACCOUNT -> openStudentAccountView();
+        case MYVEHICLES -> openMyVehiclesView();
         default -> throw new RuntimeException("View not found.");
       }
     }
@@ -160,6 +165,16 @@ public class ViewHandler
     StudentAccountController controller = new StudentAccountController(vm);
     String viewTitle = "Student Account";
     String viewSubPath = "studentaccount/StudentAccount.fxml";
+    openView(viewTitle, viewSubPath, controller);
+  }
+
+  private static void openMyVehiclesView() throws IOException
+  {
+    MyVehiclesClient myVehiclesClient = new SocketMyVehiclesClient();
+    MyVehiclesVM vm = new MyVehiclesVM(myVehiclesClient);
+    MyVehiclesController controller = new MyVehiclesController(vm);
+    String viewTitle = "My Vehicles";
+    String viewSubPath = "myvehicles/MyVehicles.fxml";
     openView(viewTitle, viewSubPath, controller);
   }
 

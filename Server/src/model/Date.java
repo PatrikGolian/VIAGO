@@ -426,7 +426,7 @@ public class Date implements Serializable
    */
   public String toString()
   {
-    return month + "/" + day + "/" + year + " -- " + hour + ":" + minute;
+    return day + "/" + month + "/" + year;
   }
 
 }

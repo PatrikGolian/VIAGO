@@ -86,3 +86,21 @@
   -fx-background-position: center center;
   -fx-background-size : 12px 12px;
 }
+
+.date-picker .day-cell.selected
+{
+  -fx-background-color : #702632;
+  -fx-text-fill : white;
+}
+
+.date-picker .day-cell.reserved-day {
+  -fx-background-color: #912F40;
+  -fx-text-fill: #ffffff;
+  -fx-opacity: 1;
+}
+
+.date-picker .day-cell.past-day {
+  -fx-background-color: #D3D3D3;
+  -fx-text-fill: #777777;
+  -fx-opacity: 1;
+}

@@ -1,6 +1,7 @@
 package services.studentaccount;
 
 import dtos.reservation.ReservationDto;
+import dtos.reservation.ReservationRequest;
 import dtos.reservation.ReservationReserveRequest;
 import dtos.studentAuth.ChangeUserRequest;
 import dtos.studentAuth.GetPasswordRequest;
@@ -11,6 +12,7 @@ import persistence.reservation.ReservationDao;
 import persistence.user.UserDao;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,18 +51,21 @@ public class StudentAccountServiceImpl implements StudentAccountService
   @Override public void changeUser(ChangeUserRequest request)
       throws SQLException
   {
-    User existingUser = userDao.getSingle(request.email());
-    if (existingUser == null)
+    User user = userDao.getSingle(request.email());
+
+    if(user == null)
     {
-      throw new ValidationException("User Not found!");
+      throw new ValidationException("User not found");
     }
 
-    User newUser = new User(
+    userDao.updateName(request.email(),request.firstName(), request.lastName());
 
-        request.email(), request.password(), request.firstName(),
-        request.lastName());
+    String newPassword = request.password();
 
-    userDao.change(newUser);
+    if(newPassword != null && !newPassword.isBlank() && !newPassword.equals(user.getPassword()))
+    {
+      userDao.updatePassword(request.email(), newPassword);
+    }
   }
 
   @Override public String getPassword(GetPasswordRequest request)
@@ -68,5 +73,33 @@ public class StudentAccountServiceImpl implements StudentAccountService
   {
     User user = userDao.getSingle(request.email());
     return user.getPassword();
+  }
+
+  @Override public void delete(ReservationRequest request)
+  {
+    LocalDate today = LocalDate.now();
+    LocalDate start = LocalDate.of(request.startDate().getYear(),
+        request.startDate().getMonth(), request.startDate().getDay());
+
+    if (today.isBefore(start))
+    {
+      try
+      {
+        Reservation reservation = new Reservation(request.vehicleId(),
+            request.vehicleType(), request.ownerEmail(),
+            request.reservedByEmail(), request.startDate(), request.endDate(),
+            request.price());
+        reservationDao.delete(reservation);
+      }
+      catch (SQLException e)
+      {
+        throw new RuntimeException(e);
+      }
+    }
+    else if (!today.isBefore(start))
+    {
+      throw new IllegalArgumentException(
+          "You cannot delete past or current reservations.");
+    }
   }
 }

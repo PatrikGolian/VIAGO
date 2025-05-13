@@ -46,7 +46,6 @@ public class ReservationVM
   private final BooleanProperty reservationSuccess = new SimpleBooleanProperty(false);
 
   // Additional info
-  private final StringProperty reservedEmailProp = new SimpleStringProperty();
   private final IntegerProperty idProp = new SimpleIntegerProperty();
 
   // Search query
@@ -285,10 +284,6 @@ public class ReservationVM
     return rangeProp;
   }
 
-  public ObjectProperty<LocalDate> reservationDateProperty()
-  {
-    return reservationDateProp;
-  }
 
   public StringProperty finalPriceProperty()
   {
@@ -447,24 +442,6 @@ public class ReservationVM
     return reservations;
   }
 
-  public void refreshVehicleTable() {
-    try
-    {
-      List<VehicleDisplayDto> updatedVehicles = reservationService.getVehicles(); // or getVehiclesOverview()
-      ObservableList<VehicleFx> updatedFxList = FXCollections.observableArrayList();
-
-      for (VehicleDisplayDto dto : updatedVehicles)
-      {
-        updatedFxList.add(
-            new VehicleFx(dto)); // assuming you have a VehicleFx constructor
-      }
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      ViewHandler.popupMessage(MessageType.ERROR, e.getMessage());
-    }
-  }
   public void update()
   {
     reservationService.updateVehicleState();

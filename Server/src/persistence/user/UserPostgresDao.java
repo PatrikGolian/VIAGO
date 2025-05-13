@@ -74,16 +74,29 @@ public class UserPostgresDao implements UserDao
 
   }
 
-  @Override public void change(User user) throws SQLException
-  {
-    User temp = getSingle(user.getEmail());
+  @Override
+  public void updateName(String email, String firstName, String lastName) throws SQLException {
+    try (Connection conn = getConnection();
+        PreparedStatement ps = conn.prepareStatement(
+            "UPDATE account SET firstname = ?, lastname = ? WHERE email = ?"
+        )) {
+      ps.setString(1, firstName);
+      ps.setString(2, lastName);
+      ps.setString(3, email);
+      ps.executeUpdate();
+    }
+  }
 
-    changeUser(
-        user.getEmail(), user.getPassword(), user.getFirstName(),
-        user.getLastName(), temp.isAdmin(), temp.isBlacklisted(),
-        temp.getBlacklistReason()
-    );
-
+  @Override
+  public void updatePassword(String email, String newPassword) throws SQLException {
+    try (Connection conn = getConnection();
+        PreparedStatement ps = conn.prepareStatement(
+            "UPDATE account SET password = ? WHERE email = ?"
+        )) {
+      ps.setString(1, newPassword);
+      ps.setString(2, email);
+      ps.executeUpdate();
+    }
   }
 
   @Override public void add(User user) throws SQLException
@@ -93,12 +106,12 @@ public class UserPostgresDao implements UserDao
         user.getBlacklistReason());
   }
 
-  @Override public User getSingle(String email) throws SQLException
+  /*@Override public User getSingle(String email) throws SQLException
   {
     try (Connection connection = getConnection())
     {
       PreparedStatement statement = connection.prepareStatement(
-          "SELECT* FROM account WHERE email =?");
+          "SELECT * FROM account WHERE email =?");
       statement.setString(1, email);
       ResultSet resultSet = statement.executeQuery();
       if (resultSet.next())
@@ -118,7 +131,33 @@ public class UserPostgresDao implements UserDao
         return null;
       }
     }
+  }*/
+  @Override
+  public User getSingle(String email) throws SQLException {
+    System.out.println("[DAO] getSingle(): looking for email = " + email);
+    try (Connection connection = getConnection()) {
+      PreparedStatement statement = connection.prepareStatement(
+          "SELECT * FROM account WHERE email = ?");
+      statement.setString(1, email);
+
+      ResultSet resultSet = statement.executeQuery();
+      if (resultSet.next()) {
+        String pwd = resultSet.getString("password");
+        System.out.println("[DAO] getSingle(): found row, password column = [" + pwd + "]");
+        String firstName       = resultSet.getString("firstname");
+        String lastName        = resultSet.getString("lastname");
+        boolean isAdmin        = resultSet.getBoolean("isAdmin");
+        boolean isBlackListed  = resultSet.getBoolean("isBlackListed");
+        String blacklistReason = resultSet.getString("blackListReason");
+        return new User(email, pwd, firstName, lastName, isAdmin, isBlackListed, blacklistReason);
+      }
+      else {
+        System.out.println("[DAO] getSingle(): no row for email = " + email);
+        return null;
+      }
+    }
   }
+
 
   @Override public void delete(String email) throws SQLException
   {

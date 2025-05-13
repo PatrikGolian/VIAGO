@@ -7,6 +7,8 @@ import persistence.user.UserDao;
 import persistence.user.UserPostgresDao;
 import services.authentication.AuthServiceImpl;
 import services.authentication.AuthenticationService;
+import services.myvehicles.MyVehiclesService;
+import services.myvehicles.MyVehiclesServiceImpl;
 import services.reservation.ReservationService;
 import services.reservation.ReservationServiceImpl;
 import services.studentaccount.StudentAccountService;
@@ -57,6 +59,10 @@ public class ServiceProvider
   {
     return new StudentAccountRequestHandler(getStudentAccountService());
   }
+  public RequestHandler getMyVehiclesRequestHandler()
+  {
+    return new MyVehiclesRequestHandler(getMyVehiclesService());
+  }
 
   public Logger getLogger()
   {
@@ -70,6 +76,10 @@ public class ServiceProvider
   public static StudentAccountService getStudentAccountService()
   {
     return new StudentAccountServiceImpl(getReservationDao(), getUserDao());
+  }
+  private static MyVehiclesService getMyVehiclesService()
+  {
+    return new MyVehiclesServiceImpl(getVehicleDao());
   }
 
   private static UserService getUserService()

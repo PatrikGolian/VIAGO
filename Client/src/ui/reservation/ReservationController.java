@@ -273,7 +273,46 @@ public class ReservationController implements Controller
             viewModel.selectedVehicleProperty().get().typePropProperty().get());
         List<Reservation> reservations = viewModel.getReservationsByTypeAndId(
             request);
-        datePicker.setDayCellFactory(dp -> new DateCell()
+        datePicker.setDayCellFactory(dp -> new DateCell() {
+          @Override public void updateItem(LocalDate item, boolean empty) {
+            super.updateItem(item, empty);
+
+            getStyleClass().removeAll("reserved-day", "past-day");
+            setDisable(false);
+
+            if (empty || item == null) {
+              setText(null);
+              return;
+            }
+
+            if (item.isBefore(LocalDate.now())) {
+              setDisable(true);
+              getStyleClass().add("past-day");
+              return;
+            }
+
+            boolean isReserved = reservations.stream().anyMatch(res -> {
+              LocalDate start = LocalDate.of(
+                  res.getStartDate().getYear(),
+                  res.getStartDate().getMonth(),
+                  res.getStartDate().getDay());
+              LocalDate end = LocalDate.of(
+                  res.getEndDate().getYear(),
+                  res.getEndDate().getMonth(),
+                  res.getEndDate().getDay());
+              return    item.equals(start)
+                  || item.equals(end)
+                  || (item.isAfter(start) && item.isBefore(end));
+            });
+
+            if (isReserved) {
+              setDisable(true);
+              getStyleClass().add("reserved-day");
+            }
+          }
+        });
+
+        /*datePicker.setDayCellFactory(dp -> new DateCell()
         {
           @Override public void updateItem(LocalDate item, boolean empty)
           {
@@ -321,7 +360,7 @@ public class ReservationController implements Controller
             }
             super.updateItem(item, empty);
           }
-        });
+        });*/
 
         // Get the DatePicker's Skin to access its content
         DatePickerSkin skin = (DatePickerSkin) datePicker.getSkin();
@@ -437,7 +476,7 @@ public class ReservationController implements Controller
 
   public void onMyVehiclesRedirect()
   {
-    ViewHandler.showView(ViewType.WELCOME);
+    ViewHandler.showView(ViewType.MYVEHICLES);
   }
 
   public void onProfileRedirect()

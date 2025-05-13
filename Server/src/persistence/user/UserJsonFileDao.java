@@ -128,7 +128,12 @@ public class UserJsonFileDao implements UserDao
     }
   }
 
-  @Override public void change(User user) throws SQLException
+  @Override public void updateName(String email, String fname, String lname) throws SQLException
+  {
+
+  }
+
+  @Override public void updatePassword(String email, String password) throws SQLException
   {
 
   }
