@@ -7,6 +7,7 @@ import model.exceptions.ServerFailureException;
 import model.exceptions.ValidationException;
 import model.exceptions.NotFoundException;
 import networking.exceptions.InvalidActionException;
+import networking.readerswriters.ReadWrite;
 import networking.requesthandlers.RequestHandler;
 import startup.ServiceProvider;
 import utilities.logging.LogLevel;
@@ -22,12 +23,15 @@ public class MainSocketHandler implements Runnable
   private final Socket clientSocket;
   private final ServiceProvider serviceProvider;
   private final Logger logger;
+  private final ReadWrite sharedResource;
 
-  public MainSocketHandler(Socket clientSocket, ServiceProvider serviceProvider)
+  public MainSocketHandler(Socket clientSocket, ServiceProvider serviceProvider,
+      ReadWrite sharedResource)
   {
     this.clientSocket = clientSocket;
     this.serviceProvider = serviceProvider;
     logger = serviceProvider.getLogger();
+    this.sharedResource = sharedResource;
   }
 
   @Override public void run()
@@ -99,6 +103,7 @@ public class MainSocketHandler implements Runnable
       ObjectOutputStream outgoingData)
       throws IOException, ClassNotFoundException, SQLException
   {
+
     Request request = (Request) incomingData.readObject();
     logger.log("Incoming request: " + request.handler() + "/" + request.action()
         + ". Body: " + request.payload(), LogLevel.INFO);
@@ -106,7 +111,7 @@ public class MainSocketHandler implements Runnable
     logger.log("Handler requested: "+request.handler()+"/"+request.action(), LogLevel.INFO);
     RequestHandler handler = switch (request.handler())
     {
-      case "auth" -> serviceProvider.getAuthenticationRequestHandler();
+      case "auth" -> serviceProvider.getAuthenticationRequestHandler(sharedResource);
       case "users" -> serviceProvider.getUserRequestHandler();
       case "addVehicle" -> serviceProvider.getAddNewVehicleRequestHandler();
       case "reservation" -> serviceProvider.getReservationRequestHandler();

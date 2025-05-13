@@ -136,7 +136,7 @@ public class StudentAccountController implements Controller
   }
   public void onMyVehiclesRedirect()
   {
-    ViewHandler.showView(ViewType.ADDNEW);
+    ViewHandler.showView(ViewType.MYVEHICLES);
   }
   public void onProfileRedirect()
   {

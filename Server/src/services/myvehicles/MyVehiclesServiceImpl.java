@@ -27,7 +27,8 @@ public class MyVehiclesServiceImpl implements MyVehiclesService
   @Override public List<VehicleDisplayDto> getVehiclesOverview(
       VehicleOwnerRequest ownerEmail) throws SQLException
   {
-    List<Vehicle> vehicles = vehicleDao.getByOwnerEmail(ownerEmail.ownerEmail());
+    List<Vehicle> vehicles = vehicleDao.getByOwnerEmail(
+        ownerEmail.ownerEmail());
     List<VehicleDisplayDto> result = new ArrayList<>();
 
     for (Vehicle vehicle : vehicles)
@@ -67,8 +68,57 @@ public class MyVehiclesServiceImpl implements MyVehiclesService
     return result;
   }
 
-  @Override public void delete()
+  @Override public void delete(DeleteVehicleRequest request)
   {
-
+    {
+      try
+      {
+        if (request instanceof DeleteBikeRequest
+            && ((DeleteBikeRequest) request).state().equals("Available"))
+        {
+          DeleteBikeRequest bikeRequest = (DeleteBikeRequest) request;
+          Bike bike = new Bike(bikeRequest.id(), bikeRequest.type(),
+              bikeRequest.brand(), bikeRequest.model(), bikeRequest.condition(),
+              bikeRequest.color(), bikeRequest.pricePerDay(),
+              bikeRequest.bikeType(), bikeRequest.ownerEmail(),
+              bikeRequest.state());
+          vehicleDao.delete(bike);
+        }
+        else if (request instanceof DeleteEBikeRequest
+            && ((DeleteEBikeRequest) request).state().equals("Available"))
+        {
+          DeleteEBikeRequest ebikeRequest = (DeleteEBikeRequest) request;
+          EBike ebike = new EBike(ebikeRequest.id(), ebikeRequest.type(),
+              ebikeRequest.brand(), ebikeRequest.model(),
+              ebikeRequest.condition(), ebikeRequest.color(),
+              ebikeRequest.pricePerDay(), ebikeRequest.bikeType(),
+              ebikeRequest.maxSpeed(), ebikeRequest.oneChargeRange(),
+              ebikeRequest.ownerEmail(), ebikeRequest.state());
+          vehicleDao.delete(ebike);
+        }
+        else if (request instanceof DeleteScooterRequest
+            && ((DeleteScooterRequest) request).state().equals("Available"))
+        {
+          DeleteScooterRequest scooterRequest = (DeleteScooterRequest) request;
+          Scooter scooter = new Scooter(scooterRequest.id(),
+              scooterRequest.type(), scooterRequest.brand(),
+              scooterRequest.model(), scooterRequest.condition(),
+              scooterRequest.color(), scooterRequest.pricePerDay(),
+              scooterRequest.maxSpeed(), scooterRequest.oneChargeRange(),
+              scooterRequest.ownerEmail(), scooterRequest.state());
+          vehicleDao.delete(scooter);
+        }
+        else
+        {
+          throw new IllegalArgumentException(
+              "You can only delete vehicles that are available.");
+        }
+      }
+      catch (SQLException e)
+      {
+        throw new RuntimeException(
+            "Failed to delete vehicle: " + e.getMessage(), e);
+      }
+    }
   }
 }

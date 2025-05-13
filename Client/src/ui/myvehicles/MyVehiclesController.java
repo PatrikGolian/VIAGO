@@ -7,6 +7,8 @@ import javafx.scene.shape.Rectangle;
 import startup.ViewHandler;
 import startup.ViewType;
 import ui.common.Controller;
+import ui.popup.MessageType;
+import ui.reservation.ReservationFx;
 import ui.reservation.ReservationVM;
 import ui.reservation.VehicleFx;
 
@@ -28,7 +30,9 @@ public class MyVehiclesController implements Controller
   @FXML private Label bikeTypeLabel;
   @FXML private Label speedLabel;
   @FXML private Label rangeLabel;
+  @FXML Label messageLabel;
   @FXML private Button addButton;
+  @FXML private Button deleteButton;
 
   @FXML private Rectangle profileShapeRedirect;
   @FXML private Label profileTextRedirect;
@@ -90,12 +94,14 @@ public class MyVehiclesController implements Controller
     stateColumn.setCellValueFactory(new PropertyValueFactory<>("stateProp"));
 
     addButton.setOnAction(e -> onAddButton());
+    deleteButton.setOnAction(e -> onDeleteReservation());
 
     bikeTypeField.textProperty()
         .bindBidirectional(viewModel.bikeTypeProperty());
     speedField.textProperty().bindBidirectional(viewModel.speedProperty());
     rangeField.textProperty().bindBidirectional(viewModel.rangeProperty());
 
+    messageLabel.textProperty().bind(viewModel.messageLabelProperty());
 
     //visibility
     speedLabel.visibleProperty().bind(viewModel.getSpeedLabelVisibility());
@@ -112,5 +118,23 @@ public class MyVehiclesController implements Controller
   public void onAddButton()
   {
     ViewHandler.showView(ViewType.ADDNEW);
+  }
+  public void onDeleteReservation()
+  {
+    VehicleFx selected = vehiclesTable.getSelectionModel().getSelectedItem();
+    if (selected != null)
+    {
+      viewModel.deleteVehicle(selected);
+      clearTable();
+      viewModel.loadVehicles();
+
+    }
+    else
+    {
+      ViewHandler.popupMessage(MessageType.WARNING, "Please select a reservation to delete.");
+    }
+  }
+  public void clearTable() {
+    vehiclesTable.getItems().clear();
   }
 }

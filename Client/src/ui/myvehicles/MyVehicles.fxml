@@ -10,7 +10,6 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.shape.Rectangle?>
 
-
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.myvehicles.MyVehiclesController">
    <children>
       <TableView fx:id="vehiclesTable" layoutY="81.0" prefHeight="200.0" prefWidth="523.0">
@@ -45,5 +44,7 @@
             </Label>
          </children>
       </StackPane>
+      <Label fx:id="messageLabel" layoutX="367.0" layoutY="331.0" prefHeight="17.0" prefWidth="228.0" />
+      <Button fx:id="deleteButton" layoutX="429.0" layoutY="289.0" mnemonicParsing="false" onAction="#onDeleteReservation" text="Delete" />
    </children>
 </AnchorPane>

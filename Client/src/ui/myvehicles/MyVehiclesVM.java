@@ -1,8 +1,7 @@
 package ui.myvehicles;
 
 import dtos.reservation.ReservationReserveRequest;
-import dtos.vehicle.VehicleDisplayDto;
-import dtos.vehicle.VehicleOwnerRequest;
+import dtos.vehicle.*;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,6 +20,7 @@ public class MyVehiclesVM
   private final ObjectProperty<VehicleFx> selectedVehicle = new SimpleObjectProperty<>();
 
   private final StringProperty profileTextRedirectProp = new SimpleStringProperty();
+  private final StringProperty messageProp = new SimpleStringProperty();
 
   private final StringProperty bikeTypeProp = new SimpleStringProperty();
   private final StringProperty speedProp = new SimpleStringProperty();
@@ -64,6 +64,64 @@ public class MyVehiclesVM
   {
     return vehicles;
   }
+
+  public void deleteVehicle(VehicleFx vehicleFx)
+  {
+    if (vehicleFx == null) {
+      return;
+    }
+
+    try {
+      String state = vehicleFx.statePropProperty().get();
+      if (!"Available".equalsIgnoreCase(state)) {
+        messageProp.set("You can only delete vehicles that are available.");
+        return;
+      }
+
+      int id = vehicleFx.idPropProperty().get();
+      String type = vehicleFx.typePropProperty().get();
+      String brand = vehicleFx.brandPropProperty().get();
+      String model = vehicleFx.modelPropProperty().get();
+      String condition = vehicleFx.conditionPropProperty().get();
+      String color = vehicleFx.colorPropProperty().get();
+      double pricePerDay = vehicleFx.pricePerDayPropProperty().get();
+      String ownerEmail = vehicleFx.ownerPropProperty().get();
+
+      DeleteVehicleRequest request;
+
+      switch (type.toLowerCase()) {
+        case "bike" -> {
+          String bikeType = vehicleFx.bikeTypePropProperty().get();
+          request = new DeleteBikeRequest(id, type, brand, model, condition, color, pricePerDay, bikeType, ownerEmail, state);
+        }
+        case "e-bike" -> {
+          String bikeType = vehicleFx.bikeTypePropProperty().get();
+          int maxSpeed = Integer.parseInt(vehicleFx.maxSpeedPropProperty().get());
+          int oneChargeRange = Integer.parseInt(vehicleFx.rangeProperty().get());
+          request = new DeleteEBikeRequest(id, type, brand, model, condition, color, pricePerDay, maxSpeed, oneChargeRange,bikeType, ownerEmail, state);
+        }
+        case "scooter" -> {
+          int maxSpeed = Integer.parseInt(vehicleFx.maxSpeedPropProperty().get());
+          int oneChargeRange = Integer.parseInt(vehicleFx.rangeProperty().get());
+          request = new DeleteScooterRequest(id, type, brand, model, condition, color, pricePerDay, maxSpeed, oneChargeRange, ownerEmail, state);
+        }
+        default -> {
+          messageProp.set("Unknown vehicle type: " + type);
+          return;
+        }
+      }
+
+      myVehiclesClient.delete(request);
+      messageProp.set("Vehicle deleted successfully.");
+    } catch (NumberFormatException e) {
+      messageProp.set("Invalid number format in speed or range.");
+      e.printStackTrace();
+    } catch (Exception e) {
+      messageProp.set("An error occurred while trying to delete the vehicle.");
+      e.printStackTrace();
+    }
+  }
+
   private void clearFields()
   {
     speedProp.set("");
@@ -142,6 +200,10 @@ public class MyVehiclesVM
   public StringProperty bikeTypeProperty()
   {
     return bikeTypeProp;
+  }
+  public Property<String> messageLabelProperty()
+  {
+    return messageProp;
   }
 
   public StringProperty speedProperty()

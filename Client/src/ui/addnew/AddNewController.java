@@ -91,7 +91,7 @@ public class AddNewController implements Controller
 
   public void onMyVehiclesRedirect()
   {
-    ViewHandler.showView(ViewType.WELCOME);
+    ViewHandler.showView(ViewType.MYVEHICLES);
   }
 
   public void onProfileRedirect()

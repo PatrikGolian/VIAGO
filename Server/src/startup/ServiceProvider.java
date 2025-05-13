@@ -1,5 +1,6 @@
 package startup;
 
+import networking.readerswriters.ReadWrite;
 import networking.requesthandlers.*;
 import persistence.reservation.ReservationDao;
 import persistence.reservation.ReservationPostgresDao;
@@ -34,9 +35,9 @@ public class ServiceProvider
 
   // This is a fairly crude and basic implementation of the Service Locator pattern.
 
-  public RequestHandler getAuthenticationRequestHandler()
+  public RequestHandler getAuthenticationRequestHandler(ReadWrite sharedResource)
   {
-    return new AuthRequestHandler(getAuthenticationService());
+    return new AuthRequestHandler(getAuthenticationService(), sharedResource);
   }
 
   public RequestHandler getUserRequestHandler()

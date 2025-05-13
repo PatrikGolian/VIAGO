@@ -102,7 +102,6 @@ public class StudentAccountVM
     if (reservationFx == null) {
       return;
     }
-
     try
     {
       int id = reservationFx.idPropProperty().get();

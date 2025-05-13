@@ -4,6 +4,7 @@ import dtos.reservation.ReservationRequest;
 import dtos.reservation.ReservationReserveRequest;
 import dtos.studentAuth.ChangeUserRequest;
 import dtos.studentAuth.GetPasswordRequest;
+import dtos.vehicle.DeleteVehicleRequest;
 import dtos.vehicle.VehicleOwnerRequest;
 import services.myvehicles.MyVehiclesService;
 import services.reservation.ReservationService;
@@ -29,6 +30,10 @@ public class MyVehiclesRequestHandler implements RequestHandler
       {
         return myVehiclesService.getVehiclesOverview(
             (VehicleOwnerRequest) payload);
+      }
+      case "delete_vehicle" -> {
+        myVehiclesService.delete((DeleteVehicleRequest) payload);
+        return Boolean.TRUE;
       }
     }
     return null; // just a default return value. Some actions above may return stuff.

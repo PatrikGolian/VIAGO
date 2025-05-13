@@ -3,6 +3,7 @@ package networking.requesthandlers;
 import dtos.auth.LoginRequest;
 import dtos.auth.RegisterUserRequest;
 import networking.exceptions.InvalidActionException;
+import networking.readerswriters.ReadWrite;
 import services.authentication.AuthenticationService;
 
 import java.sql.SQLException;
@@ -11,7 +12,7 @@ public class AuthRequestHandler implements RequestHandler
 {
     private final AuthenticationService authenticationService;
 
-    public AuthRequestHandler(AuthenticationService authenticationService)
+    public AuthRequestHandler(AuthenticationService authenticationService, ReadWrite sharedResource)
     {
         this.authenticationService = authenticationService;
     }
@@ -21,12 +22,18 @@ public class AuthRequestHandler implements RequestHandler
     {
         switch (action)
         {
-            case "register" -> authenticationService.registerUser((RegisterUserRequest) payload);
+            case "register" ->
+            {
+                authenticationService.registerUser((RegisterUserRequest) payload);
+            }
             case "login" ->
             {
                 return authenticationService.login((LoginRequest) payload);
             }
-            default -> throw new InvalidActionException("auth", action);
+            default ->
+            {
+                throw new InvalidActionException("auth", action);
+            }
         }
         return null;
     }
