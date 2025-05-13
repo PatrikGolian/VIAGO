@@ -54,6 +54,38 @@ public class UserPostgresDao implements UserDao
 
   }
 
+  public void changeUser(String email, String password, String firstname,
+      String lastname, boolean isAdmin, boolean isBlackListed,
+      String blackListReason) throws SQLException
+  {
+    try (Connection connection = getConnection())
+    {
+      PreparedStatement statement = connection.prepareStatement(
+          "UPDATE account SET password = ?, firstname = ?, lastname = ?, isAdmin = ?, isBlackListed = ?, blackListReason = ? WHERE email = ?");
+      statement.setString(7, email);
+      statement.setString(1, password);
+      statement.setString(2, firstname);
+      statement.setString(3, lastname);
+      statement.setBoolean(4, isAdmin);
+      statement.setBoolean(5, isBlackListed);
+      statement.setString(6, blackListReason);
+      statement.executeUpdate();
+    }
+
+  }
+
+  @Override public void change(User user) throws SQLException
+  {
+    User temp = getSingle(user.getEmail());
+
+    changeUser(
+        user.getEmail(), user.getPassword(), user.getFirstName(),
+        user.getLastName(), temp.isAdmin(), temp.isBlacklisted(),
+        temp.getBlacklistReason()
+    );
+
+  }
+
   @Override public void add(User user) throws SQLException
   {
     create(user.getEmail(), user.getPassword(), user.getFirstName(),

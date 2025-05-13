@@ -30,7 +30,7 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <Button fx:id="editButton" mnemonicParsing="false" text="Edit">
+            <Button fx:id="editButton" mnemonicParsing="false" onAction="#onEditButton" text="Edit">
                <font>
                   <Font size="16.0" />
                </font>
@@ -73,14 +73,19 @@
                      <children>
                         <TextField fx:id="firstNameField" prefHeight="25.0" />
                         <TextField fx:id="lastNameField" prefHeight="25.0" />
-                        <TextField fx:id="oldPasswordField" prefHeight="25.0" />
-                        <TextField fx:id="newPasswordField" prefHeight="25.0" />
-                        <TextField fx:id="confirmPasswordField" prefHeight="25.0" />
+                        <TextField fx:id="oldPasswordField" prefHeight="25.0" promptText="Enter old password" />
+                        <TextField fx:id="newPasswordField" prefHeight="25.0" promptText="Enter new password" />
+                        <TextField fx:id="confirmPasswordField" prefHeight="25.0" promptText="Confirm new password" />
                      </children>
                   </VBox>
                </children>
             </HBox>
-            <Button fx:id="confirmButton" mnemonicParsing="false" text="Confirm">
+            <Label fx:id="messageLabel" prefHeight="18.0" prefWidth="285.0" textFill="#dc0606">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Button fx:id="confirmButton" mnemonicParsing="false" onAction="#onConfirmButton" text="Confirm">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
@@ -109,12 +114,12 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="rentRedirect" layoutX="322.0" layoutY="31.0" text="Rent Vehicle">
+      <Label fx:id="rentRedirect" layoutX="322.0" layoutY="31.0" onMouseClicked="#onRentRedirect" text="Rent Vehicle">
          <font>
             <Font size="28.0" />
          </font>
       </Label>
-      <Label fx:id="myVehiclesRedirect" layoutX="494.0" layoutY="31.0" text="My Vehicles">
+      <Label fx:id="myVehiclesRedirect" layoutX="494.0" layoutY="31.0" onMouseClicked="#onMyVehiclesRedirect" text="My Vehicles">
          <font>
             <Font size="28.0" />
          </font>

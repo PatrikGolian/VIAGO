@@ -9,6 +9,8 @@ import services.authentication.AuthServiceImpl;
 import services.authentication.AuthenticationService;
 import services.reservation.ReservationService;
 import services.reservation.ReservationServiceImpl;
+import services.studentaccount.StudentAccountService;
+import services.studentaccount.StudentAccountServiceImpl;
 import services.user.UserService;
 import services.user.UserServiceImpl;
 import services.vehicle.VehicleService;
@@ -51,6 +53,11 @@ public class ServiceProvider
         getVehicleService());
   }
 
+  public RequestHandler getStudentAccountRequestHandler()
+  {
+    return new StudentAccountRequestHandler(getStudentAccountService());
+  }
+
   public Logger getLogger()
   {
     return new ConsoleLogger(LogLevel.INFO);
@@ -59,6 +66,10 @@ public class ServiceProvider
   private static AuthenticationService getAuthenticationService()
   {
     return new AuthServiceImpl(getUserDao());
+  }
+  public static StudentAccountService getStudentAccountService()
+  {
+    return new StudentAccountServiceImpl(getReservationDao(), getUserDao());
   }
 
   private static UserService getUserService()
@@ -114,4 +125,5 @@ public class ServiceProvider
   {
     return new ReservationServiceImpl(getReservationDao(), getVehicleDao());
   }
+
 }

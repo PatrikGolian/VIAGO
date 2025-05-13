@@ -3,6 +3,7 @@ package persistence.user;
 import model.entities.User;
 import utils.StringUtils;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +23,11 @@ public class UserListDao implements UserDao
   @Override public void add(User user)
   {
     users.add(user);
+  }
+
+  @Override public void change(User user) throws SQLException
+  {
+
   }
 
   /**

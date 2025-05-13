@@ -1,6 +1,5 @@
 package ui.reservation;
 
-import dtos.reservation.ReservationDisplayDto;
 import dtos.reservation.ReservationDto;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -18,9 +17,10 @@ public class ReservationFx
   private final StringProperty endDateProp = new SimpleStringProperty();
   private final DoubleProperty priceProp = new SimpleDoubleProperty();
   private final StringProperty ownerEmailProp = new SimpleStringProperty();
+  private final StringProperty reservedByProp = new SimpleStringProperty();
 
 
-  public ReservationFx(ReservationDisplayDto dto)
+  public ReservationFx(ReservationDto dto)
   {
     typeProp.set(dto.vehicleType());
     startDateProp.set(dto.startDate().toString());
@@ -34,7 +34,7 @@ public class ReservationFx
     return typeProp;
   }
 
-  public StringProperty startDaterPropProperty()
+  public StringProperty startDatePropProperty()
   {
     return startDateProp;
   }
@@ -52,5 +52,9 @@ public class ReservationFx
   public StringProperty ownerEmailPropProperty()
   {
     return ownerEmailProp;
+  }
+  public StringProperty getReservedByProp()
+  {
+    return reservedByProp;
   }
 }

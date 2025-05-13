@@ -32,6 +32,7 @@ public class ReservationVM
       vehicles, p -> true);
 
   // Realated to fields
+  private final StringProperty profileTextRedirectProp = new SimpleStringProperty();
   private final StringProperty conditionProp = new SimpleStringProperty();
   private final StringProperty colorProp = new SimpleStringProperty();
   private final StringProperty ownerEmailProp = new SimpleStringProperty();
@@ -52,6 +53,7 @@ public class ReservationVM
   private final StringProperty searchQuery = new SimpleStringProperty("");
 
   // Visibility properties
+  private final BooleanProperty dkkShowerVisibility = new SimpleBooleanProperty();
   private final BooleanProperty conditionFieldVisibility = new SimpleBooleanProperty();
   private final BooleanProperty colorFieldVisibility = new SimpleBooleanProperty();
   private final BooleanProperty ownerEmailFieldVisibility = new SimpleBooleanProperty();
@@ -154,8 +156,9 @@ public class ReservationVM
     {
       case "scooter" ->
       {
+        dkkShowerVisibility.set(false);
         datePickerLabelVisibility.set(true);
-        priceFieldVisibility.set(true);
+        priceFieldVisibility.set(false);
         priceLabelVisibility.set(true);
         datePickerVisibility.set(true);
         conditionFieldVisibility.set(true);
@@ -173,8 +176,9 @@ public class ReservationVM
       }
       case "bike" ->
       {
+        dkkShowerVisibility.set(false);
         datePickerLabelVisibility.set(true);
-        priceFieldVisibility.set(true);
+        priceFieldVisibility.set(false);
         priceLabelVisibility.set(true);
         datePickerVisibility.set(true);
         conditionFieldVisibility.set(true);
@@ -192,8 +196,9 @@ public class ReservationVM
       }
       case "e-bike" ->
       {
+        dkkShowerVisibility.set(false);
         datePickerLabelVisibility.set(true);
-        priceFieldVisibility.set(true);
+        priceFieldVisibility.set(false);
         priceLabelVisibility.set(true);
         datePickerVisibility.set(true);
         conditionFieldVisibility.set(true);
@@ -211,6 +216,7 @@ public class ReservationVM
       }
       default ->
       {
+        dkkShowerVisibility.set(false);
         datePickerLabelVisibility.set(false);
         priceFieldVisibility.set(false);
         priceLabelVisibility.set(false);
@@ -399,13 +405,32 @@ public class ReservationVM
     return reservationSuccess;
   }
 
+  public StringProperty profileTextRedirectProperty()
+  {
+    return profileTextRedirectProp;
+  }
+
+  public BooleanProperty dkkShowerVisibility()
+  {
+    return dkkShowerVisibility;
+  }
+
   public void setFinalPrice()
   {
     Date date1 = new Date(startDate.get().getDayOfMonth(), startDate.get().getMonthValue(), startDate.get().getYear());
     Date date2 = new Date(endDate.get().getDayOfMonth(), endDate.get().getMonthValue(), endDate.get().getYear());
     int period = Date.calculatePeriod(date1,date2);
     double totalPrice = period * selectedVehicle.get().pricePerDayPropProperty().get();
+    priceFieldVisibility.set(true);
+    dkkShowerVisibility.set(true);
     finalPriceProp.set(Double.toString(totalPrice));
+  }
+
+  public void setProfileInitials()
+  {
+    String firstname = AppState.getCurrentUser().firstName();
+    String lastname = AppState.getCurrentUser().lastName();
+    profileTextRedirectProp.set("" + firstname.charAt(0) + lastname.charAt(0));
   }
 
   public ArrayList<Reservation> getReservationsByTypeAndId(
@@ -434,16 +459,15 @@ public class ReservationVM
             new VehicleFx(dto)); // assuming you have a VehicleFx constructor
       }
     }
-      catch (Exception e)
-      {
-        e.printStackTrace();
-        ViewHandler.popupMessage(MessageType.ERROR, e.getMessage());
-      }
-    }
-    public void update()
+    catch (Exception e)
     {
-      reservationService.updateVehicleState();
+      e.printStackTrace();
+      ViewHandler.popupMessage(MessageType.ERROR, e.getMessage());
     }
-
+  }
+  public void update()
+  {
+    reservationService.updateVehicleState();
   }
 
+}

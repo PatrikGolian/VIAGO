@@ -1,43 +1,144 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="450.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.reservation.ReservationController">
-   <children>
-      <TableView fx:id="vehicleTable" layoutX="21.0" layoutY="74.0" prefHeight="271.0" prefWidth="395.0">
-        <columns>
-          <TableColumn fx:id="typeColumn" prefWidth="75.0" text="type" />
-          <TableColumn fx:id="brandColumn" prefWidth="75.0" text="brand" />
-            <TableColumn fx:id="modelColumn" prefWidth="75.0" text="model" />
-            <TableColumn fx:id="priceColumn" prefWidth="85.33332824707031" text="price per day" />
-            <TableColumn fx:id="stateColumn" prefWidth="82.66667683919269" text="state" />
-        </columns>
-      </TableView>
-      <Button fx:id="reserveButton" layoutX="312.0" layoutY="404.0" mnemonicParsing="false" text="reserve" />
-      <Button fx:id="backButton" layoutX="14.0" layoutY="404.0" mnemonicParsing="false" text="&lt; back" />
-      <TextField fx:id="searchField" layoutX="34.0" layoutY="32.0" prefHeight="25.0" prefWidth="222.0" promptText="Search by type or state" />
-      <TextField fx:id="conditionField" layoutX="500.0" layoutY="96.0" />
-      <TextField fx:id="colorField" layoutX="500.0" layoutY="139.0" />
-      <TextField fx:id="ownerField" layoutX="500.0" layoutY="178.0" />
-      <TextField fx:id="bikeTypeField" layoutX="500.0" layoutY="212.0" />
-      <Label fx:id="conditionLabel" layoutX="426.0" layoutY="100.0" text="Condition:" />
-      <Label fx:id="colorLabel" layoutX="429.0" layoutY="143.0" text="Color:" />
-      <Label fx:id="ownerLabel" layoutX="426.0" layoutY="182.0" text="Owner:" />
-      <Label fx:id="bikeTypeLabel" layoutX="427.0" layoutY="216.0" text="Bike type:" />
-      <Label fx:id="speedLabel" layoutX="423.0" layoutY="258.0" text="Max speed:" />
-      <Label fx:id="rangeLabel" layoutX="445.0" layoutY="289.0" text="Range:" />
-      <TextField fx:id="speedField" layoutX="500.0" layoutY="254.0" />
-      <TextField fx:id="rangeField" layoutX="500.0" layoutY="285.0" />
-      <DatePicker fx:id="datePicker" layoutX="486.0" layoutY="345.0" prefHeight="25.0" prefWidth="134.0" />
-      <Label fx:id="datePickerLabel" layoutX="511.0" layoutY="327.0" prefHeight="18.0" prefWidth="84.0" text="Choose period:" />
-      <Label fx:id="priceLabel" layoutX="450.0" layoutY="408.0" text="Price:" />
-      <TextField fx:id="priceField" layoutX="517.0" layoutY="404.0" />
-      <Label fx:id="messageLabel" layoutX="24.0" layoutY="361.0" prefHeight="18.0" prefWidth="386.0" />
-   </children>
+<AnchorPane prefHeight="559.0" prefWidth="798.0" stylesheets="@../../resources/reservationCSS/reservationStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.reservation.ReservationController">
+    <children>
+        <TableView fx:id="vehicleTable" layoutX="7.0" layoutY="172.0" prefHeight="346.0" prefWidth="414.0">
+            <columns>
+                <TableColumn fx:id="typeColumn" prefWidth="75.0" text="Type" />
+                <TableColumn fx:id="brandColumn" prefWidth="95.9999771118164" text="Brand" />
+                <TableColumn fx:id="modelColumn" prefWidth="109.60002136230469" text="Model" />
+                <TableColumn fx:id="priceColumn" prefWidth="56.79998779296875" text="PPD" />
+                <TableColumn fx:id="stateColumn" prefWidth="75.20001831054685" text="State" />
+            </columns>
+        </TableView>
+        <Button fx:id="reserveButton" layoutX="426.0" layoutY="467.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="368.0" text="Reserve" textFill="WHITE">
+            <font>
+                <Font size="24.0" />
+            </font></Button>
+        <TextField fx:id="searchField" layoutX="7.0" layoutY="136.0" prefHeight="31.0" prefWidth="414.0" promptText="Search by type or availability">
+            <font>
+                <Font size="14.0" />
+            </font></TextField>
+        <TextField fx:id="conditionField" layoutX="430.0" layoutY="188.0">
+            <font>
+                <Font size="14.0" />
+            </font></TextField>
+        <TextField fx:id="colorField" layoutX="617.0" layoutY="187.0">
+            <font>
+                <Font size="14.0" />
+            </font></TextField>
+        <TextField fx:id="ownerField" layoutX="430.0" layoutY="246.0">
+            <font>
+                <Font size="14.0" />
+            </font></TextField>
+        <TextField fx:id="bikeTypeField" layoutX="617.0" layoutY="245.0">
+            <font>
+                <Font size="14.0" />
+            </font></TextField>
+        <Label fx:id="conditionLabel" layoutX="430.0" layoutY="166.0" text="Condition">
+            <font>
+                <Font size="14.0" />
+            </font></Label>
+        <Label fx:id="colorLabel" layoutX="617.0" layoutY="167.0" text="Color">
+            <font>
+                <Font size="14.0" />
+            </font></Label>
+        <Label fx:id="ownerLabel" layoutX="430.0" layoutY="226.0" text="Owner">
+            <font>
+                <Font size="14.0" />
+            </font></Label>
+        <Label fx:id="bikeTypeLabel" layoutX="618.0" layoutY="226.0" text="Bike type">
+            <font>
+                <Font size="14.0" />
+            </font></Label>
+        <Label fx:id="speedLabel" layoutX="430.0" layoutY="284.0" text="Max speed">
+            <font>
+                <Font size="14.0" />
+            </font></Label>
+        <Label fx:id="rangeLabel" layoutX="617.0" layoutY="284.0" text="Range">
+            <font>
+                <Font size="14.0" />
+            </font></Label>
+        <TextField fx:id="speedField" layoutX="430.0" layoutY="304.0">
+            <font>
+                <Font size="14.0" />
+            </font></TextField>
+        <TextField fx:id="rangeField" layoutX="617.0" layoutY="302.0">
+            <font>
+                <Font size="14.0" />
+            </font></TextField>
+        <DatePicker fx:id="datePicker" layoutX="462.0" layoutY="364.0" prefHeight="30.0" prefWidth="296.0" />
+        <Label fx:id="datePickerLabel" layoutX="483.0" layoutY="344.0" prefHeight="20.0" prefWidth="250.0" text="Choose period (Drag from date to date)">
+            <font>
+                <Font size="14.0" />
+            </font></Label>
+        <Label fx:id="priceLabel" layoutX="517.0" layoutY="421.0" text="Total Price">
+            <font>
+                <Font size="18.0" />
+            </font></Label>
+        <Label fx:id="messageLabel" layoutX="426.0" layoutY="529.0" prefHeight="18.0" prefWidth="368.0" />
+        <Line endX="697.0" endY="7.62939453125E-6" layoutX="101.0" layoutY="80.0" startX="-100.0" stroke="#912f40" strokeWidth="3.0" />
+        <ImageView fitHeight="72.0" fitWidth="118.0" layoutX="5.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../../resources/logo.png" />
+            </image>
+        </ImageView>
+        <Label fx:id="rentRedirect" layoutX="225.0" layoutY="21.0" onMouseClicked="#onRentRedirect" text="RENT VEHICLE">
+            <font>
+                <Font name="System Bold" size="24.0" />
+            </font>
+            <cursor>
+                <Cursor fx:constant="HAND" />
+            </cursor>
+        </Label>
+        <Label fx:id="myVehiclesRedirect" layoutX="421.0" layoutY="21.0" onMouseClicked="#onMyVehiclesRedirect" text="MY  VEHICLES">
+            <font>
+                <Font name="System Bold" size="24.0" />
+            </font>
+            <cursor>
+                <Cursor fx:constant="HAND" />
+            </cursor>
+        </Label>
+        <StackPane layoutX="733.0" layoutY="10.0" prefHeight="57.0" prefWidth="55.0">
+            <children>
+                <Rectangle fx:id="profileShapeRedirect" arcHeight="5.0" arcWidth="5.0" fill="#e0e0e0" height="58.0" onMouseClicked="#onProfileRedirect" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="59.0">
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor></Rectangle>
+                <Label fx:id="profileTextRedirect" onMouseClicked="#onProfileRedirect" text="MR" textFill="#912f40">
+                    <font>
+                        <Font name="System Bold" size="26.0" />
+                    </font>
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </Label>
+            </children>
+        </StackPane>
+        <Label fx:id="priceField" layoutX="607.0" layoutY="416.0" prefHeight="35.0" prefWidth="61.0" text="Priceshow" textFill="#912f40">
+            <font>
+                <Font name="System Bold" size="24.0" />
+            </font>
+        </Label>
+        <Label fx:id="dkkShower" layoutX="669.0" layoutY="416.0" text="DKK" textFill="#912f40">
+            <font>
+                <Font name="System Bold" size="24.0" />
+            </font>
+        </Label>
+    </children>
 </AnchorPane>

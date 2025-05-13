@@ -6,6 +6,7 @@ import parser.ParserException;
 import parser.XmlJsonParser;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -125,5 +126,10 @@ public class UserJsonFileDao implements UserDao
     {
       throw new RuntimeException("Failed to load users", e);
     }
+  }
+
+  @Override public void change(User user) throws SQLException
+  {
+
   }
 }

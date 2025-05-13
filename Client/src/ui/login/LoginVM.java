@@ -68,7 +68,7 @@ public class LoginVM
     {
       UserDataDto user = authService.login(loginRequest);
       AppState.setCurrentUser(user);
-      ViewHandler.showView(ViewType.ADDNEW);
+      ViewHandler.showView(ViewType.RESERVATION);
     }
     catch (Exception e)
     {

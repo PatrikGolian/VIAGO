@@ -8,7 +8,6 @@ import startup.ViewHandler;
 import startup.ViewType;
 import ui.common.Controller;
 import ui.reservation.ReservationFx;
-import ui.reservation.VehicleFx;
 
 public class StudentAccountController implements Controller
 {
@@ -30,20 +29,30 @@ public class StudentAccountController implements Controller
   @FXML Label oldLabel;
   @FXML Label newLabel;
   @FXML Label confirmLabel;
+  @FXML Label messageLabel;
   @FXML Label nameLabel;
   @FXML Label emailLabel;
   @FXML Label rentRedirect;
+  @FXML Label myVehiclesRedirect;
 
   private final StudentAccountVM viewModel;
 
   public StudentAccountController(StudentAccountVM viewModel)
   {
     this.viewModel = viewModel;
+
+  }
+
+  private void setFieldsAndLabels()
+  {
+    viewModel.resetInfo();
+
   }
 
   public void initialize()
   {
-    //bind fields and labels
+
+    // Bind fields and labels
     firstNameField.textProperty()
         .bindBidirectional(viewModel.firstNameProperty());
     lastNameField.textProperty()
@@ -54,20 +63,69 @@ public class StudentAccountController implements Controller
         .bindBidirectional(viewModel.newPasswordProperty());
     confirmPasswordField.textProperty()
         .bindBidirectional(viewModel.confirmPasswordProperty());
+    emailLabel.textProperty().bind(viewModel.emailPropery());
+    nameLabel.textProperty().bind(viewModel.nameProperty());
+    messageLabel.textProperty().bind(viewModel.messageLabelProperty());
 
-    //hide elements for edit
+    // Set welcome labels, firs name, last name editable fiels
 
+    // Fields and labels visibility
+    firstNameField.visibleProperty()
+        .bind(viewModel.firstNameFieldVisibilityProperty());
+    firstLabel.visibleProperty()
+        .bind(viewModel.firstNameLabelVisibilityProperty());
+    lastNameField.visibleProperty()
+        .bind(viewModel.lastNameFieldVisibilityProperty());
+    lastLabel.visibleProperty()
+        .bind(viewModel.lastNameLabelVisibilityProperty());
+    oldPasswordField.visibleProperty()
+        .bind(viewModel.oldPasswordFieldVisibilityProperty());
+    oldLabel.visibleProperty()
+        .bind(viewModel.oldPasswordLabelVisibilityProperty());
+    newPasswordField.visibleProperty()
+        .bind(viewModel.newPasswordFieldVisibilityProperty());
+    newLabel.visibleProperty()
+        .bind(viewModel.newPasswordLabelVisibilityProperty());
+    confirmPasswordField.visibleProperty()
+        .bind(viewModel.confirmPasswordFieldVisibilityProperty());
+    confirmLabel.visibleProperty()
+        .bind(viewModel.confirmPasswordLabelVisibilityProperty());
+
+    setFieldsAndLabels();
+    reservationTable.setItems(viewModel.getReservationList());
+    reservationTable.setEditable(false);
+    reservationTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
     // Table view
     typeColumn.setCellValueFactory(new PropertyValueFactory<>("typeProp"));
-    startDateColumn.setCellValueFactory(new PropertyValueFactory<>("startDateProp"));
-    endDateColumn.setCellValueFactory(new PropertyValueFactory<>("endDateProp"));
+    startDateColumn.setCellValueFactory(
+        new PropertyValueFactory<>("startDateProp"));
+    endDateColumn.setCellValueFactory(
+        new PropertyValueFactory<>("endDateProp"));
     priceColumn.setCellValueFactory(new PropertyValueFactory<>("priceProp"));
-    ownerEmail.setCellValueFactory(new PropertyValueFactory<>("ownerEmailProp"));
+    ownerEmail.setCellValueFactory(
+        new PropertyValueFactory<>("ownerEmailProp"));
+
+    // Sets editable fields' visibility
+    viewModel.setVisibility();
   }
+
+  public void onEditButton()
+  {
+    viewModel.toggleEditMode();
+  }
+  public void onConfirmButton(){viewModel.ConfirmEdit();}
 
   public void onRentRedirect()
   {
     ViewHandler.showView(ViewType.RESERVATION);
+  }
+  public void onMyVehiclesRedirect()
+  {
+    ViewHandler.showView(ViewType.WELCOME);
+  }
+  public void onProfileRedirect()
+  {
+    ViewHandler.showView(ViewType.STUDENTACCOUNT);
   }
 }

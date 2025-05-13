@@ -25,7 +25,7 @@
   -fx-background-color : #702632;
 }
 
-#rentRedirect:hover, #myVehiclesRedirect
+#rentRedirect:hover, #myVehiclesRedirect:hover
 {
   -fx-text-fill : #702632;
 }

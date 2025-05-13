@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.skin.DatePickerSkin;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
@@ -29,6 +30,11 @@ import java.util.stream.Collectors;
 
 public class ReservationController implements Controller
 {
+  @FXML private Label dkkShower;
+  @FXML private Rectangle profileShapeRedirect;
+  @FXML private Label profileTextRedirect;
+  @FXML private Label rentRedirect;
+  @FXML private Label myVehiclesRedirect;
   @FXML private TableView<VehicleFx> vehicleTable;
   @FXML private TableColumn<VehicleFx, String> typeColumn;
   @FXML private TableColumn<VehicleFx, String> brandColumn;
@@ -42,13 +48,12 @@ public class ReservationController implements Controller
   @FXML private TextField bikeTypeField;
   @FXML private TextField speedField;
   @FXML private TextField rangeField;
-  @FXML private TextField priceField;
+  @FXML private Label priceField;
   @FXML private TextField searchField;
   @FXML private Label bikeTypeLabel;
   @FXML private Label speedLabel;
   @FXML private Label rangeLabel;
   @FXML private Button reserveButton;
-  @FXML private Button backButton;
   @FXML private Label conditionLabel;
   @FXML private Label colorLabel;
   @FXML private Label ownerLabel;
@@ -57,7 +62,7 @@ public class ReservationController implements Controller
   @FXML private Label messageLabel;
 
   @FXML private DatePicker datePicker;
-    ReservationService service;
+  ReservationService service;
   // Added Richard
   private DateCell iniCell = null;
   private DateCell endCell = null;
@@ -76,7 +81,6 @@ public class ReservationController implements Controller
 
   public void initialize()
   {
-
     // Text fields uneditable and unfocusable
     conditionField.setEditable(false);
     conditionField.setFocusTraversable(false);
@@ -96,8 +100,11 @@ public class ReservationController implements Controller
     rangeField.setEditable(false);
     rangeField.setFocusTraversable(false);
 
-    priceField.setEditable(false);
-    priceField.setFocusTraversable(false);
+    profileTextRedirect.textProperty().bindBidirectional(
+        viewModel.profileTextRedirectProperty());
+    viewModel.setProfileInitials();
+
+    dkkShower.visibleProperty().bind(viewModel.dkkShowerVisibility());
 
     // Search bar
     searchField.setOnKeyPressed(event -> {
@@ -169,7 +176,6 @@ public class ReservationController implements Controller
     stateColumn.setCellValueFactory(new PropertyValueFactory<>("stateProp"));
 
     // Buttons
-    backButton.setOnAction(e -> onBackButton());
     reserveButton.setOnAction(e -> onReserveButton());
 
     // Text fields
@@ -214,17 +220,18 @@ public class ReservationController implements Controller
         .bindBidirectional(viewModel.searchQueryProperty());
     vehicleTable.setItems(viewModel.getVehicleList());
 
+    viewModel.reservationSuccessProperty()
+        .addListener((obs, oldVal, newVal) -> {
+          if (newVal)
+          {
+            viewModel.update();
+            viewModel.loadVehicles();
+            vehicleTable.refresh();
 
-    viewModel.reservationSuccessProperty().addListener((obs, oldVal, newVal) -> {
-      if (newVal) {
-        viewModel.update();
-        viewModel.loadVehicles();
-        vehicleTable.refresh();
-
-        // Reset the flag to avoid repeated triggers
-        viewModel.reservationSuccessProperty().set(false);
-      }
-    });
+            // Reset the flag to avoid repeated triggers
+            viewModel.reservationSuccessProperty().set(false);
+          }
+        });
 
     // Date Picker
     datePicker.setValue(LocalDate.now());
@@ -408,11 +415,6 @@ public class ReservationController implements Controller
     });
   }
 
-  public void onBackButton()
-  {
-    ViewHandler.showView(ViewType.WELCOME);
-  }
-
   public void onReserveButton()
   {
     if (viewModel.selectedVehicleProperty().get() == null || iniDate == null
@@ -426,19 +428,21 @@ public class ReservationController implements Controller
       return;
     }
     viewModel.addReservation();
-
   }
 
-  public void startAutoRefresh()
+  public void onRentRedirect()
   {
-    Timeline timeline = new Timeline(
-        new KeyFrame(Duration.seconds(10), event -> {
+    ViewHandler.showView(ViewType.RESERVATION);
+  }
 
-          viewModel.loadVehicles();
-          vehicleTable.refresh();
-        }));
-    timeline.setCycleCount(Timeline.INDEFINITE);
-    timeline.play();
+  public void onMyVehiclesRedirect()
+  {
+    ViewHandler.showView(ViewType.WELCOME);
+  }
+
+  public void onProfileRedirect()
+  {
+    ViewHandler.showView(ViewType.STUDENTACCOUNT);
   }
 }
 
