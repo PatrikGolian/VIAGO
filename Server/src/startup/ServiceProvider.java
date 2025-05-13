@@ -40,29 +40,29 @@ public class ServiceProvider
     return new AuthRequestHandler(getAuthenticationService(), sharedResource);
   }
 
-  public RequestHandler getUserRequestHandler()
+  public RequestHandler getUserRequestHandler(ReadWrite sharedResource)
   {
-    return new UserRequestHandler(getUserService());
+    return new UserRequestHandler(getUserService(), sharedResource);
   }
 
-  public RequestHandler getAddNewVehicleRequestHandler()
+  public RequestHandler getAddNewVehicleRequestHandler(ReadWrite sharedResource)
   {
-    return new AddNewVehicleRequestHandler(getVehicleService());
+    return new AddNewVehicleRequestHandler(getVehicleService(), sharedResource);
   }
 
-  public RequestHandler getReservationRequestHandler()
+  public RequestHandler getReservationRequestHandler(ReadWrite sharedResource)
   {
     return new ReservationRequestHandler(getReservationService(),
-        getVehicleService());
+        getVehicleService(), sharedResource);
   }
 
-  public RequestHandler getStudentAccountRequestHandler()
+  public RequestHandler getStudentAccountRequestHandler(ReadWrite sharedResource)
   {
-    return new StudentAccountRequestHandler(getStudentAccountService());
+    return new StudentAccountRequestHandler(getStudentAccountService(), sharedResource);
   }
-  public RequestHandler getMyVehiclesRequestHandler()
+  public RequestHandler getMyVehiclesRequestHandler(ReadWrite sharedResource)
   {
-    return new MyVehiclesRequestHandler(getMyVehiclesService());
+    return new MyVehiclesRequestHandler(getMyVehiclesService(), sharedResource);
   }
 
   public Logger getLogger()

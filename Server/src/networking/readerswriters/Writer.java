@@ -1,31 +1,21 @@
 package networking.readerswriters;
 
-public class Writer implements Runnable
-{
-  private ReadWrite lock;
+public class Writer implements Runnable {
+  private final ReadWrite lock;
+  private final Runnable task;
 
-  public Writer(ReadWrite lock)
-  {
+  public Writer(ReadWrite lock, Runnable task) {
     this.lock = lock;
+    this.task = task;
   }
 
-  @Override public void run()
-  {
-    while (true)
-    {
-      //before writing
-      //preparation
-          //reuesting lock
-      //acquire lock
-      lock.acquireWrite();
-      //write
-          //writing database
-      //release
+  @Override
+  public void run() {
+    lock.acquireWrite();
+    try {
+      task.run(); // execute write logic
+    } finally {
       lock.releaseWrite();
     }
-  }
-  private void write()
-  {
-
   }
 }

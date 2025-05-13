@@ -12,12 +12,12 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../University Work/Semester 2/Java Programming 2/postgresql-42.7.5.jar!/" />
+          <root url="jar://$USER_HOME$/University Work/Semester 2/Java Programming 2/postgresql-42.7.5.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="mockito.core" level="project" />
+    <orderEntry type="library" exported="" name="mockito.core" level="project" />
   </component>
 </module>

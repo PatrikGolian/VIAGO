@@ -112,11 +112,11 @@ public class MainSocketHandler implements Runnable
     RequestHandler handler = switch (request.handler())
     {
       case "auth" -> serviceProvider.getAuthenticationRequestHandler(sharedResource);
-      case "users" -> serviceProvider.getUserRequestHandler();
-      case "addVehicle" -> serviceProvider.getAddNewVehicleRequestHandler();
-      case "reservation" -> serviceProvider.getReservationRequestHandler();
-      case "student" -> serviceProvider.getStudentAccountRequestHandler();
-      case "yourVehicles" -> serviceProvider.getMyVehiclesRequestHandler();
+      case "users" -> serviceProvider.getUserRequestHandler(sharedResource);
+      case "addVehicle" -> serviceProvider.getAddNewVehicleRequestHandler(sharedResource);
+      case "reservation" -> serviceProvider.getReservationRequestHandler(sharedResource);
+      case "student" -> serviceProvider.getStudentAccountRequestHandler(sharedResource);
+      case "yourVehicles" -> serviceProvider.getMyVehiclesRequestHandler(sharedResource);
       default -> {
         String msg = String.format(
             "❌ Unknown action '%s' for handler %s; payload was: %s",

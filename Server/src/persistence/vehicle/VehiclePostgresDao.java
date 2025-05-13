@@ -536,6 +536,6 @@ public class VehiclePostgresDao implements VehicleDao
         return temp.get(t);
       }
     }
-    return null;
+    return temp.getFirst();
   }
 }

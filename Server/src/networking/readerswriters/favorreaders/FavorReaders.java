@@ -6,24 +6,8 @@ import networking.readerswriters.Reader;
 
 public class FavorReaders implements ReadWrite
 {
-  public synchronized static void startReader(ReadWrite sharedResource)
-  {
-      Reader reader = new Reader(sharedResource);
-      read[readers] = new Thread(reader,"Writer"+readers);
-      read[readers].start();
-  }
-  //writer Threads
-  public synchronized static void startWriter(ReadWrite sharedResource)
-  {
-      Writer writer = new Writer(sharedResource);
-      write[writers] = new Thread(writer,"Writer"+writers);
-      write[writers].start();
-  }
-
-  private static Thread[] read = new Thread[20];
-  private static Thread[] write = new Thread[5];
-  private static int readers;
-  private static int writers;
+  private int readers;
+  private int writers;
 
   public FavorReaders()
   {

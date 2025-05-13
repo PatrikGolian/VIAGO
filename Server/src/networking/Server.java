@@ -1,6 +1,7 @@
 package networking;
 
 import networking.readerswriters.ReadWrite;
+import networking.readerswriters.favorreaders.FavorReaders;
 import startup.ServiceProvider;
 
 import java.io.IOException;

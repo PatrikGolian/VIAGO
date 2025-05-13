@@ -1,9 +1,14 @@
 package networking.requesthandlers;
 
+import dtos.auth.RegisterUserRequest;
+import dtos.studentAuth.GetPasswordRequest;
 import dtos.user.BlacklistUserRequest;
 import dtos.user.PromoteUserRequest;
 import dtos.user.UpdatePasswordRequest;
 import dtos.user.ViewUsers;
+import networking.readerswriters.ReadWrite;
+import networking.readerswriters.Reader;
+import networking.readerswriters.Writer;
 import services.user.UserService;
 
 import java.sql.SQLException;
@@ -11,10 +16,12 @@ import java.sql.SQLException;
 public class UserRequestHandler implements RequestHandler
 {
     private final UserService userService;
+    private final ReadWrite lock;
 
-    public UserRequestHandler(UserService userService)
+    public UserRequestHandler(UserService userService, ReadWrite sharedResource)
     {
         this.userService = userService;
+        this.lock = sharedResource;
     }
 
     @Override
@@ -22,14 +29,81 @@ public class UserRequestHandler implements RequestHandler
     {
         switch (action)
         {
-            case "blacklist" -> userService.blacklistUser((BlacklistUserRequest) payload);
-            case "promote" -> userService.promoteToAdmin((PromoteUserRequest) payload);
+            case "blacklist" -> {
+                Writer writer = new Writer(lock, () -> {
+                    try {
+                        userService.blacklistUser((BlacklistUserRequest) payload);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e); // wrap checked exception
+                    }
+                });
+                Thread writerThread = new Thread(writer);
+                writerThread.start();
+                try {
+                    writerThread.join();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+
+            }
+            case "promote" ->{
+                Writer writer = new Writer(lock, () -> {
+                    try {
+                        userService.promoteToAdmin((PromoteUserRequest) payload);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e); // wrap checked exception
+                    }
+                });
+                Thread writerThread = new Thread(writer);
+                writerThread.start();
+                try {
+                    writerThread.join();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
             case "view_users" ->
             {
-                return userService.getUsersOverview((ViewUsers.Request) payload);
+                Reader<Object> reader = new Reader<>(lock, () -> {
+                    try
+                    {
+                        return userService.getUsersOverview((ViewUsers.Request) payload);
+                    }
+                    catch (SQLException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                });
+                Thread thread = new Thread(reader);
+                thread.start();
+                try
+                {
+                    thread.join();
+                }
+                catch (InterruptedException e)
+                {
+                    Thread.currentThread().interrupt();
+                }
+                return reader.getResult();
+
             }
-            case "update_password" -> userService.updatePassword((UpdatePasswordRequest) payload);
+            case "update_password" -> {
+                Writer writer = new Writer(lock, () -> {
+                    try {
+                        userService.updatePassword((UpdatePasswordRequest) payload);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e); // wrap checked exception
+                    }
+                });
+                Thread writerThread = new Thread(writer);
+                writerThread.start();
+                try {
+                    writerThread.join();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
         }
-        return null; // just a default return value. Some actions above may return stuff.
+        return null;
     }
 }

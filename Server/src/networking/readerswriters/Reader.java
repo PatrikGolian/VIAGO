@@ -1,32 +1,30 @@
 package networking.readerswriters;
 
-public class Reader implements Runnable
-{
-  private ReadWrite lock;
+import java.util.concurrent.Callable;
 
-  public Reader(ReadWrite lock)
-  {
+public class Reader<T> implements Runnable {
+  private final ReadWrite lock;
+  private final Callable<T> task;
+  private T result;
+
+  public Reader(ReadWrite lock, Callable<T> task) {
     this.lock = lock;
+    this.task = task;
   }
 
-  @Override public void run()
-  {
-    while (true)
-    {
-      //before reading
-      //preparation
-          //  requesting lock
-      //acquire lock
-      lock.acquireRead();
-      //read
-          //reading from database
-      //release
+  @Override
+  public void run() {
+    lock.acquireRead();
+    try {
+      result = task.call(); // execute read logic
+    } catch (Exception e) {
+      e.printStackTrace(); // handle/log exception
+    } finally {
       lock.releaseRead();
     }
   }
 
-  private void read()
-  {
-
+  public T getResult() {
+    return result;
   }
 }
