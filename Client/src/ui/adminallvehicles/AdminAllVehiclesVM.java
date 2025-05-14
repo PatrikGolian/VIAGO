@@ -1,14 +1,14 @@
 package ui.adminallvehicles;
 
 import dtos.vehicle.*;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import networking.adminallvehicles.AdminAllVehiclesClient;
 import networking.reservation.ReservationClient;
 import networking.reservation.ReservationSubscriber;
 import startup.ViewHandler;
+import state.AppState;
 import ui.popup.MessageType;
 import ui.reservation.VehicleFx;
 
@@ -20,9 +20,21 @@ public class AdminAllVehiclesVM
 
   private final AdminAllVehiclesClient adminAllVehiclesClient;
   private final ObservableList<VehicleFx> vehicles = FXCollections.observableArrayList();
+  private final ObjectProperty<VehicleFx> selectedVehicle = new SimpleObjectProperty<>();
 
-
+  private final StringProperty profileTextRedirectProp = new SimpleStringProperty();
   private final StringProperty messageProp = new SimpleStringProperty();
+  private final StringProperty bikeTypeProp = new SimpleStringProperty();
+  private final StringProperty speedProp = new SimpleStringProperty();
+  private final StringProperty rangeProp = new SimpleStringProperty();
+  private final IntegerProperty idProp = new SimpleIntegerProperty();
+
+  private final BooleanProperty speedLabelVisibility = new SimpleBooleanProperty();
+  private final BooleanProperty rangeLabelVisibility = new SimpleBooleanProperty();
+  private final BooleanProperty bikeTypeLabelVisibility = new SimpleBooleanProperty();
+  private final BooleanProperty speedFieldVisibility = new SimpleBooleanProperty();
+  private final BooleanProperty rangeFieldVisibility = new SimpleBooleanProperty();
+  private final BooleanProperty bikeTypeFieldVisibility = new SimpleBooleanProperty();
 
   public AdminAllVehiclesVM(AdminAllVehiclesClient adminAllVehiclesClient)
   {
@@ -56,6 +68,11 @@ public class AdminAllVehiclesVM
     }
   }
 
+
+  public ObservableList<VehicleFx> getVehicleList()
+  {
+    return vehicles;
+  }
 
   public void deleteVehicle(VehicleFx vehicleFx)
   {
@@ -112,6 +129,129 @@ public class AdminAllVehiclesVM
       messageProp.set("An error occurred while trying to delete the vehicle.");
       e.printStackTrace();
     }
+  }
+
+  private void clearFields()
+  {
+    speedProp.set("");
+    rangeProp.set("");
+    bikeTypeProp.set("");
+  }
+  public void setVisibility()
+  {
+    clearFields();
+    VehicleFx vehicleFx = selectedVehicle.get();
+    if (vehicleFx == null)
+    {
+      return;
+    }
+    switch (vehicleFx.typePropProperty().get())
+    {
+      case "scooter" ->
+      {
+        speedFieldVisibility.set(true);
+        speedLabelVisibility.set(true);
+        rangeFieldVisibility.set(true);
+        rangeLabelVisibility.set(true);
+        bikeTypeLabelVisibility.set(false);
+        bikeTypeFieldVisibility.set(false);
+      }
+      case "bike" ->
+      {
+        speedFieldVisibility.set(false);
+        speedLabelVisibility.set(false);
+        rangeFieldVisibility.set(false);
+        rangeLabelVisibility.set(false);
+        bikeTypeLabelVisibility.set(true);
+        bikeTypeFieldVisibility.set(true);
+      }
+      case "e-bike" ->
+      {
+        speedFieldVisibility.set(true);
+        speedLabelVisibility.set(true);
+        rangeFieldVisibility.set(true);
+        rangeLabelVisibility.set(true);
+        bikeTypeLabelVisibility.set(true);
+        bikeTypeFieldVisibility.set(true);
+      }
+      default ->
+      {
+        speedFieldVisibility.set(false);
+        speedLabelVisibility.set(false);
+        rangeFieldVisibility.set(false);
+        rangeLabelVisibility.set(false);
+        bikeTypeLabelVisibility.set(false);
+        bikeTypeFieldVisibility.set(false);
+      }
+    }
+  }
+
+  public void setProfileInitials()
+  {
+    String firstname = AppState.getCurrentUser().firstName();
+    String lastname = AppState.getCurrentUser().lastName();
+    profileTextRedirectProp.set("" + firstname.charAt(0) + lastname.charAt(0));
+  }
+
+  public BooleanProperty getSpeedLabelVisibility()
+  {
+    return speedLabelVisibility;
+  }
+
+  public BooleanProperty getSpeedFieldVisibility()
+  {
+    return speedFieldVisibility;
+  }
+  public IntegerProperty getIdProp()
+  {
+    return idProp;
+  }
+  public StringProperty bikeTypeProperty()
+  {
+    return bikeTypeProp;
+  }
+  public Property<String> messageLabelProperty()
+  {
+    return messageProp;
+  }
+
+  public StringProperty speedProperty()
+  {
+    return speedProp;
+  }
+
+  public StringProperty rangeProperty()
+  {
+    return rangeProp;
+  }
+
+
+  public BooleanProperty getRangeLabelVisibility()
+  {
+    return rangeLabelVisibility;
+  }
+
+  public BooleanProperty getRangeFieldVisibility()
+  {
+    return rangeFieldVisibility;
+  }
+
+  public BooleanProperty getBikeTypeLabelVisibility()
+  {
+    return bikeTypeLabelVisibility;
+  }
+
+  public BooleanProperty getBikeTypeFieldVisibility()
+  {
+    return bikeTypeFieldVisibility;
+  }
+  public StringProperty profileTextRedirectProperty()
+  {
+    return profileTextRedirectProp;
+  }
+  public ObjectProperty<VehicleFx> selectedVehicleProperty()
+  {
+    return selectedVehicle;
   }
 
 

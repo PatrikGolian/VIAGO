@@ -167,7 +167,7 @@ public class ViewUsersController implements Controller
 
   public void onAllVehiclesRedirect()
   {
-    ViewHandler.showView(ViewType.ADMINALLVEHICLES); // not implemented in the view handler yet
+    ViewHandler.showView(ViewType.ADMINALLVEHICLES);
   }
 
   public void onProfileRedirect()

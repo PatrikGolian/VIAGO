@@ -24,6 +24,7 @@ public class MyVehiclesController implements Controller
   @FXML private TableColumn<VehicleFx, String> conditionColumn;
   @FXML private TableColumn<VehicleFx, String> colorColumn;
   @FXML private TableColumn<VehicleFx, String> stateColumn;
+  @FXML private TableColumn<VehicleFx, String> ownerEmailColumn;
 
   @FXML private TextField bikeTypeField;
   @FXML private TextField speedField;
@@ -98,6 +99,7 @@ public class MyVehiclesController implements Controller
     typeColumn.setCellValueFactory(new PropertyValueFactory<>("typeProp"));
     brandColumn.setCellValueFactory(new PropertyValueFactory<>("brandProp"));
     modelColumn.setCellValueFactory(new PropertyValueFactory<>("modelProp"));
+    ownerEmailColumn.setCellValueFactory(new PropertyValueFactory<>("ownerEmailProp"));
     priceColumn.setCellValueFactory(
         new PropertyValueFactory<>("pricePerDayProp"));
     conditionColumn.setCellValueFactory(new PropertyValueFactory<>("conditionProp"));
@@ -105,7 +107,7 @@ public class MyVehiclesController implements Controller
     stateColumn.setCellValueFactory(new PropertyValueFactory<>("stateProp"));
 
     addButton.setOnAction(e -> onAddButton());
-    deleteButton.setOnAction(e -> onDeleteReservation());
+    deleteButton.setOnAction(e -> onDeleteVehicle());
 
     bikeTypeField.textProperty()
         .bindBidirectional(viewModel.bikeTypeProperty());
@@ -131,7 +133,7 @@ public class MyVehiclesController implements Controller
   {
     ViewHandler.showView(ViewType.ADDNEW);
   }
-  public void onDeleteReservation()
+  public void onDeleteVehicle()
   {
     VehicleFx selected = vehiclesTable.getSelectionModel().getSelectedItem();
     if (selected != null)

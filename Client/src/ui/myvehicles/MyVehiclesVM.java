@@ -21,8 +21,8 @@ public class MyVehiclesVM
   private final ObservableList<VehicleFx> vehicles = FXCollections.observableArrayList();
   private final ObjectProperty<VehicleFx> selectedVehicle = new SimpleObjectProperty<>();
 
-  private final StringProperty profileTextRedirectProp = new SimpleStringProperty();
   private final StringProperty messageProp = new SimpleStringProperty();
+  private final StringProperty profileTextRedirectProp = new SimpleStringProperty();
 
   private final StringProperty bikeTypeProp = new SimpleStringProperty();
   private final StringProperty speedProp = new SimpleStringProperty();

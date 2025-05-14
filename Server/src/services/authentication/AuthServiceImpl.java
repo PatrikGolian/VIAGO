@@ -132,4 +132,4 @@ public class AuthServiceImpl implements AuthenticationService
         existingUser.isBlacklisted(), existingUser.isAdmin());
     return userData;
   }
-}
+  }

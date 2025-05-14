@@ -73,7 +73,7 @@
             </children>
         </StackPane>
         <Label fx:id="messageLabel" alignment="CENTER" layoutX="4.0" layoutY="470.0" prefHeight="18.0" prefWidth="714.0" />
-        <Button fx:id="deleteButton" layoutX="8.0" layoutY="493.0" mnemonicParsing="false" onAction="#onDeleteReservation" prefHeight="40.0" prefWidth="354.0" text="Delete" textFill="WHITE">
+        <Button fx:id="deleteButton" layoutX="8.0" layoutY="493.0" mnemonicParsing="false" onAction="#onDeleteVehicle" prefHeight="40.0" prefWidth="354.0" text="Delete" textFill="WHITE">
             <font>
                 <Font size="18.0" />
             </font></Button>

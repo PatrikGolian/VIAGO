@@ -6,6 +6,8 @@ import javafx.stage.Stage;
 import model.entities.User;
 import networking.addnew.AddNewVehicleClient;
 import networking.addnew.SocketAddNewVehicleClient;
+import networking.adminallvehicles.AdminAllVehiclesClient;
+import networking.adminallvehicles.SocketAllVehiclesClient;
 import networking.authentication.AuthenticationClient;
 import networking.authentication.SocketAuthenticationClient;
 import networking.myvehicles.MyVehiclesClient;
@@ -20,6 +22,7 @@ import services.user.UserService;
 import ui.addnew.AddNewController;
 import ui.addnew.AddNewVM;
 import ui.adminaccount.UserFx;
+import ui.adminallvehicles.AdminAllVehiclesController;
 import ui.adminallvehicles.AdminAllVehiclesVM;
 import ui.common.Controller;
 import ui.login.LoginController;
@@ -211,7 +214,12 @@ public class ViewHandler
 
   private static void openAdminAllVehicles() throws IOException
   {
-    AdminAllVehiclesVM vm = new AdminAllVehiclesVM();
+    AdminAllVehiclesClient client = new SocketAllVehiclesClient();
+    AdminAllVehiclesVM vm = new AdminAllVehiclesVM(client);
+    AdminAllVehiclesController controller = new AdminAllVehiclesController(vm);
+    String viewTitle = "All Vehicles";
+    String viewSubPath = "adminallvehicles/AdminAllVehicles.fxml";
+    openView(viewTitle, viewSubPath, controller);
   }
 
   private static void openView(String viewTitle, String viewSubPath,
