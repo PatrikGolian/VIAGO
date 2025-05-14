@@ -185,14 +185,13 @@ public class UserPostgresDao implements UserDao
     }
   }
 
-  @Override public List<User> getMany(String firstNameContains)
+  @Override public List<User> getMany()
       throws SQLException
   {
     try (Connection connection = getConnection())
     {
       PreparedStatement statement = connection.prepareStatement(
-          "SELECT* FROM account WHERE firstname LIKE ?");
-      statement.setString(1, "%" + firstNameContains + "%");
+          "SELECT * FROM account");
       ResultSet resultSet = statement.executeQuery();
       ArrayList<User> result = new ArrayList<>();
       while (resultSet.next())

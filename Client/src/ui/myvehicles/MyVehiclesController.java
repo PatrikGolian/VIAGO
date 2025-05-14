@@ -12,6 +12,8 @@ import ui.reservation.ReservationFx;
 import ui.reservation.ReservationVM;
 import ui.reservation.VehicleFx;
 
+import javax.swing.text.View;
+
 public class MyVehiclesController implements Controller
 {
   @FXML private TableView<VehicleFx> vehiclesTable;
@@ -48,10 +50,19 @@ public class MyVehiclesController implements Controller
   {
     profileTextRedirect.textProperty().bindBidirectional(
         viewModel.profileTextRedirectProperty());
+    viewModel.setProfileInitials();
 
     vehiclesTable.setItems(viewModel.getVehicleList());
     vehiclesTable.setEditable(false);
     vehiclesTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    bikeTypeField.setEditable(false);
+    bikeTypeField.setFocusTraversable(false);
+
+    speedField.setEditable(false);
+    speedField.setFocusTraversable(false);
+
+    rangeField.setEditable(false);
+    rangeField.setFocusTraversable(false);
 
     viewModel.selectedVehicleProperty()
         .bind(vehiclesTable.getSelectionModel().selectedItemProperty());
@@ -112,6 +123,7 @@ public class MyVehiclesController implements Controller
         .bind(viewModel.getBikeTypeLabelVisibility());
     bikeTypeField.visibleProperty()
         .bind(viewModel.getBikeTypeFieldVisibility());
+
   }
 
 
@@ -134,6 +146,22 @@ public class MyVehiclesController implements Controller
       ViewHandler.popupMessage(MessageType.WARNING, "Please select a reservation to delete.");
     }
   }
+
+  public void onProfileRedirect()
+  {
+    ViewHandler.showView(ViewType.STUDENTACCOUNT);
+  }
+
+  public void onRentRedirect()
+  {
+    ViewHandler.showView(ViewType.RESERVATION);
+  }
+
+  public void onMyVehiclesRedirect()
+  {
+    ViewHandler.showView(ViewType.MYVEHICLES);
+  }
+
   public void clearTable() {
     vehiclesTable.getItems().clear();
   }

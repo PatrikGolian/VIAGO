@@ -70,6 +70,11 @@ public class User
     blacklistReason = reason;
   }
 
+  public void setBlacklisted(boolean blacklisted)
+  {
+    isBlacklisted = blacklisted;
+  }
+
   public void setAdmin(boolean promoteToAdmin)
   {
     isAdmin = promoteToAdmin;

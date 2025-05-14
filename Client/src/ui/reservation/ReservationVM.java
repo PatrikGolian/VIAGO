@@ -5,6 +5,7 @@ import dtos.reservation.ReservationRequest;
 import dtos.reservation.ReservationRequestByIdType;
 import dtos.vehicle.VehicleDataDto;
 import dtos.vehicle.VehicleDisplayDto;
+import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,7 +17,9 @@ import networking.reservation.ReservationClient;
 import startup.ViewHandler;
 import state.AppState;
 import ui.popup.MessageType;
+import networking.reservation.ReservationSubscriber;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -78,9 +81,15 @@ public class ReservationVM
   public ReservationVM(ReservationClient reservationService)
   {
     this.reservationService = reservationService;
-
-    loadVehicles();
+    try
+    {
+      new ReservationSubscriber("localhost", 2910, () -> loadVehicles());
+    }
+    catch (IOException e)
+    {
+    }
   }
+
 
   public void addReservation()
   {

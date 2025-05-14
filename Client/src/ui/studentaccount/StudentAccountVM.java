@@ -45,6 +45,7 @@ public class StudentAccountVM
   private final BooleanProperty oldPasswordFieldVisibility = new SimpleBooleanProperty();
   private final BooleanProperty newPasswordFieldVisibility = new SimpleBooleanProperty();
   private final BooleanProperty confirmPasswordFieldVisibility = new SimpleBooleanProperty();
+  private final BooleanProperty confirmButtonVisibility = new SimpleBooleanProperty();
 
   private final BooleanProperty firstNameLabelVisibility = new SimpleBooleanProperty();
   private final BooleanProperty lastNameLabelVisibility = new SimpleBooleanProperty();
@@ -79,6 +80,7 @@ public class StudentAccountVM
     oldPasswordProp.set("");
     newPasswordProp.set("");
     confirmPasswordProp.set("");
+
   }
 
   public void loadReservations()
@@ -181,6 +183,7 @@ public class StudentAccountVM
 
     changeNameLabelVisibility.set(false);
     changePasswordLabelVisibility.set(false);
+    confirmButtonVisibility.set(false);
   }
 
   public void toggleEditMode()
@@ -207,6 +210,7 @@ public class StudentAccountVM
     changeNameLabelVisibility.set(newVisibility);
 
     messageLabelVisibility.set(newVisibility);
+    confirmButtonVisibility.set(newVisibility);
   }
 
   public void confirmEdit()
@@ -500,6 +504,11 @@ public class StudentAccountVM
   public BooleanProperty changePasswordLabelVisibility()
   {
     return changePasswordLabelVisibility;
+  }
+
+  public BooleanProperty confirmButtonVisibility()
+  {
+    return confirmButtonVisibility;
   }
 
   public StringProperty profileTextRedirectProperty()

@@ -29,9 +29,9 @@ public class FavorReaders implements ReadWrite
         e.printStackTrace();
       }
     }
-
-    System.out.println(Thread.currentThread().getName() + " READING (readers :: "+readers+"), (writers :: "+writers+")");
     readers++;
+    System.out.println(Thread.currentThread().getName() + " READING (readers :: "+readers+"), (writers :: "+writers+")");
+
   }
 
   @Override public synchronized void releaseRead()
@@ -60,9 +60,9 @@ public class FavorReaders implements ReadWrite
         e.printStackTrace();
       }
     }
-
-    System.out.println(Thread.currentThread().getName() + " WRITING (readers :: "+readers+"), (writers :: "+writers+")");
     writers++;
+    System.out.println(Thread.currentThread().getName() + " WRITING (readers :: "+readers+"), (writers :: "+writers+")");
+
   }
 
   @Override public synchronized void releaseWrite()

@@ -1,6 +1,7 @@
 package networking.requesthandlers;
 
 import dtos.auth.RegisterUserRequest;
+import dtos.studentAuth.ChangeUserRequest;
 import dtos.studentAuth.GetPasswordRequest;
 import dtos.user.BlacklistUserRequest;
 import dtos.user.PromoteUserRequest;
@@ -46,28 +47,12 @@ public class UserRequestHandler implements RequestHandler
                 }
 
             }
-            case "promote" ->{
-                Writer writer = new Writer(lock, () -> {
-                    try {
-                        userService.promoteToAdmin((PromoteUserRequest) payload);
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e); // wrap checked exception
-                    }
-                });
-                Thread writerThread = new Thread(writer);
-                writerThread.start();
-                try {
-                    writerThread.join();
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
             case "view_users" ->
             {
                 Reader<Object> reader = new Reader<>(lock, () -> {
                     try
                     {
-                        return userService.getUsersOverview((ViewUsers.Request) payload);
+                        return userService.getUsersOverview();
                     }
                     catch (SQLException e)
                     {
@@ -102,6 +87,54 @@ public class UserRequestHandler implements RequestHandler
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
+            }
+            case "changeUser" -> {
+                Reader<Object> reader = new Reader<>(lock, () -> {
+                    try
+                    {
+                        userService.changeUser((ChangeUserRequest) payload);
+                        return Boolean.TRUE;
+                    }
+                    catch (SQLException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                });
+                Thread thread = new Thread(reader);
+                thread.start();
+                try
+                {
+                    thread.join();
+                }
+                catch (InterruptedException e)
+                {
+                    Thread.currentThread().interrupt();
+                }
+                return reader.getResult();
+
+            }
+            case "getPassword" -> {
+                Reader<Object> reader = new Reader<>(lock, () -> {
+                    try
+                    {
+                        return userService.getPassword((GetPasswordRequest) payload);
+                    }
+                    catch (SQLException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                });
+                Thread thread = new Thread(reader);
+                thread.start();
+                try
+                {
+                    thread.join();
+                }
+                catch (InterruptedException e)
+                {
+                    Thread.currentThread().interrupt();
+                }
+                return reader.getResult();
             }
         }
         return null;

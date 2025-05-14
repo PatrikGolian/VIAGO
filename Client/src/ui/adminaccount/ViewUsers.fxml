@@ -1,43 +1,158 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.adminaccount.ViewUsersController">
+<AnchorPane prefHeight="673.0" prefWidth="752.0" stylesheets="@../../resources/adminAccountCSS/adminAccountStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.adminaccount.ViewUsersController">
     <children>
-        <BorderPane prefHeight="400.0" prefWidth="600.0">
-            <bottom>
-                <FlowPane alignment="CENTER" columnHalignment="CENTER" prefHeight="32.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-                    <children>
-                        <Button fx:id="promoteButton" mnemonicParsing="false" onAction="#onPromote" text="Promote" />
-                        <Button fx:id="blacklistButton" mnemonicParsing="false" onAction="#onBlacklist" text="Blacklist" />
-                        <Button fx:id="changePasswordButton" mnemonicParsing="false" onAction="#onChangePassword" text="Change Password" />
-                    </children>
-                </FlowPane>
-            </bottom>
-            <center>
-                <ScrollPane prefHeight="200.0" prefWidth="200.0" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
-                    <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="358.0" prefWidth="597.0">
-                            <children>
-                                <TableView fx:id="table" layoutX="-2.0" layoutY="-1.0" onSort="#onSort" prefHeight="368.0" prefWidth="600.0">
-                                    <columns>
-                                        <TableColumn fx:id="firstNameColumn" prefWidth="175.0" text="First name" />
-                                        <TableColumn fx:id="lastNameColumn" prefWidth="175.0" text="Last name" />
-                                        <TableColumn fx:id="emailColumn" prefWidth="150.0" text="Email" />
-                                        <TableColumn fx:id="blacklistedColumn" prefWidth="100.0" text="Blacklisted?" />
-                                    </columns>
-                                </TableView>
-                            </children>
-                        </AnchorPane>
-                    </content>
-                </ScrollPane>
-            </center>
-        </BorderPane>
+        <TableView fx:id="table" layoutX="294.0" layoutY="112.0" prefHeight="427.0" prefWidth="450.0">
+            <columns>
+                <TableColumn fx:id="firstNameColumn" editable="false" prefWidth="122.4000244140625" text="First name" />
+                <TableColumn fx:id="lastNameColumn" editable="false" prefWidth="112.0" text="Last name" />
+                <TableColumn fx:id="emailColumn" editable="false" prefWidth="114.39996337890625" text="Email" />
+                <TableColumn fx:id="blacklistedColumn" editable="false" prefWidth="105.5999755859375" text="BlackListed" />
+            </columns>
+        </TableView>
+        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e0e0e0" height="601.0" layoutX="-5.0" layoutY="75.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="286.0" />
+        <Button fx:id="blacklistButton" layoutX="294.0" layoutY="641.0" mnemonicParsing="false" onAction="#onBlacklist" prefHeight="30.0" prefWidth="450.0" text="Blacklist user" textFill="WHITE">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Button>
+        <Label layoutX="294.0" layoutY="84.0" prefHeight="27.0" prefWidth="131.0" text="Registred users">
+            <font>
+                <Font size="18.0" />
+            </font>
+        </Label>
+        <Label fx:id="allVehiclesRedirect" layoutX="437.0" layoutY="18.0" onMouseClicked="#onAllVehiclesRedirect" prefHeight="35.0" prefWidth="163.0" text="ALL VEHICLES">
+            <font>
+                <Font name="System Bold" size="24.0" />
+            </font>
+            <cursor>
+                <Cursor fx:constant="HAND" />
+            </cursor>
+        </Label>
+        <Line endX="649.0000610351562" layoutX="101.0" layoutY="74.0" startX="-100.0" stroke="#912f40" strokeWidth="3.0" />
+        <ImageView fitHeight="72.0" fitWidth="119.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../../resources/logo.png" />
+            </image>
+        </ImageView>
+        <StackPane layoutX="686.0" layoutY="6.0" prefHeight="60.0" prefWidth="60.0">
+            <children>
+                <Rectangle fx:id="profileShapeRedirect" arcHeight="5.0" arcWidth="5.0" fill="#912f40" height="60.0" onMouseClicked="#onProfileRedirect" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="60.0">
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </Rectangle>
+                <Label fx:id="profileTextRedirect" onMouseClicked="#onProfileRedirect" text="MR" textFill="#e0e0e0">
+                    <font>
+                        <Font name="System Bold" size="25.0" />
+                    </font>
+                </Label>
+            </children>
+        </StackPane>
+        <TextField fx:id="confirmPasswordField" layoutX="82.0" layoutY="607.0" prefHeight="26.0" prefWidth="186.0" promptText="Confirm new password" />
+        <TextField fx:id="newPasswordField" layoutX="113.0" layoutY="574.0" prefHeight="26.0" prefWidth="156.0" promptText="Enter new password" />
+        <TextField fx:id="oldPasswordField" layoutX="106.0" layoutY="541.0" prefHeight="26.0" prefWidth="163.0" promptText="Enter old password" />
+        <TextField fx:id="lastNameField" layoutX="90.0" layoutY="482.0" prefHeight="26.0" prefWidth="182.0" />
+        <TextField fx:id="firstNameField" layoutX="90.0" layoutY="451.0" prefHeight="26.0" prefWidth="182.0" />
+        <Label fx:id="firstLabel" layoutX="12.0" layoutY="451.0" prefHeight="26.0" prefWidth="78.0" text="First name">
+            <font>
+                <Font size="15.0" />
+            </font>
+        </Label>
+        <Label fx:id="lastLabel" layoutX="12.0" layoutY="482.0" prefHeight="25.0" prefWidth="99.0" text="Last name">
+            <font>
+                <Font size="15.0" />
+            </font>
+        </Label>
+        <Label fx:id="oldLabel" layoutX="12.0" layoutY="541.0" prefHeight="25.0" prefWidth="131.0" text="Old password">
+            <font>
+                <Font size="15.0" />
+            </font>
+        </Label>
+        <Label fx:id="newLabel" layoutX="12.0" layoutY="574.0" prefHeight="25.0" prefWidth="131.0" text="New password">
+            <font>
+                <Font size="15.0" />
+            </font>
+        </Label>
+        <Label fx:id="confirmLabel" layoutX="11.0" layoutY="608.0" prefHeight="25.0" prefWidth="158.0" text="Confirm it">
+            <font>
+                <Font size="15.0" />
+            </font>
+        </Label>
+        <Button fx:id="confirmButton" layoutX="9.0" layoutY="641.0" mnemonicParsing="false" onAction="#onConfirmButton" prefHeight="30.0" prefWidth="258.0" text="CONFIRM" textFill="WHITE">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Button>
+        <Button fx:id="editButton" layoutX="12.0" layoutY="387.0" mnemonicParsing="false" onAction="#onEditButton" prefHeight="30.0" prefWidth="258.0" text="EDIT" textFill="WHITE">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Button>
+        <Label fx:id="emailLabel" layoutX="13.0" layoutY="362.0" prefHeight="20.0" prefWidth="257.0" text="email" textFill="#912f40">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Label>
+        <Label fx:id="nameLabel" layoutX="112.0" layoutY="336.0" prefHeight="27.0" prefWidth="163.0" text="Name" textFill="#702632">
+            <font>
+                <Font name="System Bold" size="18.0" />
+            </font>
+        </Label>
+        <Label layoutX="16.0" layoutY="336.0" prefHeight="27.0" prefWidth="99.0" text="WELCOME, " textFill="#702632">
+            <font>
+                <Font name="System Bold" size="18.0" />
+            </font>
+        </Label>
+        <Label fx:id="messageLabel" alignment="CENTER" layoutX="294.0" layoutY="616.0" prefHeight="20.0" prefWidth="450.0" textFill="#dc0606">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Label>
+        <StackPane layoutX="13.0" layoutY="84.0" prefHeight="217.0" prefWidth="222.0">
+            <children>
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#912f40" height="244.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="257.0" />
+                <ImageView fitHeight="244.0" fitWidth="255.0" opacity="0.12" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../../resources/studentAccountCSS/viaGOWireframeslogo-06.png" />
+                    </image>
+                </ImageView>
+                <Label fx:id="coverLabel" text="IN" textFill="#e0e0e0">
+                    <font>
+                        <Font name="System Bold" size="110.0" />
+                    </font>
+                </Label>
+            </children>
+        </StackPane>
+        <Label fx:id="changeNameLabel" layoutX="12.0" layoutY="426.0" text="Change name" textFill="#912f40">
+            <font>
+                <Font name="System Bold" size="12.0" />
+            </font>
+        </Label>
+        <Label fx:id="changePasswordLabel" layoutX="13.0" layoutY="514.0" text="Change password" textFill="#912f40">
+            <font>
+                <Font name="System Bold" size="12.0" />
+            </font>
+        </Label>
+      <Label fx:id="blackListReasonLabel" layoutX="298.0" layoutY="541.0" prefHeight="27.0" prefWidth="156.0" text="Black List Reason">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <TextField fx:id="blackListReasonField" layoutX="296.0" layoutY="575.0" prefHeight="60.0" prefWidth="450.0" />
     </children>
 </AnchorPane>

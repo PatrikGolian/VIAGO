@@ -3,6 +3,7 @@ package startup;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import model.entities.User;
 import networking.addnew.AddNewVehicleClient;
 import networking.addnew.SocketAddNewVehicleClient;
 import networking.authentication.AuthenticationClient;
@@ -15,8 +16,11 @@ import networking.studentaccount.SocketStudentAccountClient;
 import networking.studentaccount.StudentAccountClient;
 import networking.user.SocketUsersClient;
 import networking.user.UsersClient;
+import services.user.UserService;
 import ui.addnew.AddNewController;
 import ui.addnew.AddNewVM;
+import ui.adminaccount.UserFx;
+import ui.adminallvehicles.AdminAllVehiclesVM;
 import ui.common.Controller;
 import ui.login.LoginController;
 import ui.login.LoginVM;
@@ -60,11 +64,12 @@ public class ViewHandler
         case WELCOME -> openWelcomeView();
         case REGISTER -> openRegisterView();
         case LOGIN -> openLoginView();
-        case VIEWUSERS -> openUsersOverview();
         case ADDNEW -> openAddNewView();
         case RESERVATION -> openReservationView();
         case STUDENTACCOUNT -> openStudentAccountView();
         case MYVEHICLES -> openMyVehiclesView();
+        case VIEWUSERS -> openUsersOverview();
+        case ADMINALLVEHICLES -> openAdminAllVehicles();
         default -> throw new RuntimeException("View not found.");
       }
     }
@@ -76,6 +81,32 @@ public class ViewHandler
 
   public static void popupMessage(MessageType type,
       String message) // currently always an error, will fix later for success message too.
+  {
+    Stage stage = new Stage();
+    stage.setMinWidth(300);
+    stage.setMinHeight(200);
+
+      PopupController controller = new PopupController(stage, type, message);
+
+    FXMLLoader fxmlLoader = new FXMLLoader(
+        ViewHandler.class.getResource("../ui/popup/Popup.fxml"));
+    fxmlLoader.setControllerFactory(ignore -> controller);
+
+    try
+    {
+      Scene scene = new Scene(fxmlLoader.load());
+      stage.setTitle("Error");
+      stage.setScene(scene);
+    }
+    catch (IOException e)
+    {
+      throw new RuntimeException(e);
+    }
+    stage.show();
+  }
+
+  public static void popupMessage(MessageType type,
+      String message, UserFx user, UsersClient userService) // currently always an error, will fix later for success message too.
   {
     Stage stage = new Stage();
     stage.setMinWidth(300);
@@ -98,16 +129,6 @@ public class ViewHandler
       throw new RuntimeException(e);
     }
     stage.show();
-  }
-
-  private static void openUsersOverview() throws IOException
-  {
-    UsersClient client = new SocketUsersClient();
-    ViewUsersVM vm = new ViewUsersVM(client);
-    ViewUsersController controller = new ViewUsersController(vm);
-    String viewTitle = "Overview";
-    String viewSubPath = "viewusers/ViewUsers.fxml";
-    openView(viewTitle, viewSubPath, controller);
   }
 
   private static void openLoginView() throws IOException
@@ -176,6 +197,21 @@ public class ViewHandler
     String viewTitle = "My Vehicles";
     String viewSubPath = "myvehicles/MyVehicles.fxml";
     openView(viewTitle, viewSubPath, controller);
+  }
+
+  private static void openUsersOverview() throws IOException
+  {
+    UsersClient client = new SocketUsersClient();
+    ViewUsersVM vm = new ViewUsersVM(client);
+    ViewUsersController controller = new ViewUsersController(vm);
+    String viewTitle = "Overview";
+    String viewSubPath = "adminaccount/ViewUsers.fxml";
+    openView(viewTitle, viewSubPath, controller);
+  }
+
+  private static void openAdminAllVehicles() throws IOException
+  {
+    AdminAllVehiclesVM vm = new AdminAllVehiclesVM();
   }
 
   private static void openView(String viewTitle, String viewSubPath,

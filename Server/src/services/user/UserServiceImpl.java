@@ -1,9 +1,8 @@
 package services.user;
 
-import dtos.user.BlacklistUserRequest;
-import dtos.user.PromoteUserRequest;
-import dtos.user.UpdatePasswordRequest;
-import dtos.user.ViewUsers;
+import dtos.studentAuth.ChangeUserRequest;
+import dtos.studentAuth.GetPasswordRequest;
+import dtos.user.*;
 import model.entities.User;
 import model.exceptions.NotFoundException;
 import model.exceptions.ValidationException;
@@ -27,35 +26,33 @@ public class UserServiceImpl implements UserService
   // * validate
   // * update
   // * save changes
-  @Override public void promoteToAdmin(PromoteUserRequest request)
+
+
+  @Override public void changeUser(ChangeUserRequest request)
       throws SQLException
   {
-    // retrieve
     User user = userDao.getSingle(request.email());
-    if (user == null)
+
+    if(user == null)
     {
-      throw new NotFoundException(
-          "User with email '" + request.email() + "' not found.");
+      throw new ValidationException("User not found");
     }
 
-    // validate
-    if (user.isBlacklisted())
+    userDao.updateName(request.email(),request.firstName(), request.lastName());
+
+    String newPassword = request.password();
+
+    if(newPassword != null && !newPassword.isBlank() && !newPassword.equals(user.getPassword()))
     {
-      throw new ValidationException("The user with email '" + request.email()
-          + "' is blacklisted, and cannot be promoted to admin.");
+      userDao.updatePassword(request.email(), newPassword);
     }
+  }
 
-    if (user.isAdmin())
-    {
-      throw new ValidationException(
-          "The user with email '" + request.email() + "' is already an admin.");
-    }
-
-    // update
-    user.setAdmin(true);
-
-    // save changes
-    userDao.save(user);
+  @Override public String getPassword(GetPasswordRequest request)
+      throws SQLException
+  {
+    User user = userDao.getSingle(request.email());
+    return user.getPassword();
   }
 
   @Override public void blacklistUser(BlacklistUserRequest request)
@@ -67,31 +64,28 @@ public class UserServiceImpl implements UserService
       throw new NotFoundException(
           "User with email '" + request.email() + "' not found.");
     }
-    if (user.isBlacklisted())
-    {
-      throw new ValidationException("The user with email '" + request.email()
-          + "' is already blacklisted.");
-    }
+    user.setBlacklisted(!user.isBlacklisted());
+    System.out.println(user);
     user.blacklist(
         request.reason()); // Alternatively I could have a setBlackList(true, request.reason()) method. I prefer this clearer approach.
     user.setAdmin(false); // admins are automatically demoted when blacklisted.
     userDao.save(user);
   }
 
-  @Override public List<ViewUsers.UserDisplayDto> getUsersOverview(
-      ViewUsers.Request filterParameters) throws SQLException
+  @Override public List<UserDataDto> getUsersOverview(
+      ) throws SQLException
   {
-    List<User> users = userDao.getMany(filterParameters.firstNameContains());
-    List<ViewUsers.UserDisplayDto> result = new ArrayList<>();
+    List<User> users = userDao.getMany();
+    List<UserDataDto> result = new ArrayList<>();
 
     // convert User to UserDto. This way we only send the data, the client needs. We don't include the password, for example.
     // I could add admin status or black list status, if needed.
 
     for (User user : users)
     {
-      ViewUsers.UserDisplayDto dto = new ViewUsers.UserDisplayDto(
+      UserDataDto dto = new UserDataDto(
           user.getEmail(), user.getFirstName(), user.getLastName(),
-          user.isBlacklisted());
+          user.isBlacklisted(),user.isAdmin());
       result.add(dto);
     }
 

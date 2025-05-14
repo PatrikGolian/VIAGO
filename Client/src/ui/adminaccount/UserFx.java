@@ -1,5 +1,6 @@
 package ui.adminaccount;
 
+import dtos.user.UserDataDto;
 import dtos.user.ViewUsers;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -12,13 +13,17 @@ public class UserFx
   private final StringProperty firstNameProp = new SimpleStringProperty();
   private final StringProperty lastNameProp = new SimpleStringProperty();
   private final BooleanProperty isBlacklisted = new SimpleBooleanProperty();
+  private final BooleanProperty isAdmin = new SimpleBooleanProperty();
+  private final StringProperty blackListReason = new SimpleStringProperty();
 
-  public UserFx(ViewUsers.UserDisplayDto user)
+  public UserFx(UserDataDto user)
   {
     emailProp.set(user.email());
     firstNameProp.set(user.firstName());
     lastNameProp.set(user.lastName());
     isBlacklisted.set(user.isBlacklisted());
+    isAdmin.set(user.isAdmin());
+    blackListReason.set(user.blackListReason());
   }
 
   public StringProperty emailProperty()
@@ -39,5 +44,10 @@ public class UserFx
   public BooleanProperty isBlacklistedProperty()
   {
     return isBlacklisted;
+  }
+
+  public StringProperty blackListedReasonProperty()
+  {
+    return blackListReason;
   }
 }

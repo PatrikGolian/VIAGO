@@ -1,0 +1,58 @@
+.root
+{
+  -fx-background-color : #ffffff;
+}
+
+.text-field
+{
+  -fx-background-color : #ffffff;
+  -fx-border-radius : 0px;
+  -fx-background-radius : 0px;
+  -fx-border-color : black;
+  -fx-border-width : 0.5px;
+  -fx-border-style : solid;
+}
+
+.button
+{
+  -fx-border-radius : 0px;
+  -fx-background-radius : 0px;
+  -fx-background-color : #912F40;
+}
+
+.button:hover
+{
+  -fx-background-color : #702632;
+}
+
+#myVehiclesRedirect
+{
+  -fx-text-fill : #912F40;
+}
+
+#rentRedirect:hover, #myVehiclesRedirect:hover
+{
+  -fx-text-fill : #702632;
+}
+
+.table-view .column-header-background
+{
+  -fx-background-color : #912F40;
+}
+
+.table-view .column-header .label
+{
+  -fx-text-fill : white;
+}
+
+.table-view
+{
+  -fx-table-cell-border-color : transparent;
+}
+
+#vehiclesTable .column-header,
+#vehiclesTable .column-header .label {
+  -fx-background-color: transparent;
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+}

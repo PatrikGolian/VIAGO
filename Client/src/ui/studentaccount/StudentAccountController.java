@@ -47,7 +47,6 @@ public class StudentAccountController implements Controller
   public StudentAccountController(StudentAccountVM viewModel)
   {
     this.viewModel = viewModel;
-
   }
 
   private void setFieldsAndLabels()
@@ -101,6 +100,7 @@ public class StudentAccountController implements Controller
         .bind(viewModel.changeNameLabelVisibility());
     changePasswordLabel.visibleProperty()
         .bind(viewModel.changePasswordLabelVisibility());
+    confirmButton.visibleProperty().bind(viewModel.confirmButtonVisibility());
 
     setFieldsAndLabels();
     reservationTable.setItems(viewModel.getReservationList());

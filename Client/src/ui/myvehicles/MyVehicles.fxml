@@ -6,45 +6,98 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.myvehicles.MyVehiclesController">
-   <children>
-      <TableView fx:id="vehiclesTable" layoutY="81.0" prefHeight="200.0" prefWidth="523.0">
-        <columns>
-          <TableColumn fx:id="typeColumn" prefWidth="75.0" text="Type" />
-          <TableColumn fx:id="brandColumn" prefWidth="75.0" text="Brand" />
-            <TableColumn fx:id="modelColumn" prefWidth="75.0" text="Model" />
-            <TableColumn fx:id="priceColumn" prefWidth="75.0" text="PPD" />
-            <TableColumn fx:id="conditionColumn" prefWidth="75.0" text="Condition" />
-            <TableColumn fx:id="colorColumn" prefWidth="75.0" text="Color" />
-            <TableColumn fx:id="stateColumn" prefWidth="75.0" text="State" />
-        </columns>
-      </TableView>
-      <Button fx:id="addButton" layoutX="348.0" layoutY="23.0" mnemonicParsing="false" text="Add New" />
-      <TextField fx:id="speedField" layoutX="199.0" layoutY="289.0" />
-      <TextField fx:id="rangeField" layoutX="199.0" layoutY="327.0" />
-      <TextField fx:id="bikeTypeField" layoutX="199.0" layoutY="360.0" />
-      <Label fx:id="speedLabel" layoutX="65.0" layoutY="293.0" text="Speed:" />
-      <Label fx:id="rangeLabel" layoutX="65.0" layoutY="331.0" text="Range:" />
-      <Label fx:id="bikeTypeLabel" layoutX="65.0" layoutY="364.0" text="Bike type:" />
-      <StackPane layoutX="523.0" layoutY="14.0" prefHeight="67.0" prefWidth="65.0">
-         <children>
-            <Rectangle fx:id="profileShapeRedirect" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="59.0" stroke="BLACK" strokeType="INSIDE" width="47.0">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Rectangle>
-            <Label fx:id="profileTextRedirect" text="Label">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Label>
-         </children>
-      </StackPane>
-      <Label fx:id="messageLabel" layoutX="367.0" layoutY="331.0" prefHeight="17.0" prefWidth="228.0" />
-      <Button fx:id="deleteButton" layoutX="429.0" layoutY="289.0" mnemonicParsing="false" onAction="#onDeleteReservation" text="Delete" />
-   </children>
+<AnchorPane prefHeight="548.0" prefWidth="728.0" stylesheets="@../../resources/myVehiclesCSS/myVehiclesStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.myvehicles.MyVehiclesController">
+    <children>
+        <TableView fx:id="vehiclesTable" layoutX="7.0" layoutY="81.0" prefHeight="349.0" prefWidth="714.0">
+            <columns>
+                <TableColumn fx:id="typeColumn" prefWidth="104.80002117156982" text="Type" />
+                <TableColumn fx:id="brandColumn" prefWidth="110.4000244140625" text="Brand" />
+                <TableColumn fx:id="modelColumn" prefWidth="127.19999694824219" text="Model" />
+                <TableColumn fx:id="priceColumn" minWidth="0.0" prefWidth="60.0" text="PPD" />
+                <TableColumn fx:id="conditionColumn" prefWidth="90.39996337890625" text="Condition" />
+                <TableColumn fx:id="colorColumn" prefWidth="93.60003662109375" text="Color" />
+                <TableColumn fx:id="stateColumn" prefWidth="127.199951171875" text="State" />
+            </columns>
+        </TableView>
+        <Button fx:id="addButton" layoutX="367.0" layoutY="493.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="354.0" text="Add New" textFill="WHITE">
+            <font>
+                <Font size="18.0" />
+            </font></Button>
+        <TextField fx:id="speedField" layoutX="50.0" layoutY="435.0" prefHeight="30.0" prefWidth="184.0">
+            <font>
+                <Font size="14.0" />
+            </font></TextField>
+        <TextField fx:id="rangeField" layoutX="285.0" layoutY="434.0" prefHeight="30.0" prefWidth="184.0">
+            <font>
+                <Font size="14.0" />
+            </font></TextField>
+        <TextField fx:id="bikeTypeField" layoutX="537.0" layoutY="434.0" prefHeight="30.0" prefWidth="184.0">
+            <font>
+                <Font size="14.0" />
+            </font></TextField>
+        <Label fx:id="speedLabel" layoutX="7.0" layoutY="439.0" text="Speed">
+            <font>
+                <Font size="14.0" />
+            </font></Label>
+        <Label fx:id="rangeLabel" layoutX="241.0" layoutY="439.0" text="Range">
+            <font>
+                <Font size="14.0" />
+            </font></Label>
+        <Label fx:id="bikeTypeLabel" layoutX="476.0" layoutY="439.0" text="Bike type">
+            <font>
+                <Font size="14.0" />
+            </font></Label>
+        <StackPane layoutX="655.0" layoutY="4.0" prefHeight="58.0" prefWidth="66.0">
+            <children>
+                <Rectangle fx:id="profileShapeRedirect" arcHeight="5.0" arcWidth="5.0" fill="#e0e0e0" height="60.0" onMouseClicked="#onProfileRedirect" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="66.0">
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </Rectangle>
+                <Label fx:id="profileTextRedirect" onMouseClicked="#onProfileRedirect" text="MR" textFill="#912f40">
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                    <font>
+                        <Font name="System Bold" size="25.0" />
+                    </font>
+                </Label>
+            </children>
+        </StackPane>
+        <Label fx:id="messageLabel" alignment="CENTER" layoutX="4.0" layoutY="470.0" prefHeight="18.0" prefWidth="714.0" />
+        <Button fx:id="deleteButton" layoutX="8.0" layoutY="493.0" mnemonicParsing="false" onAction="#onDeleteReservation" prefHeight="40.0" prefWidth="354.0" text="Delete" textFill="WHITE">
+            <font>
+                <Font size="18.0" />
+            </font></Button>
+        <Line endX="625.0000610351562" layoutX="101.0" layoutY="71.0" startX="-100.0" stroke="#912f40" strokeWidth="3.0" />
+        <ImageView fitHeight="60.0" fitWidth="118.0" layoutX="4.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../../resources/logo.png" />
+            </image>
+        </ImageView>
+        <Label fx:id="rentRedirect" layoutX="182.0" layoutY="18.0" onMouseClicked="#onRentRedirect" prefHeight="35.0" prefWidth="166.0" text="RENT VEHICLE">
+            <font>
+                <Font name="System Bold" size="24.0" />
+            </font>
+            <cursor>
+                <Cursor fx:constant="HAND" />
+            </cursor>
+        </Label>
+        <Label fx:id="myVehiclesRedirect" layoutX="395.0" layoutY="19.0" text="MY VEHICLES" textFill="#912f40">
+            <font>
+                <Font name="System Bold" size="24.0" />
+            </font>
+            <cursor>
+                <Cursor fx:constant="HAND" />
+            </cursor>
+        </Label>
+    </children>
 </AnchorPane>

@@ -40,11 +40,6 @@ public class RegisterVM
             return;
         }
 
-        if (!emailProp.get().matches("^\\d{6,}@via\\.dk"))
-        {
-            messageProp.set("Email must be a valid a VIA UC email! (format user@via.dk)");
-            return;
-        }
 
         if (firstNameProp.get() == null || firstNameProp.get().isEmpty())
         {

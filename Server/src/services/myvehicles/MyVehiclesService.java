@@ -3,10 +3,8 @@ package services.myvehicles;
 import dtos.reservation.ReservationDto;
 import dtos.reservation.ReservationRequest;
 import dtos.reservation.ReservationReserveRequest;
-import dtos.vehicle.DeleteVehicleRequest;
-import dtos.vehicle.VehicleDataDto;
-import dtos.vehicle.VehicleDisplayDto;
-import dtos.vehicle.VehicleOwnerRequest;
+import dtos.studentAuth.ChangeUserRequest;
+import dtos.vehicle.*;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -17,4 +15,5 @@ public interface MyVehiclesService
       VehicleOwnerRequest request)
       throws SQLException;
   void delete(DeleteVehicleRequest request);
+  void changeVehicle(VehicleChangeRequest request) throws SQLException;
 }

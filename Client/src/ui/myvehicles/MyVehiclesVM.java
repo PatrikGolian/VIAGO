@@ -6,12 +6,14 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import networking.myvehicles.MyVehiclesClient;
+import networking.myvehicles.MyVehiclesSubscriber;
 import networking.reservation.ReservationClient;
 import startup.ViewHandler;
 import state.AppState;
 import ui.popup.MessageType;
 import ui.reservation.VehicleFx;
 
+import java.io.IOException;
 import java.util.List;
 
 public class MyVehiclesVM
@@ -39,6 +41,13 @@ public class MyVehiclesVM
   public MyVehiclesVM(MyVehiclesClient myVehiclesClient)
   {
     this.myVehiclesClient = myVehiclesClient;
+    try
+    {
+      new MyVehiclesSubscriber("localhost", 2910, ()->loadVehicles());
+    }
+    catch (IOException e)
+    {
+    }
     loadVehicles();
   }
   public void loadVehicles()
@@ -244,4 +253,5 @@ public class MyVehiclesVM
   {
     return selectedVehicle;
   }
+
 }

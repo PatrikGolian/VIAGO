@@ -6,6 +6,8 @@ import persistence.reservation.ReservationDao;
 import persistence.reservation.ReservationPostgresDao;
 import persistence.user.UserDao;
 import persistence.user.UserPostgresDao;
+import services.allvehicles.AllVehiclesService;
+import services.allvehicles.AllVehiclesServiceImpl;
 import services.authentication.AuthServiceImpl;
 import services.authentication.AuthenticationService;
 import services.myvehicles.MyVehiclesService;
@@ -64,6 +66,10 @@ public class ServiceProvider
   {
     return new MyVehiclesRequestHandler(getMyVehiclesService(), sharedResource);
   }
+  public RequestHandler getAllVehiclesRequestHandler(ReadWrite sharedResource)
+  {
+    return new AllVehiclesRequestHandler(getAllVehiclesService(), sharedResource);
+  }
 
   public Logger getLogger()
   {
@@ -81,6 +87,11 @@ public class ServiceProvider
   private static MyVehiclesService getMyVehiclesService()
   {
     return new MyVehiclesServiceImpl(getVehicleDao());
+  }
+
+  private static AllVehiclesService getAllVehiclesService()
+  {
+    return new AllVehiclesServiceImpl(getVehicleDao());
   }
 
   private static UserService getUserService()

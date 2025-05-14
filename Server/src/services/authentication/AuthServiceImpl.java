@@ -32,13 +32,21 @@ public class AuthServiceImpl implements AuthenticationService
     validatePasswordIsCorrectFormat(request.password());
     validateFirstName(request.firstName());
     validateLastName(request.lastName());
+    if (request.email().matches(("^[a-zA-Z]+@via\\.dk$")))
+    {
+      User newUser = new User(
 
-    User newUser = new User(
-
-        request.email(), request.password(), request.firstName(),
-        request.lastName());
-
-    userDao.add(newUser);
+          request.email(), request.password(), request.firstName(),
+          request.lastName());
+      newUser.setAdmin(true);
+      userDao.add(newUser);
+    }
+    else
+    {
+      User newUser = new User(request.email(), request.password(),
+          request.firstName(), request.lastName());
+      userDao.add(newUser);
+    }
   }
 
   private static void validatePasswordIsCorrectFormat(String password)
@@ -92,7 +100,8 @@ public class AuthServiceImpl implements AuthenticationService
   private static void validateEmailIsCorrectFormat(String email)
   {
     // validate email has correct format
-    if (!email.matches("^\\d{6,}@via\\.dk$"))
+    if (!email.matches("^\\d{6,}@via\\.dk$") && !email.matches(
+        "^[a-zA-Z]+@via\\.dk$"))
     {
       throw new ValidationException(
           "Email needs to be a valid VIA UC email (format: user@via.dk)");

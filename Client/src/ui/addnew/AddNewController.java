@@ -76,7 +76,7 @@ public class AddNewController implements Controller
 
   public void onBack()
   {
-    ViewHandler.showView(ViewType.WELCOME);
+    ViewHandler.showView(ViewType.MYVEHICLES);
   }
 
   public void onAddButton()

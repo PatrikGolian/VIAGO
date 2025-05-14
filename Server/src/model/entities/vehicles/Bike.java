@@ -17,4 +17,8 @@ public class Bike extends Vehicle
   {
     return bikeType;
   }
+
+  public void setPrice()
+  {
+  }
 }

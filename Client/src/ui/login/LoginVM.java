@@ -66,9 +66,16 @@ public class LoginVM
         passwordProp.get());
     try
     {
+
       UserDataDto user = authService.login(loginRequest);
       AppState.setCurrentUser(user);
-      ViewHandler.showView(ViewType.RESERVATION);
+      if(user.isAdmin())
+      {
+        ViewHandler.showView(ViewType.VIEWUSERS);
+      }
+      else {
+      ViewHandler.showView(ViewType.STUDENTACCOUNT);}
+
     }
     catch (Exception e)
     {

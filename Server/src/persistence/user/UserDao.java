@@ -13,5 +13,5 @@ public interface UserDao
   User getSingle(String email) throws SQLException;
   void delete(String email) throws SQLException;
   void save(User user) throws SQLException;
-  List<User> getMany(String firstNameContains) throws SQLException;
+  List<User> getMany() throws SQLException;
 }

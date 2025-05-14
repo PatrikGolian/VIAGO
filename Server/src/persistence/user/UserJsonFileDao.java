@@ -103,7 +103,7 @@ public class UserJsonFileDao implements UserDao
 
   }
 
-  @Override public List<User> getMany(String firstNameContains)
+  @Override public List<User> getMany()
   {
     try
     {
@@ -113,11 +113,7 @@ public class UserJsonFileDao implements UserDao
 
       for (User user : users.list)
       {
-        if (firstNameContains == null || user.getFirstName().toLowerCase()
-            .contains(firstNameContains.toLowerCase()))
-        {
           filtered.add(user);
-        }
       }
 
       return filtered;

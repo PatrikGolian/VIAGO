@@ -1,37 +1,30 @@
-package services.myvehicles;
+package services.allvehicles;
 
-import dtos.reservation.ReservationDto;
-import dtos.reservation.ReservationReserveRequest;
-import dtos.studentAuth.ChangeUserRequest;
 import dtos.vehicle.*;
-import model.entities.User;
-import model.entities.reservation.Reservation;
 import model.entities.vehicles.Bike;
 import model.entities.vehicles.EBike;
 import model.entities.vehicles.Scooter;
 import model.entities.vehicles.Vehicle;
-import model.exceptions.ValidationException;
-import persistence.reservation.ReservationDao;
 import persistence.vehicle.VehicleDao;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyVehiclesServiceImpl implements MyVehiclesService
+public class AllVehiclesServiceImpl implements AllVehiclesService
 {
   private final VehicleDao vehicleDao;
 
-  public MyVehiclesServiceImpl(VehicleDao vehicleDao)
+  public AllVehiclesServiceImpl(VehicleDao vehicleDao)
   {
     this.vehicleDao = vehicleDao;
   }
 
-  @Override public List<VehicleDisplayDto> getVehiclesOverview(
-      VehicleOwnerRequest ownerEmail) throws SQLException
+
+  @Override public List<VehicleDisplayDto> getVehiclesOverview()
+      throws SQLException
   {
-    List<Vehicle> vehicles = vehicleDao.getByOwnerEmail(
-        ownerEmail.ownerEmail());
+    List<Vehicle> vehicles = vehicleDao.getAll();
     List<VehicleDisplayDto> result = new ArrayList<>();
 
     for (Vehicle vehicle : vehicles)
@@ -43,7 +36,6 @@ public class MyVehiclesServiceImpl implements MyVehiclesService
                 bike.getModel(), bike.getPricePerDay(), bike.getState(),
                 bike.getCondition(), bike.getColor(), bike.getOwnerEmail(),
                 bike.getBikeType()));
-
       }
       else if (vehicle instanceof EBike ebike)
       {
@@ -123,34 +115,5 @@ public class MyVehiclesServiceImpl implements MyVehiclesService
             "Failed to delete vehicle: " + e.getMessage(), e);
       }
     }
-  }
-
-  @Override public void changeVehicle(VehicleChangeRequest request)
-      throws SQLException
-  {
-    if (request instanceof BikeChangeRequest)
-    {
-      {
-        Bike bike = (Bike) vehicleDao.getByIdAndType(((BikeChangeRequest) request).id(),((BikeChangeRequest) request).type());
-       // bike.(((BikeChangeRequest) request).pricePerDay());
-        //vehicleDao.update(bike);
-      }
-    }
-    /*User user = userDao.getSingle(request.email());
-
-    if(user == null)
-    {
-      throw new ValidationException("User not found");
-    }
-
-    userDao.updateName(request.email(),request.firstName(), request.lastName());
-
-    String newPassword = request.password();
-
-    if(newPassword != null && !newPassword.isBlank() && !newPassword.equals(user.getPassword()))
-    {
-      userDao.updatePassword(request.email(), newPassword);
-    }
-  }*/
   }
 }

@@ -89,21 +89,6 @@ public class VehicleServiceImpl implements VehicleService
     }
 
   }
-
-  /* public List<VehicleDisplayDto> getVehiclesOverview()
-       throws SQLException
-   {
-     List<Vehicle> vehicles = vehicleDao.getAll();
-     List<VehicleDisplayDto> result = new ArrayList<>();
-
-     for (Vehicle vehicle : vehicles)
-     {
-       switch ()
-       VehicleDisplayDto dto = new VehicleDisplayDto(vehicle.getId(), vehicle.getType(), vehicle.getBrand(), vehicle.getModel(), vehicle.getPricePerDay(),vehicle.getState());
-       result.add(dto);
-     }
-     return result;
-   } */
   @Override public List<VehicleDisplayDto> getVehiclesOverview()
       throws SQLException
   {

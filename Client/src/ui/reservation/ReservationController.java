@@ -81,6 +81,7 @@ public class ReservationController implements Controller
 
   public void initialize()
   {
+    viewModel.loadVehicles();
     // Text fields uneditable and unfocusable
     conditionField.setEditable(false);
     conditionField.setFocusTraversable(false);

@@ -69,7 +69,7 @@ public class UserListDao implements UserDao
     users.add(user);
   }
 
-  @Override public List<User> getMany(String firstNameContains)
+  @Override public List<User> getMany()
   {
     List<User> result = new ArrayList<>();
     for (int i = 0; i < users.size(); i++)
@@ -77,12 +77,7 @@ public class UserListDao implements UserDao
       // this is an attempt at implementing paging, as seen in dbs, maybe it works, maybe it doesn't
       User user = users.get(i);
 
-      if (StringUtils.isNullOrEmpty(firstNameContains) || user.getFirstName()
-          .contains(
-              firstNameContains)) // if argument firstNameContains is not empty string, we filter by this.
-      {
         result.add(user);
-      }
     }
     return result;
   }
