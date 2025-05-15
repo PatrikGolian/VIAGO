@@ -1,42 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="600.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.adminallvehicles.AdminAllVehiclesController">
-   <children>
-      <TableView fx:id="vehiclesTable" layoutX="43.0" layoutY="65.0" prefHeight="200.0" prefWidth="646.0">
+<AnchorPane prefHeight="548.0" prefWidth="728.0" stylesheets="@../../resources/allVehiclesCSS/allVehiclesStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.adminallvehicles.AdminAllVehiclesController">
+<children>
+    <TableView fx:id="vehiclesTable" layoutX="7.0" layoutY="81.0" prefHeight="349.0" prefWidth="714.0">
         <columns>
-          <TableColumn fx:id="typeColumn" prefWidth="75.0" text="Type" />
-          <TableColumn fx:id="brandColumn" prefWidth="75.0" text="Brand" />
-            <TableColumn fx:id="modelColumn" prefWidth="75.0" text="Model" />
-            <TableColumn fx:id="priceColumn" prefWidth="75.0" text="PPD" />
-            <TableColumn fx:id="conditionColumn" prefWidth="75.0" text="Condition" />
-            <TableColumn fx:id="colorColumn" prefWidth="75.0" text="Color" />
-            <TableColumn fx:id="stateColumn" prefWidth="75.0" text="State" />
+            <TableColumn fx:id="typeColumn" prefWidth="104.80002117156982" text="Type" />
+            <TableColumn fx:id="brandColumn" prefWidth="110.4000244140625" text="Brand" />
+            <TableColumn fx:id="modelColumn" prefWidth="127.19999694824219" text="Model" />
+            <TableColumn fx:id="priceColumn" minWidth="0.0" prefWidth="60.0" text="PPD" />
+            <TableColumn fx:id="conditionColumn" prefWidth="90.39996337890625" text="Condition" />
+            <TableColumn fx:id="colorColumn" prefWidth="93.60003662109375" text="Color" />
+            <TableColumn fx:id="stateColumn" prefWidth="127.199951171875" text="State" />
             <TableColumn fx:id="ownerEmailColumn" prefWidth="75.0" text="Owner" />
         </columns>
-      </TableView>
-      <Label fx:id="speedLabel" layoutX="163.0" layoutY="322.0" text="Speed" />
-      <Label fx:id="rangeLabel" layoutX="163.0" layoutY="378.0" text="Range" />
-      <Label fx:id="bikeTypeLabel" layoutX="163.0" layoutY="444.0" text="Bike type" />
-      <TextField fx:id="speedField" layoutX="276.0" layoutY="318.0" />
-      <TextField fx:id="rangeField" layoutX="292.0" layoutY="383.0" />
-      <TextField fx:id="bikeTypeField" layoutX="276.0" layoutY="440.0" />
-      <Button fx:id="deleteButton" layoutX="530.0" layoutY="358.0" mnemonicParsing="false" onAction="#onDeleteVehicle" text="Delete" />
-      <Label fx:id="messageLabel" layoutX="11.0" layoutY="509.0" prefHeight="17.0" prefWidth="646.0" />
-      <StackPane layoutX="555.0" layoutY="501.0" prefHeight="69.0" prefWidth="83.0">
-         <children>
-            <Rectangle fx:id="profileShapeRedirect" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="67.0" stroke="BLACK" strokeType="INSIDE" width="80.0" />
-            <Label fx:id="profileTextRedirect" text="Label" />
-         </children>
-      </StackPane>
-   </children>
+    </TableView>
+    <TextField fx:id="speedField" layoutX="50.0" layoutY="435.0" prefHeight="30.0" prefWidth="184.0">
+        <font>
+            <Font size="14.0" />
+        </font></TextField>
+    <TextField fx:id="rangeField" layoutX="285.0" layoutY="434.0" prefHeight="30.0" prefWidth="184.0">
+        <font>
+            <Font size="14.0" />
+        </font></TextField>
+    <TextField fx:id="bikeTypeField" layoutX="537.0" layoutY="434.0" prefHeight="30.0" prefWidth="184.0">
+        <font>
+            <Font size="14.0" />
+        </font></TextField>
+    <Label fx:id="speedLabel" layoutX="7.0" layoutY="439.0" text="Speed">
+        <font>
+            <Font size="14.0" />
+        </font></Label>
+    <Label fx:id="rangeLabel" layoutX="241.0" layoutY="439.0" text="Range">
+        <font>
+            <Font size="14.0" />
+        </font></Label>
+    <Label fx:id="bikeTypeLabel" layoutX="476.0" layoutY="439.0" text="Bike type">
+        <font>
+            <Font size="14.0" />
+        </font></Label>
+    <StackPane layoutX="655.0" layoutY="4.0" prefHeight="58.0" prefWidth="66.0">
+        <children>
+            <Rectangle fx:id="profileShapeRedirect" arcHeight="5.0" arcWidth="5.0" fill="#e0e0e0" height="60.0" onMouseClicked="#onProfileRedirect" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="66.0">
+                <cursor>
+                    <Cursor fx:constant="HAND" />
+                </cursor>
+            </Rectangle>
+            <Label fx:id="profileTextRedirect" onMouseClicked="#onProfileRedirect" text="MR" textFill="#912f40">
+                <cursor>
+                    <Cursor fx:constant="HAND" />
+                </cursor>
+                <font>
+                    <Font name="System Bold" size="25.0" />
+                </font>
+            </Label>
+        </children>
+    </StackPane>
+    <Label fx:id="messageLabel" alignment="CENTER" layoutX="4.0" layoutY="472.0" prefHeight="18.0" prefWidth="714.0" />
+    <Button fx:id="deleteButton" layoutX="8.0" layoutY="497.0" mnemonicParsing="false" onAction="#onDeleteVehicle" prefHeight="40.0" prefWidth="714.0" text="Delete" textFill="WHITE">
+        <font>
+            <Font size="18.0" />
+        </font></Button>
+    <Line endX="625.0000610351562" layoutX="101.0" layoutY="71.0" startX="-100.0" stroke="#912f40" strokeWidth="3.0" />
+    <ImageView fitHeight="60.0" fitWidth="118.0" layoutX="4.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
+        <image>
+            <Image url="@../../resources/logo.png" />
+        </image>
+    </ImageView>
+      <TextField fx:id="searchField" layoutX="234.0" layoutY="21.0" prefHeight="27.0" prefWidth="285.0" promptText="Search by type">
+         <font>
+            <Font size="14.0" />
+         </font></TextField>
+</children>
 </AnchorPane>

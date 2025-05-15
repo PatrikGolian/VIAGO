@@ -2,6 +2,7 @@ package startup;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import model.entities.User;
 import networking.addnew.AddNewVehicleClient;
@@ -56,6 +57,9 @@ public class ViewHandler
   {
     showView(ViewType.LOGIN);
     stage.show();
+    stage.setResizable(false);
+    stage.getIcons().add(
+        new Image(getClass().getResourceAsStream("../resources/icon-06.png")));
   }
 
   public static void showView(ViewType viewToShow)
@@ -64,7 +68,6 @@ public class ViewHandler
     {
       switch (viewToShow)
       {
-        case WELCOME -> openWelcomeView();
         case REGISTER -> openRegisterView();
         case LOGIN -> openLoginView();
         case ADDNEW -> openAddNewView();
@@ -82,14 +85,15 @@ public class ViewHandler
     }
   }
 
-  public static void popupMessage(MessageType type,
-      String message) // currently always an error, will fix later for success message too.
+  public static void popupMessage(MessageType type, String message)
   {
     Stage stage = new Stage();
     stage.setMinWidth(300);
     stage.setMinHeight(200);
+    stage.setResizable(false);
 
-      PopupController controller = new PopupController(stage, type, message);
+
+    PopupController controller = new PopupController(stage, type, message);
 
     FXMLLoader fxmlLoader = new FXMLLoader(
         ViewHandler.class.getResource("../ui/popup/Popup.fxml"));
@@ -108,14 +112,16 @@ public class ViewHandler
     stage.show();
   }
 
-  public static void popupMessage(MessageType type,
-      String message, UserFx user, UsersClient userService) // currently always an error, will fix later for success message too.
+  public static void popupMessage(MessageType type, String message, UserFx user,
+      UsersClient userService)
   {
     Stage stage = new Stage();
     stage.setMinWidth(300);
     stage.setMinHeight(200);
+    stage.setResizable(false);
 
-    PopupController controller = new PopupController(stage, type, message);
+    PopupController controller = new PopupController(stage, type, message, user,
+        userService);
 
     FXMLLoader fxmlLoader = new FXMLLoader(
         ViewHandler.class.getResource("../ui/popup/Popup.fxml"));
@@ -139,7 +145,7 @@ public class ViewHandler
     AuthenticationClient service = new SocketAuthenticationClient();
     LoginVM vm = new LoginVM(service);
     LoginController controller = new LoginController(vm);
-    String viewTitle = "Login";
+    String viewTitle = "viaGO - Login";
     String viewSubPath = "login/Login.fxml";
     openView(viewTitle, viewSubPath, controller);
   }
@@ -149,17 +155,10 @@ public class ViewHandler
     AuthenticationClient service = new SocketAuthenticationClient();
     RegisterVM vm = new RegisterVM(service);
     RegisterController controller = new RegisterController(vm);
-    String viewTitle = "Register";
+    String viewTitle = "viaGO - Register";
     String viewSubPath = "register/Register.fxml";
     openView(viewTitle, viewSubPath, controller);
-  }
 
-  private static void openWelcomeView() throws IOException
-  {
-    WelcomeController controller = new WelcomeController();
-    String viewTitle = "Welcome";
-    String viewSubPath = "welcome/Welcome.fxml";
-    openView(viewTitle, viewSubPath, controller);
   }
 
   private static void openAddNewView() throws IOException
@@ -167,7 +166,7 @@ public class ViewHandler
     AddNewVehicleClient addNew = new SocketAddNewVehicleClient();
     AddNewVM vm = new AddNewVM(addNew);
     AddNewController controller = new AddNewController(vm);
-    String viewTitle = "AddNew";
+    String viewTitle = "viaGO - Add New";
     String viewSubPath = "addnew/AddNew.fxml";
     openView(viewTitle, viewSubPath, controller);
   }
@@ -177,7 +176,7 @@ public class ViewHandler
     ReservationClient reservationClient = new SocketReservationClient();
     ReservationVM vm = new ReservationVM(reservationClient);
     ReservationController controller = new ReservationController(vm);
-    String viewTitle = "Reservation";
+    String viewTitle = "viaGO - Reservation";
     String viewSubPath = "reservation/Reservation.fxml";
     openView(viewTitle, viewSubPath, controller);
   }
@@ -187,7 +186,7 @@ public class ViewHandler
     StudentAccountClient studentAccountClient = new SocketStudentAccountClient();
     StudentAccountVM vm = new StudentAccountVM(studentAccountClient);
     StudentAccountController controller = new StudentAccountController(vm);
-    String viewTitle = "Student Account";
+    String viewTitle = "viaGO - Student Account";
     String viewSubPath = "studentaccount/StudentAccount.fxml";
     openView(viewTitle, viewSubPath, controller);
   }
@@ -197,7 +196,7 @@ public class ViewHandler
     MyVehiclesClient myVehiclesClient = new SocketMyVehiclesClient();
     MyVehiclesVM vm = new MyVehiclesVM(myVehiclesClient);
     MyVehiclesController controller = new MyVehiclesController(vm);
-    String viewTitle = "My Vehicles";
+    String viewTitle = "viaGO - My Vehicles";
     String viewSubPath = "myvehicles/MyVehicles.fxml";
     openView(viewTitle, viewSubPath, controller);
   }
@@ -207,7 +206,7 @@ public class ViewHandler
     UsersClient client = new SocketUsersClient();
     ViewUsersVM vm = new ViewUsersVM(client);
     ViewUsersController controller = new ViewUsersController(vm);
-    String viewTitle = "Overview";
+    String viewTitle = "viaGO - Overview";
     String viewSubPath = "adminaccount/ViewUsers.fxml";
     openView(viewTitle, viewSubPath, controller);
   }
@@ -217,7 +216,7 @@ public class ViewHandler
     AdminAllVehiclesClient client = new SocketAllVehiclesClient();
     AdminAllVehiclesVM vm = new AdminAllVehiclesVM(client);
     AdminAllVehiclesController controller = new AdminAllVehiclesController(vm);
-    String viewTitle = "All Vehicles";
+    String viewTitle = "viaGO - All Vehicles";
     String viewSubPath = "adminallvehicles/AdminAllVehicles.fxml";
     openView(viewTitle, viewSubPath, controller);
   }

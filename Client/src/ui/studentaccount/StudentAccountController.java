@@ -11,8 +11,11 @@ import ui.common.Controller;
 import ui.popup.MessageType;
 import ui.reservation.ReservationFx;
 
+import javax.swing.text.View;
+
 public class StudentAccountController implements Controller
 {
+  @FXML Button logoutButton;
   @FXML Label changeNameLabel;
   @FXML Label changePasswordLabel;
   @FXML Label coverLabel;
@@ -52,12 +55,10 @@ public class StudentAccountController implements Controller
   private void setFieldsAndLabels()
   {
     viewModel.resetInfo();
-
   }
 
   public void initialize()
   {
-
     // Bind fields and labels
     firstNameField.textProperty()
         .bindBidirectional(viewModel.firstNameProperty());
@@ -157,6 +158,12 @@ public class StudentAccountController implements Controller
       ViewHandler.popupMessage(MessageType.WARNING, "Please select a reservation to delete.");
     }
   }
+
+  public void onLogout()
+  {
+    ViewHandler.showView(ViewType.LOGIN);
+  }
+
   public void clearTable() {
     reservationTable.getItems().clear();
   }

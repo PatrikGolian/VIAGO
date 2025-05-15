@@ -90,6 +90,8 @@ public class ViewUsersController implements Controller
         .bind(vm.confirmPasswordLabelVisibilityProperty());
     confirmButton.visibleProperty().bind(vm.confirmButtonVisibility());
 
+    blacklistButton.textProperty().bind(vm.blackListButtonNameProperty());
+
     changeNameLabel.visibleProperty().bind(vm.changeNameLabelVisibility());
     changePasswordLabel.visibleProperty()
         .bind(vm.changePasswordLabelVisibility());
@@ -115,16 +117,21 @@ public class ViewUsersController implements Controller
     // Table view
     table.setItems(vm.getUsersList());
     table.setEditable(false);
-    vm.selectedUserProperty().bind(table.getSelectionModel().selectedItemProperty());
     table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    blackListReasonField.setEditable(false);
+    blackListReasonField.setFocusTraversable(false);
+
+
+    vm.selectedUserProperty().bind(table.getSelectionModel().selectedItemProperty());
     vm.selectedUserProperty().addListener((obs, oldValue, newV) -> {
           if (newV != null)
           {
+            vm.blackListButtonName(newV.isBlacklistedProperty().get());
+            vm.blackListFieldSet(vm.getBlacklistReason(newV));
+            vm.setVisibility();
             select(newV);
-            vm.selectedUserProperty().setValue(newV);
           }
         });
-    // vm.setVisibility();
 
     firstNameColumn.setCellValueFactory(
         param -> param.getValue().firstNameProperty());
@@ -133,21 +140,8 @@ public class ViewUsersController implements Controller
     emailColumn.setCellValueFactory(param -> param.getValue().emailProperty());
     blacklistedColumn.setCellValueFactory(
         param -> param.getValue().isBlacklistedProperty());
-  }
 
-  public void onBlacklist()
-  {
-    vm.blacklist();
-  }
 
-  public void onChangePassword()
-  {
-
-  }
-
-  public void onSort(SortEvent<TableView<UserFx>> tableViewSortEvent)
-  {
-    // not sure what this can do.. will investigate
   }
 
   private void setFieldsAndLabels()
@@ -175,35 +169,40 @@ public class ViewUsersController implements Controller
     ViewHandler.showView(ViewType.VIEWUSERS);
   }
 
-  //  public void onBlackList()
-  //  {
-  //    UserFx selected = table.getSelectionModel().getSelectedItem();
-  //    if (selected != null)
-  //    {
-  //      vm.blacklist(selected);
-  //      clearTable();
-  //      vm.loadUsers();
-  //
-  //    }
-  //    else
-  //    {
-  //      ViewHandler.popupMessage(MessageType.WARNING, "Please select a user to blacklist.");
-  //    }
-  //  }
+    public void onBlacklist()
+    {
+      UserFx selected = table.getSelectionModel().getSelectedItem();
+      if (selected != null)
+      {
+        vm.blacklist(selected);
+        clearTable();
+        vm.loadUsers();
+      }
+      else
+      {
+        ViewHandler.popupMessage(MessageType.WARNING, "Please select a user to blacklist.");
+      }
+    }
   private void updateBlackListedReasonField()
   {
-    UserFx selectedUser = vm.selectedUserProperty().get();
-    String blackListedReason = selectedUser.blackListedReasonProperty().get();
+    UserFx selected = table.getSelectionModel().getSelectedItem();
+    String blackListedReason = selected.blackListedReasonProperty().get();
   }
   public void clearTable()
   {
     table.getItems().clear();
   }
 
+  public void onLogout()
+  {
+    ViewHandler.showView(ViewType.LOGIN);
+  }
+
   public void select(UserFx selected)
   {
     vm.setSelected(selected);
   }
+
 }
 
 

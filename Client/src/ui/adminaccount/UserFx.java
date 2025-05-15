@@ -1,7 +1,6 @@
 package ui.adminaccount;
 
 import dtos.user.UserDataDto;
-import dtos.user.ViewUsers;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;

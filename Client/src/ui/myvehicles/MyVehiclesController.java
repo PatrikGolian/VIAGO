@@ -24,7 +24,6 @@ public class MyVehiclesController implements Controller
   @FXML private TableColumn<VehicleFx, String> conditionColumn;
   @FXML private TableColumn<VehicleFx, String> colorColumn;
   @FXML private TableColumn<VehicleFx, String> stateColumn;
-  @FXML private TableColumn<VehicleFx, String> ownerEmailColumn;
 
   @FXML private TextField bikeTypeField;
   @FXML private TextField speedField;
@@ -99,7 +98,6 @@ public class MyVehiclesController implements Controller
     typeColumn.setCellValueFactory(new PropertyValueFactory<>("typeProp"));
     brandColumn.setCellValueFactory(new PropertyValueFactory<>("brandProp"));
     modelColumn.setCellValueFactory(new PropertyValueFactory<>("modelProp"));
-    ownerEmailColumn.setCellValueFactory(new PropertyValueFactory<>("ownerEmailProp"));
     priceColumn.setCellValueFactory(
         new PropertyValueFactory<>("pricePerDayProp"));
     conditionColumn.setCellValueFactory(new PropertyValueFactory<>("conditionProp"));

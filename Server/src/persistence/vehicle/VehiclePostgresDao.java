@@ -447,6 +447,22 @@ public class VehiclePostgresDao implements VehicleDao
       }
     }
   }
+  @Override public void deleteAll(String email) throws SQLException
+  {
+    PreparedStatement statement;
+    try (Connection connection = getConnection())
+    {
+      statement = connection.prepareStatement("DELETE FROM bike WHERE ownerEmail = ?");
+      statement.setString(1, email);
+      statement.executeUpdate();
+      statement = connection.prepareStatement("DELETE FROM eBike WHERE ownerEmail = ?");
+      statement.setString(1, email);
+      statement.executeUpdate();
+      statement = connection.prepareStatement("DELETE FROM scooter WHERE ownerEmail = ?");
+      statement.setString(1, email);
+      statement.executeUpdate();
+    }
+  }
 
   @Override public void save(Vehicle vehicle, Vehicle oldVehicle)
       throws SQLException

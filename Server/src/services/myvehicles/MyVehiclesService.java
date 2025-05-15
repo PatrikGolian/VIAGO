@@ -15,5 +15,5 @@ public interface MyVehiclesService
       VehicleOwnerRequest request)
       throws SQLException;
   void delete(DeleteVehicleRequest request);
-  void changeVehicle(VehicleChangeRequest request) throws SQLException;
+  void deleteAll(VehicleOwnerRequest request) throws SQLException;
 }

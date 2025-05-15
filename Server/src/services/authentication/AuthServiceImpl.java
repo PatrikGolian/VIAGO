@@ -32,10 +32,10 @@ public class AuthServiceImpl implements AuthenticationService
     validatePasswordIsCorrectFormat(request.password());
     validateFirstName(request.firstName());
     validateLastName(request.lastName());
+
     if (request.email().matches(("^[a-zA-Z]+@via\\.dk$")))
     {
       User newUser = new User(
-
           request.email(), request.password(), request.firstName(),
           request.lastName());
       newUser.setAdmin(true);
@@ -108,7 +108,7 @@ public class AuthServiceImpl implements AuthenticationService
     }
   }
 
-  @Override public UserDataDto login(LoginRequest request) throws SQLException
+  @Override public UserDataDto login(LoginRequest request) throws ValidationException, SQLException
   {
     User existingUser = userDao.getSingle(request.email());
     if (existingUser == null)
@@ -126,10 +126,8 @@ public class AuthServiceImpl implements AuthenticationService
       throw new ValidationException(
           "This user is blacklisted: " + existingUser.getBlacklistReason());
     }
-
-    UserDataDto userData = new UserDataDto(existingUser.getEmail(),
-        existingUser.getFirstName(), existingUser.getLastName(),
-        existingUser.isBlacklisted(), existingUser.isAdmin());
+    UserDataDto userData = new UserDataDto(existingUser.getEmail(), existingUser.getFirstName(), existingUser.getLastName(),
+        existingUser.isBlacklisted(), existingUser.isAdmin(),existingUser.getBlacklistReason());
     return userData;
   }
-  }
+}

@@ -10,6 +10,9 @@ import java.util.List;
 public interface UserService
 {
   void blacklistUser(BlacklistUserRequest request) throws SQLException;
+  void blacklistUserReason(BlacklistUserRequest request) throws SQLException;
+
+  String getBlackListReason(BlacklistUserRequest request) throws SQLException;
 
   List<UserDataDto> getUsersOverview()
       throws SQLException;

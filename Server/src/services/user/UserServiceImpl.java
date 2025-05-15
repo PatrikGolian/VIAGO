@@ -64,12 +64,41 @@ public class UserServiceImpl implements UserService
       throw new NotFoundException(
           "User with email '" + request.email() + "' not found.");
     }
-    user.setBlacklisted(!user.isBlacklisted());
-    System.out.println(user);
-    user.blacklist(
-        request.reason()); // Alternatively I could have a setBlackList(true, request.reason()) method. I prefer this clearer approach.
-    user.setAdmin(false); // admins are automatically demoted when blacklisted.
+    user.setReason(request.reason());
+    System.out.println(user.toString());
+    if (user.isBlacklisted())
+    {
+      user.setBlacklisted(!(user.isBlacklisted()));
+    }
+    else
+    {
+      user.blacklist(request.reason()); // Alternatively I could have a setBlackList(true, request.reason()) method. I prefer this clearer approach.
+    }
     userDao.save(user);
+  }
+  @Override public void blacklistUserReason(BlacklistUserRequest request)
+      throws SQLException
+  {
+    User user = userDao.getSingle(request.email());
+    if (user == null)
+    {
+      throw new NotFoundException(
+          "User with email '" + request.email() + "' not found.");
+    }
+    user.setReason(request.reason());
+    System.out.println(user.toString());
+    userDao.save(user);
+  }
+
+  @Override public  String getBlackListReason(BlacklistUserRequest request) throws SQLException
+  {
+    User user = userDao.getSingle(request.email());
+    if (user == null)
+    {
+      throw new NotFoundException(
+          "User with email '" + request.email() + "' not found.");
+    }
+    return user.getBlacklistReason();
   }
 
   @Override public List<UserDataDto> getUsersOverview(
@@ -85,7 +114,7 @@ public class UserServiceImpl implements UserService
     {
       UserDataDto dto = new UserDataDto(
           user.getEmail(), user.getFirstName(), user.getLastName(),
-          user.isBlacklisted(),user.isAdmin());
+          user.isBlacklisted(),user.isAdmin(),user.getBlacklistReason());
       result.add(dto);
     }
 

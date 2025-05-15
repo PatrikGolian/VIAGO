@@ -4,7 +4,9 @@ import dtos.vehicle.*;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import networking.adminallvehicles.AdminAllVehiclesClient;
+import networking.adminallvehicles.AllVehiclesSubscriber;
 import networking.reservation.ReservationClient;
 import networking.reservation.ReservationSubscriber;
 import startup.ViewHandler;
@@ -21,6 +23,8 @@ public class AdminAllVehiclesVM
   private final AdminAllVehiclesClient adminAllVehiclesClient;
   private final ObservableList<VehicleFx> vehicles = FXCollections.observableArrayList();
   private final ObjectProperty<VehicleFx> selectedVehicle = new SimpleObjectProperty<>();
+  private final FilteredList<VehicleFx> filteredVehicles = new FilteredList<>(
+      vehicles, p -> true);
 
   private final StringProperty profileTextRedirectProp = new SimpleStringProperty();
   private final StringProperty messageProp = new SimpleStringProperty();
@@ -39,13 +43,14 @@ public class AdminAllVehiclesVM
   public AdminAllVehiclesVM(AdminAllVehiclesClient adminAllVehiclesClient)
   {
     this.adminAllVehiclesClient = adminAllVehiclesClient;
-    /*try
+    try
     {
-      new ReservationSubscriber("localhost", 2910, () -> loadVehicles());
+      new AllVehiclesSubscriber("localhost", 2910, () -> loadVehicles());
     }
     catch (IOException e)
     {
-    }*/
+    }
+    loadVehicles();
   }
 
 
@@ -55,7 +60,7 @@ public class AdminAllVehiclesVM
     try
     {
       List<VehicleDisplayDto> loadedVehicles = adminAllVehiclesClient.getVehicles();
-      //vehicles.clear();
+      vehicles.clear();
       for (VehicleDisplayDto vehicle : loadedVehicles) // (int i = 0; i < loadedVehicles.size(); i++)
       {
         vehicles.add(new VehicleFx(vehicle));
@@ -73,6 +78,12 @@ public class AdminAllVehiclesVM
   {
     return vehicles;
   }
+
+  public FilteredList<VehicleFx> getFilteredVehicles()
+  {
+    return filteredVehicles;
+  }
+
 
   public void deleteVehicle(VehicleFx vehicleFx)
   {
@@ -124,10 +135,10 @@ public class AdminAllVehiclesVM
       messageProp.set("Vehicle deleted successfully.");
     } catch (NumberFormatException e) {
       messageProp.set("Invalid number format in speed or range.");
-      e.printStackTrace();
+
     } catch (Exception e) {
       messageProp.set("An error occurred while trying to delete the vehicle.");
-      e.printStackTrace();
+
     }
   }
 
@@ -253,6 +264,4 @@ public class AdminAllVehiclesVM
   {
     return selectedVehicle;
   }
-
-
 }

@@ -4,9 +4,7 @@ import dtos.auth.RegisterUserRequest;
 import dtos.studentAuth.ChangeUserRequest;
 import dtos.studentAuth.GetPasswordRequest;
 import dtos.user.BlacklistUserRequest;
-import dtos.user.PromoteUserRequest;
 import dtos.user.UpdatePasswordRequest;
-import dtos.user.ViewUsers;
 import networking.readerswriters.ReadWrite;
 import networking.readerswriters.Reader;
 import networking.readerswriters.Writer;
@@ -46,6 +44,46 @@ public class UserRequestHandler implements RequestHandler
                     Thread.currentThread().interrupt();
                 }
 
+            }
+            case "blackListReason" -> {
+                Writer writer = new Writer(lock, () -> {
+                    try {
+                        userService.blacklistUserReason((BlacklistUserRequest) payload);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e); // wrap checked exception
+                    }
+                });
+                Thread writerThread = new Thread(writer);
+                writerThread.start();
+                try {
+                    writerThread.join();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+
+            }
+            case "getBlackListReason" ->{
+                Reader<Object> reader = new Reader<>(lock, () -> {
+                    try
+                    {
+                        return userService.getBlackListReason((BlacklistUserRequest) payload);
+                    }
+                    catch (SQLException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                });
+                Thread thread = new Thread(reader);
+                thread.start();
+                try
+                {
+                    thread.join();
+                }
+                catch (InterruptedException e)
+                {
+                    Thread.currentThread().interrupt();
+                }
+                return reader.getResult();
             }
             case "view_users" ->
             {

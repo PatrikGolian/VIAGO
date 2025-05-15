@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="468.0" maxWidth="638.0" prefHeight="468.0" prefWidth="638.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.login.LoginController" stylesheets="@../../resources/loginCSS/loginStyle.css">
+<AnchorPane maxHeight="468.0" maxWidth="638.0" prefHeight="468.0" prefWidth="638.0" stylesheets="@../../resources/loginCSS/loginStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.login.LoginController">
    <children>
       <TextField fx:id="emailInput" layoutX="140.0" layoutY="219.0" prefHeight="35.0" prefWidth="359.0" promptText="Email">
          <font>

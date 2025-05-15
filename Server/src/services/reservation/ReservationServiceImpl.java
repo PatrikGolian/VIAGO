@@ -3,7 +3,8 @@ package services.reservation;
 import dtos.reservation.ReservationDto;
 import dtos.reservation.ReservationRequest;
 import dtos.reservation.ReservationRequestByIdType;
-import dtos.user.ViewUsers;
+import dtos.reservation.ReservationReserveRequest;
+import dtos.vehicle.VehicleOwnerRequest;
 import model.Date;
 import model.entities.User;
 import model.entities.reservation.Reservation;
@@ -86,6 +87,11 @@ public class ReservationServiceImpl implements ReservationService
       } else
         System.out.println("[UPDATESTATE] ----> not equal");
     }
+  }
+
+  public void deleteAll(ReservationReserveRequest request)
+  {
+  reservationDao.deleteAll(request.reservedByEmail());
   }
 
   public void addNewReservation(ReservationRequest request)

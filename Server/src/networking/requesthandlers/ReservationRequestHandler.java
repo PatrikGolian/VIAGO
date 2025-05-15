@@ -2,6 +2,7 @@ package networking.requesthandlers;
 
 import dtos.reservation.ReservationRequest;
 import dtos.reservation.ReservationRequestByIdType;
+import dtos.reservation.ReservationReserveRequest;
 import dtos.vehicle.AddNewBikeRequest;
 import dtos.vehicle.AddNewEBikeRequest;
 import dtos.vehicle.VehicleDisplayDto;
@@ -49,6 +50,18 @@ public class ReservationRequestHandler implements RequestHandler
         }
 
 
+      }
+      case "delete_allReservation" ->{
+        Writer writer = new Writer(lock, () -> {
+          reservationService.deleteAll((ReservationReserveRequest) payload);
+        });
+        Thread thread = new Thread(writer);
+        thread.start();
+        try {
+          thread.join();
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+        }
       }
       case "view_vehicles" ->
       {

@@ -75,6 +75,11 @@ public class User
     isBlacklisted = blacklisted;
   }
 
+  public void setReason(String reason)
+  {
+    blacklistReason = reason;
+  }
+
   public void setAdmin(boolean promoteToAdmin)
   {
     isAdmin = promoteToAdmin;

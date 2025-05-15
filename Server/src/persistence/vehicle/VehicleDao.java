@@ -1,5 +1,6 @@
 package persistence.vehicle;
 
+import dtos.vehicle.VehicleOwnerRequest;
 import model.entities.vehicles.Vehicle;
 
 import java.sql.SQLException;
@@ -15,5 +16,6 @@ public interface VehicleDao
   ArrayList<Vehicle> getByOwnerEmail(String ownerEmail) throws SQLException;
   ArrayList<Vehicle> getAll() throws SQLException;
   void delete(Vehicle vehicle) throws SQLException;
+  void deleteAll(String request) throws SQLException;
   void save(Vehicle vehicle, Vehicle oldVehicle) throws SQLException;
 }

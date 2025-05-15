@@ -14,9 +14,9 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="673.0" prefWidth="752.0" stylesheets="@../../resources/studentAccountCSS/studentAccountStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.studentaccount.StudentAccountController">
+<AnchorPane prefHeight="720.0" prefWidth="752.0" stylesheets="@../../resources/studentAccountCSS/studentAccountStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.studentaccount.StudentAccountController">
    <children>
-      <TableView fx:id="reservationTable" layoutX="294.0" layoutY="150.0" prefHeight="458.0" prefWidth="449.0">
+      <TableView fx:id="reservationTable" layoutX="294.0" layoutY="150.0" prefHeight="493.0" prefWidth="450.0">
          <columns>
             <TableColumn fx:id="typeColumn" editable="false" prefWidth="84.79998779296875" text="Vehicle Type" />
             <TableColumn fx:id="startDateColumn" editable="false" prefWidth="91.199951171875" text="Start Date" />
@@ -25,8 +25,8 @@
             <TableColumn fx:id="ownerEmail" editable="false" prefWidth="143.20003662109377" text="Owner email" />
          </columns>
       </TableView>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e0e0e0" height="601.0" layoutX="-5.0" layoutY="75.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="286.0" />
-      <Button fx:id="deleteButton" layoutX="294.0" layoutY="641.0" mnemonicParsing="false" onAction="#onDeleteReservation" prefHeight="30.0" prefWidth="450.0" text="DELETE" textFill="WHITE">
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e0e0e0" height="638.0" layoutX="-5.0" layoutY="75.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="286.0" />
+      <Button fx:id="deleteButton" layoutX="294.0" layoutY="678.0" mnemonicParsing="false" onAction="#onDeleteReservation" prefHeight="30.0" prefWidth="450.0" text="DELETE" textFill="WHITE">
          <font>
             <Font size="14.0" />
          </font>
@@ -127,7 +127,7 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <Label fx:id="messageLabel" alignment="CENTER" layoutX="294.0" layoutY="616.0" prefHeight="20.0" prefWidth="450.0" textFill="#dc0606">
+      <Label fx:id="messageLabel" alignment="CENTER" layoutX="296.0" layoutY="650.0" prefHeight="20.0" prefWidth="450.0" textFill="#dc0606">
          <font>
             <Font size="14.0" />
          </font>
@@ -157,5 +157,10 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
+      <Button fx:id="logoutButton" layoutX="9.0" layoutY="678.0" mnemonicParsing="false" onAction="#onLogout" prefHeight="30.0" prefWidth="258.0" text="LOG OUT" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

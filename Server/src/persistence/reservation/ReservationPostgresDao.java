@@ -129,6 +129,22 @@ public class ReservationPostgresDao implements ReservationDao
     }
   }
 
+  public void deleteAll(String email)
+  {
+    PreparedStatement statement;
+    try (Connection connection = getConnection())
+    {
+      statement = connection.prepareStatement(
+          "DELETE FROM reservation WHERE reservedByEmail = ?");
+      statement.setString(1, email);
+      statement.executeUpdate();
+    }
+    catch (SQLException e)
+    {
+      throw new RuntimeException(e);
+    }
+  }
+
   public void save(Reservation reservation, Reservation oldReservation)
       throws SQLException
   {

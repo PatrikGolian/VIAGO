@@ -69,6 +69,27 @@ public class MyVehiclesRequestHandler implements RequestHandler
         }
         return Boolean.TRUE;
       }
+      case "delete_allVehicle" ->
+      {
+        Writer writer = new Writer(lock, () -> {
+          try
+          {
+            myVehiclesService.deleteAll((VehicleOwnerRequest) payload);
+          }
+          catch (SQLException e)
+          {
+            throw new RuntimeException(e);
+          }
+        });
+        Thread thread = new Thread(writer);
+        thread.start();
+        try {
+          thread.join();
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+        }
+        return Boolean.TRUE;
+      }
     }
     return null;
   }

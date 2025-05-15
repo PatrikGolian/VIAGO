@@ -1,4 +1,5 @@
-package networking.reservation;
+package networking.user;
+
 import dtos.Request;
 import dtos.Response;
 import javafx.application.Platform;
@@ -8,38 +9,30 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class ReservationSubscriber {
+public class UsersSubscriber
+{
   private final ObjectOutputStream out;
   private final ObjectInputStream in;
   private final Thread readerThread;
 
-  public ReservationSubscriber(String host, int port, Runnable action) throws IOException
+  public UsersSubscriber(String host, int port, Runnable action) throws
+      IOException
   {
     Socket sock = new Socket(host, port);
     this.out = new ObjectOutputStream(sock.getOutputStream());
     this.in = new ObjectInputStream(sock.getInputStream());
 
-    out.writeObject(new Request("reservation", "subscribe", null));
+    out.writeObject(new Request("users", "subscribe", null));
 
     this.readerThread = new Thread(() -> {
       try {
         while (true) {
           Response response = (Response) in.readObject();
-          System.out.println("----> [reservationSub] got push: " + response.status());
           switch (response.status()) {
-            case "RESERVATION_ADDED":
-            {
-              Platform.runLater(action);
-              System.out.println("----> [reservationSub] got reservation push! ");
-            }
-              break;
-            case "BIKE_ADDED":
+            case "USER_ADDED":
               Platform.runLater(action);
               break;
-            case "EBIKE_ADDED":
-              Platform.runLater(action);
-              break;
-            case "SCOOTER_ADDED":
+            case "USER_BLACKLISTED":
               Platform.runLater(action);
               break;
             default:

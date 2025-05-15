@@ -6,185 +6,104 @@ import dtos.reservation.ReservationReserveRequest;
 import dtos.studentAuth.ChangeUserRequest;
 import dtos.studentAuth.GetPasswordRequest;
 import dtos.user.BlacklistUserRequest;
-import dtos.user.PromoteUserRequest;
 import dtos.user.UserDataDto;
-import dtos.user.ViewUsers;
 import javafx.beans.Observable;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.entities.User;
+import networking.adminallvehicles.AllVehiclesSubscriber;
 import networking.studentaccount.StudentAccountClient;
 import networking.user.UsersClient;
+import networking.user.UsersSubscriber;
 import startup.ViewHandler;
 import state.AppState;
 import ui.popup.MessageType;
 import ui.reservation.ReservationFx;
 import ui.reservation.VehicleFx;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
 public class ViewUsersVM
 {
+  // Services and Data Models
   private final UsersClient userService;
+  private final ObservableList<UserFx> users = FXCollections.observableArrayList();
+  private final ObjectProperty<UserFx> selectedUser = new SimpleObjectProperty<>();
+  private UserFx selected;
+
+  // 2. UI State Properties
+  // Button/Action State
   private final BooleanProperty showBlacklistButtonProp = new SimpleBooleanProperty();
   private final BooleanProperty disableChangePasswordButtonProp = new SimpleBooleanProperty(
       true);
-  private final ObservableList<UserFx> users = FXCollections.observableArrayList();
-  private ObjectProperty<UserFx> selectedUser = new SimpleObjectProperty<>();
 
-//  private final BooleanProperty disableBlacklistButtonProp = new SimpleBooleanProperty(
-//      true);
-
-  // Editable Fields
-  private final StringProperty profileTextRedirectProperty = new SimpleStringProperty();
-  private final StringProperty coverLabelProperty = new SimpleStringProperty();
-  private final StringProperty firstNameProp = new SimpleStringProperty();
-  private final StringProperty lastNameProp = new SimpleStringProperty();
-  private final StringProperty oldPasswordProp = new SimpleStringProperty();
-  private final StringProperty newPasswordProp = new SimpleStringProperty();
-  private final StringProperty confirmPasswordProp = new SimpleStringProperty();
-  private final StringProperty emailProp = new SimpleStringProperty();
-  private final StringProperty nameProp = new SimpleStringProperty();
-  private final StringProperty messageProp = new SimpleStringProperty();
-  private final StringProperty messageProp2 = new SimpleStringProperty();
-  private UserFx selected;
-
-  // Visiblity bind
+  // Visibility of Labels and Fields
   private final BooleanProperty changeNameLabelVisibility = new SimpleBooleanProperty();
   private final BooleanProperty changePasswordLabelVisibility = new SimpleBooleanProperty();
+
   private final BooleanProperty firstNameFieldVisibility = new SimpleBooleanProperty();
   private final BooleanProperty lastNameFieldVisibility = new SimpleBooleanProperty();
   private final BooleanProperty oldPasswordFieldVisibility = new SimpleBooleanProperty();
   private final BooleanProperty newPasswordFieldVisibility = new SimpleBooleanProperty();
   private final BooleanProperty confirmPasswordFieldVisibility = new SimpleBooleanProperty();
+  private final BooleanProperty blackListReasonFieldVisibility = new SimpleBooleanProperty();
+  private final BooleanProperty confirmButtonVisibility = new SimpleBooleanProperty();
 
   private final BooleanProperty firstNameLabelVisibility = new SimpleBooleanProperty();
   private final BooleanProperty lastNameLabelVisibility = new SimpleBooleanProperty();
   private final BooleanProperty oldPasswordLabelVisibility = new SimpleBooleanProperty();
   private final BooleanProperty newPasswordLabelVisibility = new SimpleBooleanProperty();
   private final BooleanProperty confirmPasswordLabelVisibility = new SimpleBooleanProperty();
-  private final BooleanProperty messageLabelVisibility = new SimpleBooleanProperty();
   private final BooleanProperty blackListReasonLabelVisibility = new SimpleBooleanProperty();
-  private final BooleanProperty blackListReasonFieldVisibility = new SimpleBooleanProperty();
-  private final BooleanProperty confirmButtonVisibility = new SimpleBooleanProperty();
+  private final BooleanProperty messageLabelVisibility = new SimpleBooleanProperty();
+
+  // User Editable Input Properties
+  private final StringProperty firstNameProp = new SimpleStringProperty();
+  private final StringProperty lastNameProp = new SimpleStringProperty();
+  private final StringProperty oldPasswordProp = new SimpleStringProperty();
+  private final StringProperty newPasswordProp = new SimpleStringProperty();
+  private final StringProperty confirmPasswordProp = new SimpleStringProperty();
+  private final StringProperty blackListedReasonFieldProp = new SimpleStringProperty();
+
+  // Informational Display Properties
+  private final StringProperty profileTextRedirectProperty = new SimpleStringProperty();
+  private final StringProperty coverLabelProperty = new SimpleStringProperty();
+  private final StringProperty emailProp = new SimpleStringProperty();
+  private final StringProperty nameProp = new SimpleStringProperty();
+  private final StringProperty messageProp = new SimpleStringProperty();
+  private final StringProperty messageProp2 = new SimpleStringProperty();
+  private final StringProperty blackListButtonName = new SimpleStringProperty();
+
   public ViewUsersVM(UsersClient userService)
   {
     this.userService = userService;
-    //showPromoteButtonProp.set(AppState.getCurrentUser().isAdmin());
-    showBlacklistButtonProp.set(AppState.getCurrentUser().isAdmin());
-   // selectedIndexProp.addListener(this::updateEnablePromoteAndBlacklistButtons);
-    // selectedIndexProp.addListener(this::updateEnableChangePasswordButton);
-  }
-
-  private void updateEnableChangePasswordButton(Observable observable)
-  {
-    UserFx userFx = selected;
-    boolean shouldDisable = !userFx.emailProperty().get()
-        .equals(AppState.getCurrentUser().email());
-    disableChangePasswordButtonProp.set(shouldDisable);
-  }
-
-  /*public BooleanProperty showPromoteButtonProperty()
-  {
-    return showPromoteButtonProp;
-  }*/
-
-  public BooleanProperty showBlacklistButtonProperty()
-  {
-    return showBlacklistButtonProp;
-  }
-
-  public BooleanProperty disableChangePasswordButtonProperty()
-  {
-    return disableChangePasswordButtonProp;
-  }
-
-  public void loadUsers()
-  {
-    users.clear();
     try
     {
-      List<UserDataDto> loadedUsers = userService.getUsers();
-      for (UserDataDto user : loadedUsers)
-      {
-        if(user.isAdmin() == false)
-        {
-          users.add(new UserFx(user));
-        }
-      }
+      new UsersSubscriber("localhost", 2910, () -> loadUsers());
     }
-    catch (Exception e)
+    catch (IOException e)
     {
-      ViewHandler.popupMessage(MessageType.ERROR, e.getMessage());
     }
+    showBlacklistButtonProp.set(AppState.getCurrentUser().isAdmin());
   }
 
-  public ObservableList<UserFx> getUsersList()
+  // Initialization / Setup
+  public void setSelected(UserFx selectedUser)
   {
-    return users;
+    selected = selectedUser;
   }
 
-
- /* private void updateEnablePromoteAndBlacklistButtons(Observable observable)
+  public void setProfileInitials()
   {
-    boolean shouldDisable = selectedIndexProp.get() < 0;
-    disablePromoteButtonProp.set(shouldDisable);
-    disableBlacklistButtonProp.set(shouldDisable);
-  }*/
-
-
-
-  public void blacklist()
-  {
-
-    UserFx user = selected;
-
-    if (user.isBlacklistedProperty().get())
-    {
-      try
-      {
-        BlacklistUserRequest request = new BlacklistUserRequest(
-            user.emailProperty().get(), "");
-        userService.blacklist(request);
-        user.isBlacklistedProperty().set(false);
-        ViewHandler.popupMessage(MessageType.WARNING,
-            user.firstNameProperty().get() + " has been unblacklisted!");
-      }
-      catch (Exception e)
-      {
-        throw new RuntimeException(e);
-      }
-    }else
-    {
-      try
-      {
-        ViewHandler.popupMessage(MessageType.REASON, "", user, userService);
-
-      }
-      catch (Exception e)
-      {
-        ViewHandler.popupMessage(MessageType.ERROR, e.getMessage());
-      }
-    }
-  }
-
-  public void resetInfo()
-  {
-    AppState.setCurrentUser(AppState.getCurrentUser());
-
-    String firstName = AppState.getCurrentUser().firstName();
-    String lastName = AppState.getCurrentUser().lastName();
-
-    nameProp.set(firstName + " " + lastName);
-    emailProp.set(AppState.getCurrentUser().email());
-    firstNameProp.set(firstName);
-    lastNameProp.set(lastName);
-    oldPasswordProp.set("");
-    newPasswordProp.set("");
-    confirmPasswordProp.set("");
+    String firstname = AppState.getCurrentUser().firstName();
+    String lastname = AppState.getCurrentUser().lastName();
+    profileTextRedirectProperty.set(
+        "" + firstname.charAt(0) + lastname.charAt(0));
+    coverLabelProperty.set("" + firstname.charAt(0) + lastname.charAt(0));
   }
 
   public void setVisibilityEditFields()
@@ -208,6 +127,7 @@ public class ViewUsersVM
     changeNameLabelVisibility.set(false);
     changePasswordLabelVisibility.set(false);
   }
+
   public void setVisibility()
   {
     UserFx userFx = selectedUser.get();
@@ -256,6 +176,113 @@ public class ViewUsersVM
     confirmButtonVisibility.set(false);
   }
 
+  public void resetInfo()
+  {
+    AppState.setCurrentUser(AppState.getCurrentUser());
+
+    String firstName = AppState.getCurrentUser().firstName();
+    String lastName = AppState.getCurrentUser().lastName();
+
+    nameProp.set(firstName + " " + lastName);
+    emailProp.set(AppState.getCurrentUser().email());
+    firstNameProp.set(firstName);
+    lastNameProp.set(lastName);
+    oldPasswordProp.set("");
+    newPasswordProp.set("");
+    confirmPasswordProp.set("");
+    blackListButtonName.set("Blacklist");
+  }
+
+  private void updateEnableChangePasswordButton(Observable observable)
+  {
+    UserFx userFx = selected;
+    boolean shouldDisable = !userFx.emailProperty().get()
+        .equals(AppState.getCurrentUser().email());
+    disableChangePasswordButtonProp.set(shouldDisable);
+  }
+
+  // User Account Management
+  public void loadUsers()
+  {
+    try
+    {
+      List<UserDataDto> loadedUsers = userService.getUsers();
+      users.clear();
+      for (UserDataDto user : loadedUsers)
+      {
+        if (user.isAdmin() == false)
+        {
+          users.add(new UserFx(user));
+        }
+      }
+    }
+    catch (Exception e)
+    {
+      ViewHandler.popupMessage(MessageType.ERROR, e.getMessage());
+    }
+  }
+
+  public void blacklist(UserFx user)
+  {
+
+    if (user.isBlacklistedProperty().getValue())
+    {
+      try
+      {
+        user.isBlacklistedProperty().set(false);
+        BlacklistUserRequest request = new BlacklistUserRequest(
+            user.emailProperty().get(), "");
+        userService.blacklist(request);
+        ViewHandler.popupMessage(MessageType.SUCCESS,
+            user.firstNameProperty().get() + " has been unblacklisted!");
+      }
+      catch (Exception e)
+      {
+        throw new RuntimeException(e);
+      }
+    }
+    else
+    {
+      try
+      {
+        user.isBlacklistedProperty().set(true);
+        BlacklistUserRequest request = new BlacklistUserRequest(
+            user.emailProperty().get(), "");
+        userService.blacklist(request);
+        ViewHandler.popupMessage(MessageType.REASON, "", user, userService);
+      }
+      catch (Exception e)
+      {
+        ViewHandler.popupMessage(MessageType.ERROR, e.getMessage());
+      }
+    }
+  }
+
+  public void blackListButtonName(boolean isBlacklisted)
+  {
+    if (isBlacklisted)
+    {
+      blackListButtonName.set("Remove Blacklist");
+    }
+    else
+    {
+      blackListButtonName.set("Blacklist User");
+    }
+  }
+
+  public void blackListFieldSet(String reason)
+  {
+    blackListedReasonFieldProperty().set(reason);
+  }
+
+  public String getBlacklistReason(UserFx user)
+  {
+    BlacklistUserRequest request = new BlacklistUserRequest(
+        user.emailProperty().get(), "");
+    return userService.getBlackListReason(request);
+  }
+
+  // User Edit / Validation
   public void confirmEdit() throws SQLException
   {
     validateInfo();
@@ -267,7 +294,7 @@ public class ViewUsersVM
     String first = firstNameProp.get().trim();
     String last = lastNameProp.get().trim();
 
-    // --- 1) Name validation (always) ---
+    // Name validation (always)
     if (first.isEmpty())
     {
       messageProp.set("First name cannot be empty");
@@ -289,7 +316,7 @@ public class ViewUsersVM
       return;
     }
 
-    // --- 2) Password branch (only if they filled in “newPassword”) ---
+    // Password branch (only if they filled in “newPassword”)
     String finalPassword;
     boolean wantsPasswordChange =
         newPasswordProp.get() != null && !newPasswordProp.get().isBlank();
@@ -299,19 +326,20 @@ public class ViewUsersVM
       String oldPwd = oldPasswordProp.get();
       String newPwd = newPasswordProp.get();
       String confirmPwd = confirmPasswordProp.get();
-      // must supply old
+
+      // Must supply old
       if (oldPwd == null || oldPwd.isBlank())
       {
         messageProp.set("Please enter your old password to change it");
         return;
       }
-      // verify old matches what’s on the server
+      // Verify old matches what’s on the server
       String oldPwds = oldPasswordProp.get();
       String currentOnServerU = getOldPassword(
           new GetPasswordRequest(emailProp.get()));
 
-      System.out.println("⏱ Typed oldPwd    = [" + oldPwds + "]");
-      System.out.println("⏱ Server password= [" + currentOnServerU + "]");
+      System.out.println("Typed oldPwd = [" + oldPwds + "]");
+      System.out.println("Server password = [" + currentOnServerU + "]");
       String currentOnServer = getOldPassword(
           new GetPasswordRequest(emailProp.get()));
       if (!oldPwd.equals(currentOnServer))
@@ -329,11 +357,11 @@ public class ViewUsersVM
     }
     else
     {
-      // no password change requested → keep the existing
+      // No password change requested -> keep the existing
       finalPassword = getOldPassword(new GetPasswordRequest(emailProp.get()));
     }
 
-    // --- 3) Send a single ChangeUserRequest with the name + finalPassword ---
+    // Send a single ChangeUserRequest with the name + finalPassword
     try
     {
       ChangeUserRequest req = new ChangeUserRequest(first, last,
@@ -345,7 +373,7 @@ public class ViewUsersVM
 
       var oldDto = AppState.getCurrentUser();
       var updatedDto = new UserDataDto(oldDto.email(), first, last,
-          oldDto.isBlacklisted(), oldDto.isAdmin());
+          oldDto.isBlacklisted(), oldDto.isAdmin(), oldDto.blackListReason());
       AppState.setCurrentUser(updatedDto);
 
       resetInfo();
@@ -357,15 +385,33 @@ public class ViewUsersVM
     }
   }
 
+  private void changeUser(ChangeUserRequest request) throws SQLException
+  {
+    userService.changeUser(request);
+  }
+
+  // Properties
+
+  public BooleanProperty showBlacklistButtonProperty()
+  {
+    return showBlacklistButtonProp;
+  }
+
+  public BooleanProperty disableChangePasswordButtonProperty()
+  {
+    return disableChangePasswordButtonProp;
+  }
+
+  public ObservableList<UserFx> getUsersList()
+  {
+    return users;
+  }
+
   private String getOldPassword(GetPasswordRequest request) throws SQLException
   {
     return userService.getPassword(request);
   }
 
-  private void changeUser(ChangeUserRequest request) throws SQLException
-  {
-    userService.changeUser(request);
-  }
   public ObjectProperty<UserFx> selectedUserProperty()
   {
     return selectedUser;
@@ -396,9 +442,15 @@ public class ViewUsersVM
   {
     return confirmPasswordProp;
   }
+
   public BooleanProperty confirmButtonVisibility()
   {
     return confirmButtonVisibility;
+  }
+
+  public Property<String> blackListButtonNameProperty()
+  {
+    return blackListButtonName;
   }
 
   public Property<String> messageLabelProperty()
@@ -421,10 +473,12 @@ public class ViewUsersVM
   {
     return lastNameFieldVisibility;
   }
+
   public BooleanProperty getBlackListLabelVisibility()
   {
     return blackListReasonLabelVisibility;
   }
+
   public BooleanProperty getBlackListFieldVisibility()
   {
     return blackListReasonFieldVisibility;
@@ -502,21 +556,7 @@ public class ViewUsersVM
 
   public StringProperty blackListedReasonFieldProperty()
   {
-    return blackListedReasonFieldProperty();
-  }
-
-  public void setProfileInitials()
-  {
-    String firstname = AppState.getCurrentUser().firstName();
-    String lastname = AppState.getCurrentUser().lastName();
-    profileTextRedirectProperty.set(
-        "" + firstname.charAt(0) + lastname.charAt(0));
-    coverLabelProperty.set("" + firstname.charAt(0) + lastname.charAt(0));
-  }
-
-  public void setSelected(UserFx selectedUser)
-  {
-    selected = selectedUser;
+    return blackListedReasonFieldProp;
   }
 }
 

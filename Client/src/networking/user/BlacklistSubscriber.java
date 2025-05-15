@@ -1,38 +1,49 @@
-package networking.myvehicles;
+package networking.user;
+
 import dtos.Request;
 import dtos.Response;
+import dtos.user.BlackListDto;
 import javafx.application.Platform;
+import state.AppState;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class MyVehiclesSubscriber {
+public class BlacklistSubscriber
+{
   private final ObjectOutputStream out;
   private final ObjectInputStream in;
   private final Thread readerThread;
 
-  public MyVehiclesSubscriber(String host, int port, Runnable action) throws IOException
+  public BlacklistSubscriber(String host, int port, Runnable action) throws
+      IOException
   {
     Socket sock = new Socket(host, port);
     this.out = new ObjectOutputStream(sock.getOutputStream());
     this.in = new ObjectInputStream(sock.getInputStream());
 
-    out.writeObject(new Request("yourVehicles", "subscribe", null));
+    out.writeObject(new Request("users", "subscribe", null));
 
     this.readerThread = new Thread(() -> {
       try {
         while (true) {
           Response response = (Response) in.readObject();
-          System.out.println("----> [myVehicles] got push: " + response.status());
-          switch (response.status()) {
-            case "RESERVATION_ADDED":
-            {
-              Platform.runLater(action);
-              System.out.println("----> [myVehicles] recieved reservation push! ");
+          Object raw = response.payload();
+          if(raw instanceof BlackListDto)
+          {
+            BlackListDto blackListDto = (BlackListDto) raw;
+            switch (response.status()) {
+              case "USER_BLACKLISTED":
+              {
+                if(blackListDto.email().equals(AppState.getCurrentUser().email()))
+                {
+                  Platform.runLater(action);
+                }
+              }break;
+              default:
             }
-            default:
           }
         }
       } catch (Exception e) {

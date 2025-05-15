@@ -3,7 +3,6 @@
   -fx-background-color : #ffffff;
 }
 
-
 .text-field
 {
   -fx-background-color : #ffffff;
@@ -26,14 +25,19 @@
   -fx-background-color : #702632;
 }
 
-#allVehiclesRedirect:hover
+#allVehiclesRedirect
+{
+  -fx-text-fill : #912F40;
+}
+
+#rentRedirect:hover, #myVehiclesRedirect:hover
 {
   -fx-text-fill : #702632;
 }
 
-#table .column-header-background
+.table-view .column-header-background
 {
-  -fx-background-color: #912F40;
+  -fx-background-color : #912F40;
 }
 
 .table-view .column-header .label
@@ -46,8 +50,8 @@
   -fx-table-cell-border-color : transparent;
 }
 
-#table .column-header,
-#table .column-header .label {
+#vehiclesTable .column-header,
+#vehiclesTable .column-header .label {
   -fx-background-color: transparent;
   -fx-text-fill: white;
   -fx-font-weight: bold;

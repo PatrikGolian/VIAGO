@@ -16,6 +16,7 @@ public interface ReservationDao
   ArrayList<Reservation> getByTypeAndId(int vehicleId, String vehicleType)
       throws SQLException;
   void delete(Reservation reservation) throws SQLException;
+  void deleteAll(String request);
   void save(Reservation reservation, Reservation oldReservation)
       throws SQLException;
 }

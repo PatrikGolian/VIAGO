@@ -1,4 +1,5 @@
-package networking.reservation;
+package networking.adminallvehicles;
+
 import dtos.Request;
 import dtos.Response;
 import javafx.application.Platform;
@@ -8,39 +9,34 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class ReservationSubscriber {
+public class AllVehiclesSubscriber {
   private final ObjectOutputStream out;
   private final ObjectInputStream in;
   private final Thread readerThread;
 
-  public ReservationSubscriber(String host, int port, Runnable action) throws IOException
+  public AllVehiclesSubscriber(String host, int port, Runnable action) throws IOException
   {
     Socket sock = new Socket(host, port);
     this.out = new ObjectOutputStream(sock.getOutputStream());
     this.in = new ObjectInputStream(sock.getInputStream());
 
-    out.writeObject(new Request("reservation", "subscribe", null));
+    out.writeObject(new Request("allVehicles", "subscribe", null));
+    out.flush();
 
     this.readerThread = new Thread(() -> {
       try {
         while (true) {
           Response response = (Response) in.readObject();
-          System.out.println("----> [reservationSub] got push: " + response.status());
+          System.out.println("----> [allVehicles] got push: " + response.status());
           switch (response.status()) {
             case "RESERVATION_ADDED":
+            case "BIKE_ADDED":
+            case "EBIKE_ADDED":
+            case "SCOOTER_ADDED":
             {
               Platform.runLater(action);
-              System.out.println("----> [reservationSub] got reservation push! ");
+              System.out.println("----> [allVehicles] recieved the reservation push!");
             }
-              break;
-            case "BIKE_ADDED":
-              Platform.runLater(action);
-              break;
-            case "EBIKE_ADDED":
-              Platform.runLater(action);
-              break;
-            case "SCOOTER_ADDED":
-              Platform.runLater(action);
               break;
             default:
           }
@@ -52,3 +48,4 @@ public class ReservationSubscriber {
     readerThread.start();
   }
 }
+

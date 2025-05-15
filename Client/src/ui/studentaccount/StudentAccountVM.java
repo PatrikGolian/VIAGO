@@ -291,7 +291,7 @@ public class StudentAccountVM
           oldDto.email(),
           first,
           last, oldDto.isBlacklisted(),
-          oldDto.isAdmin()
+          oldDto.isAdmin(), oldDto.blackListReason()
       );
       AppState.setCurrentUser(updatedDto);
 
@@ -302,90 +302,6 @@ public class StudentAccountVM
       messageProp.set("Update failed: " + ex.getMessage());
     }
   }
-  /*private void validateInfo()
-  {
-    if (oldPasswordProp.get().isEmpty()&&newPasswordProp.get().isEmpty()&&confirmPasswordProp.get().isEmpty())
-    {
-      try
-      {
-        String password = getOldPassword(new GetPasswordRequest(emailProp.get()));
-        ChangeUserRequest request = new ChangeUserRequest(
-            firstNameProp.get(), lastNameProp.get(), emailProp.get(), password
-        );
-        changeUser(request);
-        resetInfo();
-        messageProp.set("Success");
-      }
-      catch (Exception e)
-      {
-        // might receive exception from lower layer (i.e. client)
-        messageProp.set(e.getMessage());
-      }
-    }
-    else
-    {
-      if (oldPasswordProp.get()
-          .equals(getOldPassword(new GetPasswordRequest(emailProp.get()))))
-      {
-        messageProp.set("Old password is not coorect!");
-        return;
-      }
-      if (firstNameProp.get() == null || firstNameProp.get().isEmpty())
-      {
-        messageProp.set("First name cannot be empty");
-        return;
-      }
-      if (firstNameProp.get().length() < 2)
-      {
-        messageProp.set("First name has to have at least 3 letters");
-        return;
-      }
-      if (!firstNameProp.get().matches("[a-zA-Z ]+"))
-      {
-        messageProp.set("First name can only contain letters");
-        return;
-      }
-      if (lastNameProp.get() == null || lastNameProp.get().isEmpty())
-      {
-        messageProp.set("Last name cannot be empty");
-        return;
-      }
-      if (lastNameProp.get().length() < 2)
-      {
-        messageProp.set("Last name has to have at least 3 letters");
-        return;
-      }
-      if (!lastNameProp.get().matches("[a-zA-Z ]+"))
-      {
-        messageProp.set("Last name can only contain letters");
-        return;
-      }
-      if (newPasswordProp.get() == null || newPasswordProp.get().isEmpty())
-      {
-        messageProp.set("Password cannot be empty");
-        return;
-      }
-      if (!newPasswordProp.get().equals(confirmPasswordProp.get()))
-      {
-        messageProp.set("Passwords do not match");
-        System.out.println(newPasswordProp.get() + confirmPasswordProp.get());
-        return;
-      }
-      try
-      {
-        ChangeUserRequest request = new ChangeUserRequest(firstNameProp.get(),
-            lastNameProp.get(), emailProp.get(), newPasswordProp.get());
-        changeUser(request);
-        resetInfo();
-        messageProp.set("Success");
-      }
-      catch (Exception e)
-      {
-        // might receive exception from lower layer (i.e. client)
-        messageProp.set(e.getMessage());
-      }
-    }
-  }*/
 
   private String getOldPassword(GetPasswordRequest request)
   {

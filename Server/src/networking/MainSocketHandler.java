@@ -2,9 +2,14 @@ package networking;
 
 import dtos.Request;
 import dtos.Response;
+import dtos.auth.RegisterUserDto;
+import dtos.auth.RegisterUserRequest;
 import dtos.error.ErrorResponse;
 import dtos.reservation.ReservationDto;
 import dtos.reservation.ReservationRequest;
+import dtos.user.BlackListDto;
+import dtos.user.BlacklistUserRequest;
+import dtos.user.UserDataDto;
 import dtos.vehicle.*;
 import model.exceptions.ServerFailureException;
 import model.exceptions.ValidationException;
@@ -19,6 +24,7 @@ import utilities.logging.Logger;
 import java.io.*;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -31,6 +37,9 @@ public class MainSocketHandler implements Runnable
   private final ReadWrite sharedResource;
   private static final List<ObjectOutputStream> reservationSubscribers = new CopyOnWriteArrayList<>();
   private static final List<ObjectOutputStream> myVehiclesSubscribers = new CopyOnWriteArrayList<>();
+  private static final List<ObjectOutputStream> allVehiclesSubscribers = new CopyOnWriteArrayList<>();
+  private static final List<ObjectOutputStream> viewUsersSubscribers = new CopyOnWriteArrayList<>();
+  private static final List<ObjectOutputStream> blacklistSubscribers = new CopyOnWriteArrayList<>();
 
   public MainSocketHandler(Socket clientSocket, ServiceProvider serviceProvider,
       ReadWrite sharedResource)
@@ -41,126 +50,97 @@ public class MainSocketHandler implements Runnable
     this.sharedResource = sharedResource;
   }
 
-  @Override public void run()
-  {
-    try
-    {
-      ObjectInputStream incomingData = new ObjectInputStream(
-          clientSocket.getInputStream());
-      ObjectOutputStream outgoingData = new ObjectOutputStream(
-          clientSocket.getOutputStream());
-      //handleRequestWithErrorHandling(incomingData, outgoingData);
-      while(!clientSocket.isClosed())
-      {
-        handleRequestWithErrorHandling(incomingData, outgoingData);
-      }
-    }
-    catch (IOException e)
-    {
-      logger.log(Arrays.toString(e.getStackTrace()), LogLevel.ERROR);
-    }
+  @Override
+  public void run() {
+    try (ObjectInputStream  in  = new ObjectInputStream(clientSocket.getInputStream());
+        ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream())) {
 
-    finally
-    {
-      try
-      {
-        clientSocket.close();
-      }
-      catch (IOException e)
-      {
-      }
-    }
-  }
+      while (true) {
+        Request req = (Request) in.readObject();
 
-  private void handleRequestWithErrorHandling(ObjectInputStream incomingData,
-      ObjectOutputStream outgoingData) throws IOException
-  {
-    try
-    {
-      handleRequest(incomingData, outgoingData);
+        if (isSubscribeRequest(req)) {
+          registerSubscriber(req, out);
+          out.writeObject(new Response("SUCCESS", "subscribed"));
+          out.flush();
+          continue;
+        }
+
+        handleRequestWithErrorHandling(req, out);
+        broadcastIfNeeded(req);
+        break;
+      }
+
     }
-    catch (NotFoundException | InvalidActionException | ValidationException e)
+    catch (EOFException eof)
     {
-      logger.log(e.getMessage(), LogLevel.INFO);
-      ErrorResponse payload = new ErrorResponse(e.getMessage());
-      Response error = new Response("ERROR", payload);
-      outgoingData.writeObject(error);
-    }
-    catch (ServerFailureException e)
-    {
-      logger.log(Arrays.toString(e.getStackTrace()) + "\n" + e.getMessage(),
-          LogLevel.ERROR);
-      ErrorResponse payload = new ErrorResponse(e.getMessage());
-      Response error = new Response("SERVER_FAILURE", payload);
-      outgoingData.writeObject(error);
-    }
-    catch (ClassCastException e)
-    {
-      logger.log(e.getMessage(), LogLevel.INFO);
-      ErrorResponse payload = new ErrorResponse("Invalid request");
-      Response error = new Response("ERROR", payload);
-      outgoingData.writeObject(error);
     }
     catch (Exception e)
     {
-      logger.log(Arrays.toString(e.getStackTrace()), LogLevel.ERROR);
-      ErrorResponse payload = new ErrorResponse(e.getMessage());
-      Response error = new Response("SERVER_FAILURE", payload);
-      System.out.println(e.getMessage());
-      outgoingData.writeObject(error);
+      logger.log(e.getMessage(), LogLevel.ERROR);
+    }
+    finally
+    {
+      try { clientSocket.close(); } catch (IOException ignore){}
     }
   }
 
-  private void handleRequest(ObjectInputStream incomingData,
-      ObjectOutputStream outgoingData)
-      throws IOException, ClassNotFoundException, SQLException
+  private void broadcastIfNeeded(Request request)
   {
-
-    Request request = (Request) incomingData.readObject();
-    logger.log("Incoming request: " + request.handler() + "/" + request.action()
-        + ". Body: " + request.payload(), LogLevel.INFO);
-
-    logger.log("Handler requested: "+request.handler()+"/"+request.action(), LogLevel.INFO);
-
-    if("reservation".equals(request.handler()) && "subscribe".equals(request.action()))
+    if("reservation".equals(request.handler()) && "reserve".equals(request.action()))
     {
-      reservationSubscribers.add(outgoingData);
-      outgoingData.writeObject(new Response("SUCCESS", "subscribed"));
+      ReservationRequest reservationRequest = (ReservationRequest) request.payload();
+      ReservationDto reservationDto = new ReservationDto
+          (
+              reservationRequest.vehicleId(),
+              reservationRequest.vehicleType(),
+              reservationRequest.ownerEmail(),
+              reservationRequest.reservedByEmail(),
+              reservationRequest.startDate(),
+              reservationRequest.endDate(),
+              reservationRequest.price()
+          );
+      Response push = new Response("RESERVATION_ADDED", reservationDto);
+
+      for(ObjectOutputStream subscriber : reservationSubscribers)
+      {
+        try
+        {
+          subscriber.writeObject(push);
+          System.out.println("Pushed to listener to reserveationSubscriber:)");
+        }
+        catch (IOException e)
+        {
+          System.out.println("Removing subscriber from reservationSub");
+          reservationSubscribers.remove(subscriber);
+        }
+      }
+      for(ObjectOutputStream subscriber : myVehiclesSubscribers)
+      {
+        try
+        {
+          subscriber.writeObject(push);
+          System.out.println("Pushed to listener to myVehiclesSubscriber:)");
+        }
+        catch (IOException e)
+        {
+          System.out.println("Removing subscriber from myVehiclesSub");
+          myVehiclesSubscribers.remove(subscriber);
+        }
+      }
+      for(ObjectOutputStream subscriber : allVehiclesSubscribers)
+      {
+        try
+        {
+          subscriber.writeObject(push);
+          System.out.println("Pushed to listener to allVehiclesSubscriber :)");
+        }
+        catch (IOException e)
+        {
+          System.out.println("Removing subscriber from allVehiclesSub");
+        }
+      }
       return;
     }
-
-    if("yourVehicles".equals(request.handler()) && "subscribe".equals(request.action()))
-    {
-      myVehiclesSubscribers.add(outgoingData);
-      outgoingData.writeObject(new Response("SUCCESS", "subscribed"));
-    }
-    RequestHandler handler = switch (request.handler())
-    {
-      case "auth" -> serviceProvider.getAuthenticationRequestHandler(sharedResource);
-      case "users" -> serviceProvider.getUserRequestHandler(sharedResource);
-      case "addVehicle" -> serviceProvider.getAddNewVehicleRequestHandler(sharedResource);
-      case "reservation" -> serviceProvider.getReservationRequestHandler(sharedResource);
-      case "student" -> serviceProvider.getStudentAccountRequestHandler(sharedResource);
-      case "yourVehicles" -> serviceProvider.getMyVehiclesRequestHandler(sharedResource);
-      case "allVehicles" -> serviceProvider.getAllVehiclesRequestHandler(sharedResource);
-      default -> {
-        String msg = String.format(
-            "Unknown action '%s' for handler %s; payload was: %s",
-            request.action(),
-            this.getClass().getSimpleName(),
-            request.payload());
-        // print to stderr (or use your logger)
-        System.err.println(msg);
-        // Optionally dump a stack trace here to see the call path:
-        new Exception("Stack trace for unknown action").printStackTrace();
-        throw new IllegalStateException(
-          "Unexpected value: " + request.handler());}
-    };
-
-    Object result = handler.handle(request.action(), request.payload());
-    //System.out.println("response from server" + result.toString());
-    Response response = new Response("SUCCESS", result);
-    outgoingData.writeObject(response);
 
     if("addVehicle".equals(request.handler()) && "addBike".equals(request.action()))
     {
@@ -189,6 +169,17 @@ public class MainSocketHandler implements Runnable
         catch (IOException e)
         {
           reservationSubscribers.remove(subscriber);
+        }
+      }
+      for(ObjectOutputStream subscriber : allVehiclesSubscribers)
+      {
+        try
+        {
+          subscriber.writeObject(push);
+        }
+        catch (IOException e)
+        {
+          allVehiclesSubscribers.remove(subscriber);
         }
       }
       return;
@@ -224,6 +215,17 @@ public class MainSocketHandler implements Runnable
           reservationSubscribers.remove(subscriber);
         }
       }
+      for(ObjectOutputStream subscriber : allVehiclesSubscribers)
+      {
+        try
+        {
+          subscriber.writeObject(push);
+        }
+        catch (IOException e)
+        {
+          allVehiclesSubscribers.remove(subscriber);
+        }
+      }
       return;
     }
 
@@ -257,25 +259,30 @@ public class MainSocketHandler implements Runnable
           reservationSubscribers.remove(subscriber);
         }
       }
+      for(ObjectOutputStream subscriber : allVehiclesSubscribers)
+      {
+        try
+        {
+          subscriber.writeObject(push);
+        }
+        catch (IOException e)
+        {
+          allVehiclesSubscribers.remove(subscriber);
+        }
+      }
       return;
     }
-
-    if("reservation".equals(request.handler()) && "reserve".equals(request.action()))
+    if("auth".equals(request.handler()) && "register".equals(request.action()))
     {
-      ReservationRequest reservationRequest = (ReservationRequest) request.payload();
-      ReservationDto reservationDto = new ReservationDto
-          (
-              reservationRequest.vehicleId(),
-              reservationRequest.vehicleType(),
-              reservationRequest.ownerEmail(),
-              reservationRequest.reservedByEmail(),
-              reservationRequest.startDate(),
-              reservationRequest.endDate(),
-              reservationRequest.price()
-          );
-      Response push = new Response("RESERVATION_ADDED", reservationDto);
+      RegisterUserRequest registerUserRequest = (RegisterUserRequest) request.payload();
+      RegisterUserDto registerUserDto = new RegisterUserDto(
+          registerUserRequest.email(),
+          registerUserRequest.password(),
+          registerUserRequest.firstName(),
+          registerUserRequest.lastName());
+      Response push = new Response("USER_ADDED", registerUserDto);
 
-      for(ObjectOutputStream subscriber : reservationSubscribers)
+      for(ObjectOutputStream subscriber : viewUsersSubscribers)
       {
         try
         {
@@ -283,21 +290,106 @@ public class MainSocketHandler implements Runnable
         }
         catch (IOException e)
         {
-          reservationSubscribers.remove(subscriber);
-        }
-      }
-      for(ObjectOutputStream subscriber : myVehiclesSubscribers)
-      {
-        try
-        {
-          subscriber.writeObject(push);
-        }
-        catch (IOException e)
-        {
-          myVehiclesSubscribers.remove(subscriber);
+          viewUsersSubscribers.remove(subscriber);
         }
       }
       return;
+    }
+    if("users".equals(request.handler()) && "blacklist".equals(request.action()))
+    {
+      BlacklistUserRequest blacklistUserRequest = (BlacklistUserRequest)request.payload();
+      BlackListDto blackListDto = new BlackListDto
+          (
+              blacklistUserRequest.email(),
+              blacklistUserRequest.reason()
+          );
+      Response push = new Response("USER_BLACKLISTED", blackListDto);
+      for(ObjectOutputStream subscriber : blacklistSubscribers)
+      {
+        try
+        {
+          subscriber.writeObject(push);
+        }
+        catch (IOException e)
+        {
+          blacklistSubscribers.remove(subscriber);
+        }
+      }
+      for(ObjectOutputStream subscriber : viewUsersSubscribers)
+      {
+        try
+        {
+          subscriber.writeObject(push);
+        }
+        catch (IOException e)
+        {
+          viewUsersSubscribers.remove(subscriber);
+        }
+      }
+      return;
+    }
+  }
+
+  private Object handleOne(Request req)
+      throws SQLException,
+      InvalidActionException,
+      NotFoundException,
+      ValidationException
+  {
+    RequestHandler handler = switch (req.handler())
+    {
+      case "auth"         -> serviceProvider.getAuthenticationRequestHandler(sharedResource);
+      case "users"        -> serviceProvider.getUserRequestHandler(sharedResource);
+      case "addVehicle"   -> serviceProvider.getAddNewVehicleRequestHandler(sharedResource);
+      case "reservation"  -> serviceProvider.getReservationRequestHandler(sharedResource);
+      case "student"      -> serviceProvider.getStudentAccountRequestHandler(sharedResource);
+      case "yourVehicles" -> serviceProvider.getMyVehiclesRequestHandler(sharedResource);
+      case "allVehicles"  -> serviceProvider.getAllVehiclesRequestHandler(sharedResource);
+      default -> throw new InvalidActionException("Unknown handler: " + req.handler(), req.action());
+    };
+
+    // now invoke the handler, passing along action + payload
+    return handler.handle(req.action(), req.payload());
+  }
+
+  private void registerSubscriber(Request request, ObjectOutputStream outgoing)
+  {
+    switch (request.handler()) {
+      case "reservation" : reservationSubscribers.add(outgoing); break;
+      case "yourVehicles": myVehiclesSubscribers.add(outgoing); break;
+      case "allVehicles": allVehiclesSubscribers.add(outgoing); break;
+      case "users":
+      {
+        viewUsersSubscribers.add(outgoing);
+        blacklistSubscribers.add(outgoing);
+      } break;
+    }
+  }
+
+  private boolean isSubscribeRequest(Request request)
+  {
+    return ("reservation".equals(request.handler()) && "subscribe".equals(request.action()))
+        || ("yourVehicles".equals(request.handler()) && "subscribe".equals(request.action()))
+        || ("allVehicles".equals(request.handler()) && "subscribe".equals(request.action()))
+        || ("users".equals(request.handler()) && "subscribe".equals(request.action()));
+  }
+
+  private void handleRequestWithErrorHandling(Request req,
+      ObjectOutputStream out) throws IOException {
+    try {
+      Object result = handleOne(req);
+      out.writeObject(new Response("SUCCESS", result));
+      out.flush();
+    } catch (ValidationException|NotFoundException e) {
+      out.writeObject(new Response("ERROR", new ErrorResponse(e.getMessage())));
+    } catch (ServerFailureException e) {
+      out.writeObject(new Response("SERVER_FAILURE", new ErrorResponse(e.getMessage())));
+    } catch (ClassCastException e) {
+      out.writeObject(new Response("ERROR", new ErrorResponse("Invalid request")));
+    } catch (Exception e) {
+      out.writeObject(new Response("SERVER_FAILURE", new ErrorResponse(e.getMessage())));
+    } finally {
+      try { out.flush(); } catch(IOException ignore){}
     }
   }
 }

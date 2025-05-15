@@ -6,8 +6,14 @@ import dtos.vehicle.AddNewScooterRequest;
 import javafx.beans.Observable;
 import javafx.beans.property.*;
 import networking.addnew.AddNewVehicleClient;
+import networking.user.BlacklistSubscriber;
+import startup.ViewHandler;
+import startup.ViewType;
 import state.AppState;
+import ui.popup.MessageType;
 import utils.StringUtils;
+
+import java.io.IOException;
 
 public class AddNewVM
 {
@@ -48,6 +54,8 @@ public class AddNewVM
     rangeProp.addListener(this::updateAddButtonState);
     bikeTypeProp.addListener(this::updateAddButtonState);
   }
+  
+
 
   public void add()
   {

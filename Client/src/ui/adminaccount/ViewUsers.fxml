@@ -14,7 +14,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="673.0" prefWidth="752.0" stylesheets="@../../resources/adminAccountCSS/adminAccountStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.adminaccount.ViewUsersController">
+<AnchorPane prefHeight="713.0" prefWidth="752.0" stylesheets="@../../resources/adminAccountCSS/adminAccountStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.adminaccount.ViewUsersController">
     <children>
         <TableView fx:id="table" layoutX="294.0" layoutY="112.0" prefHeight="427.0" prefWidth="450.0">
             <columns>
@@ -24,18 +24,18 @@
                 <TableColumn fx:id="blacklistedColumn" editable="false" prefWidth="105.5999755859375" text="BlackListed" />
             </columns>
         </TableView>
-        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e0e0e0" height="601.0" layoutX="-5.0" layoutY="75.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="286.0" />
-        <Button fx:id="blacklistButton" layoutX="294.0" layoutY="641.0" mnemonicParsing="false" onAction="#onBlacklist" prefHeight="30.0" prefWidth="450.0" text="Blacklist user" textFill="WHITE">
+        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e0e0e0" height="639.0" layoutX="-5.0" layoutY="75.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="286.0" />
+        <Button fx:id="blacklistButton" layoutX="296.0" layoutY="680.0" mnemonicParsing="false" onAction="#onBlacklist" prefHeight="30.0" prefWidth="450.0" text="BLACKLIST USER" textFill="WHITE">
             <font>
                 <Font size="14.0" />
             </font>
         </Button>
-        <Label layoutX="294.0" layoutY="84.0" prefHeight="27.0" prefWidth="131.0" text="Registred users">
+        <Label layoutX="452.0" layoutY="83.0" prefHeight="27.0" prefWidth="131.0" text="Registred users">
             <font>
                 <Font size="18.0" />
             </font>
         </Label>
-        <Label fx:id="allVehiclesRedirect" layoutX="437.0" layoutY="18.0" onMouseClicked="#onAllVehiclesRedirect" prefHeight="35.0" prefWidth="163.0" text="ALL VEHICLES">
+        <Label fx:id="allVehiclesRedirect" layoutX="294.0" layoutY="18.0" onMouseClicked="#onAllVehiclesRedirect" prefHeight="35.0" prefWidth="163.0" text="ALL VEHICLES">
             <font>
                 <Font name="System Bold" size="24.0" />
             </font>
@@ -118,7 +118,7 @@
                 <Font name="System Bold" size="18.0" />
             </font>
         </Label>
-        <Label fx:id="messageLabel" alignment="CENTER" layoutX="294.0" layoutY="616.0" prefHeight="20.0" prefWidth="450.0" textFill="#dc0606">
+        <Label fx:id="messageLabel" alignment="CENTER" layoutX="296.0" layoutY="654.0" prefHeight="20.0" prefWidth="450.0" textFill="#dc0606">
             <font>
                 <Font size="14.0" />
             </font>
@@ -148,11 +148,21 @@
                 <Font name="System Bold" size="12.0" />
             </font>
         </Label>
-      <Label fx:id="blackListReasonLabel" layoutX="298.0" layoutY="541.0" prefHeight="27.0" prefWidth="156.0" text="Black List Reason">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
-      <TextField fx:id="blackListReasonField" layoutX="296.0" layoutY="575.0" prefHeight="60.0" prefWidth="450.0" />
+        <Label fx:id="blackListReasonLabel" alignment="CENTER" layoutX="427.0" layoutY="543.0" prefHeight="27.0" prefWidth="182.0" text="BLACKLIST REASON" textFill="#912f40">
+            <font>
+                <Font name="System Bold" size="18.0" />
+            </font>
+        </Label>
+        <TextField fx:id="blackListReasonField" layoutX="296.0" layoutY="575.0" prefHeight="74.0" prefWidth="450.0" />
+        <Label id="adminLabel" fx:id="adminLabel" layoutX="104.0" layoutY="86.0" text="ADMIN" textFill="#e0e0e0">
+            <font>
+                <Font name="System Bold" size="24.0" />
+            </font>
+        </Label>
+        <Button fx:id="logoutButton" layoutX="9.0" layoutY="680.0" mnemonicParsing="false" onAction="#onLogout" prefHeight="30.0" prefWidth="258.0" text="LOG OUT" textFill="WHITE">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Button>
     </children>
 </AnchorPane>

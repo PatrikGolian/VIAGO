@@ -125,32 +125,44 @@ public class MyVehiclesServiceImpl implements MyVehiclesService
     }
   }
 
-  @Override public void changeVehicle(VehicleChangeRequest request)
-      throws SQLException
+  //  @Override public void deleteAll(VehicleOwnerRequest request) throws SQLException
+  //  {
+  //    vehicleDao.deleteAll(request.ownerEmail());
+  //  }
+  @Override public void deleteAll(VehicleOwnerRequest ownerEmail)
   {
-    if (request instanceof BikeChangeRequest)
+    try
     {
+      List<Vehicle> vehicles = vehicleDao.getByOwnerEmail(ownerEmail.ownerEmail());
+
+      for (Vehicle vehicle : vehicles)
       {
-        Bike bike = (Bike) vehicleDao.getByIdAndType(((BikeChangeRequest) request).id(),((BikeChangeRequest) request).type());
-       // bike.(((BikeChangeRequest) request).pricePerDay());
-        //vehicleDao.update(bike);
+
+        if (vehicle instanceof Bike bike)
+        {
+          vehicleDao.delete(bike);
+        }
+        else if (vehicle instanceof EBike ebike)
+        {
+          vehicleDao.delete(ebike);
+        }
+        else if (vehicle instanceof Scooter scooter)
+        {
+          vehicleDao.delete(scooter);
+        }
+        else
+        {
+          throw new IllegalStateException(
+              "Unknown vehicle type: " + vehicle.getClass().getName());
+        }
       }
     }
-    /*User user = userDao.getSingle(request.email());
-
-    if(user == null)
+    catch (SQLException e)
     {
-      throw new ValidationException("User not found");
+      throw new RuntimeException(
+          "Failed to delete all vehicles for owner " + ownerEmail + ": "
+              + e.getMessage(), e);
     }
-
-    userDao.updateName(request.email(),request.firstName(), request.lastName());
-
-    String newPassword = request.password();
-
-    if(newPassword != null && !newPassword.isBlank() && !newPassword.equals(user.getPassword()))
-    {
-      userDao.updatePassword(request.email(), newPassword);
-    }
-  }*/
   }
 }
+

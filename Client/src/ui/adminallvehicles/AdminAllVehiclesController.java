@@ -16,7 +16,6 @@ import ui.reservation.VehicleFx;
 public class AdminAllVehiclesController implements Controller
 {
 
-
   private final AdminAllVehiclesVM viewModel;
 
   private final StringProperty profileTextRedirectProp = new SimpleStringProperty();
@@ -29,6 +28,7 @@ public class AdminAllVehiclesController implements Controller
   @FXML private TableColumn<VehicleFx, String> conditionColumn;
   @FXML private TableColumn<VehicleFx, String> colorColumn;
   @FXML private TableColumn<VehicleFx, String> stateColumn;
+  @FXML private TableColumn<VehicleFx, String> ownerEmailColumn;
 
   @FXML private TextField bikeTypeField;
   @FXML private TextField speedField;
@@ -42,12 +42,12 @@ public class AdminAllVehiclesController implements Controller
 
   @FXML private Rectangle profileShapeRedirect;
   @FXML private Label profileTextRedirect;
+  @FXML private TextField searchField;
 
   public AdminAllVehiclesController(AdminAllVehiclesVM viewModel)
   {
     this.viewModel = viewModel;
   }
-
 
   public void initialize()
   {
@@ -101,8 +101,8 @@ public class AdminAllVehiclesController implements Controller
     typeColumn.setCellValueFactory(new PropertyValueFactory<>("typeProp"));
     brandColumn.setCellValueFactory(new PropertyValueFactory<>("brandProp"));
     modelColumn.setCellValueFactory(new PropertyValueFactory<>("modelProp"));
-    priceColumn.setCellValueFactory(
-        new PropertyValueFactory<>("pricePerDayProp"));
+    ownerEmailColumn.setCellValueFactory(new PropertyValueFactory<>("ownerProp"));
+    priceColumn.setCellValueFactory(new PropertyValueFactory<>("pricePerDayProp"));
     conditionColumn.setCellValueFactory(new PropertyValueFactory<>("conditionProp"));
     colorColumn.setCellValueFactory(new PropertyValueFactory<>("colorProp"));
     stateColumn.setCellValueFactory(new PropertyValueFactory<>("stateProp"));
@@ -125,6 +125,28 @@ public class AdminAllVehiclesController implements Controller
         .bind(viewModel.getBikeTypeLabelVisibility());
     bikeTypeField.visibleProperty()
         .bind(viewModel.getBikeTypeFieldVisibility());
+
+    // Search bar
+    searchField.setOnKeyPressed(event -> {
+      if (event.getCode().toString().equals("ENTER"))
+      {
+        String input = searchField.getText();
+        String newVal = (input == null) ? "" : input.toLowerCase();
+
+        viewModel.getFilteredVehicles().setPredicate(vehicle -> {
+          String type = (vehicle.typePropProperty().get() != null) ?
+              vehicle.typePropProperty().get().toLowerCase() :
+              "";
+          String condition = (vehicle.conditionPropProperty().get() != null) ?
+              vehicle.conditionPropProperty().get().toLowerCase() :
+              "";
+
+          return type.contains(newVal) || condition.contains(newVal);
+        });
+
+        vehiclesTable.setItems(viewModel.getFilteredVehicles());
+      }
+    });
   }
 
   public void onDeleteVehicle()
@@ -142,8 +164,6 @@ public class AdminAllVehiclesController implements Controller
       ViewHandler.popupMessage(MessageType.WARNING, "Please select a reservation to delete.");
     }
   }
-
-
   public void clearTable() {
     vehiclesTable.getItems().clear();
   }
@@ -152,5 +172,4 @@ public class AdminAllVehiclesController implements Controller
   {
     ViewHandler.showView(ViewType.VIEWUSERS);
   }
-
 }

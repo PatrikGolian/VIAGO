@@ -5,7 +5,6 @@ import dtos.reservation.ReservationRequest;
 import dtos.reservation.ReservationReserveRequest;
 import dtos.studentAuth.ChangeUserRequest;
 import dtos.studentAuth.GetPasswordRequest;
-import dtos.user.ViewUsers;
 
 import java.util.List;
 
