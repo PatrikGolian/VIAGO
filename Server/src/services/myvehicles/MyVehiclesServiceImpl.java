@@ -1,17 +1,10 @@
 package services.myvehicles;
 
-import dtos.reservation.ReservationDto;
-import dtos.reservation.ReservationReserveRequest;
-import dtos.studentAuth.ChangeUserRequest;
 import dtos.vehicle.*;
-import model.entities.User;
-import model.entities.reservation.Reservation;
 import model.entities.vehicles.Bike;
 import model.entities.vehicles.EBike;
 import model.entities.vehicles.Scooter;
 import model.entities.vehicles.Vehicle;
-import model.exceptions.ValidationException;
-import persistence.reservation.ReservationDao;
 import persistence.vehicle.VehicleDao;
 
 import java.sql.SQLException;

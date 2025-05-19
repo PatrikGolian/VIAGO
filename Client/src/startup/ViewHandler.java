@@ -4,7 +4,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import model.entities.User;
 import networking.addnew.AddNewVehicleClient;
 import networking.addnew.SocketAddNewVehicleClient;
 import networking.adminallvehicles.AdminAllVehiclesClient;
@@ -19,7 +18,6 @@ import networking.studentaccount.SocketStudentAccountClient;
 import networking.studentaccount.StudentAccountClient;
 import networking.user.SocketUsersClient;
 import networking.user.UsersClient;
-import services.user.UserService;
 import ui.addnew.AddNewController;
 import ui.addnew.AddNewVM;
 import ui.adminaccount.UserFx;
@@ -40,7 +38,6 @@ import ui.studentaccount.StudentAccountController;
 import ui.studentaccount.StudentAccountVM;
 import ui.adminaccount.ViewUsersController;
 import ui.adminaccount.ViewUsersVM;
-import ui.welcome.WelcomeController;
 
 import java.io.IOException;
 

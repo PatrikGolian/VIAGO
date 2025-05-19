@@ -1,6 +1,5 @@
 package services.scheduler;
 
-import model.Date;
 import services.reservation.ReservationService;
 
 import java.time.LocalDateTime;

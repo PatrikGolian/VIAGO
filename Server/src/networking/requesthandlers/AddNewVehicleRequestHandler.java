@@ -83,7 +83,6 @@ public class AddNewVehicleRequestHandler implements RequestHandler
         } catch (InterruptedException e) {
           Thread.currentThread().interrupt();
         }
-
       }
     }
     return null;

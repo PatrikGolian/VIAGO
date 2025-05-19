@@ -1,6 +1,5 @@
 package services.vehicle;
 
-import dtos.reservation.ReservationDto;
 import dtos.vehicle.*;
 import model.entities.vehicles.Bike;
 import model.entities.vehicles.EBike;
@@ -160,8 +159,8 @@ public class VehicleServiceImpl implements VehicleService
 
   private static void conditionValidation(String condition)
   {
-    if (!(condition.equals("used") || condition.equals("good")
-        || condition.equals("new")))
+    if (!((condition.equals("used") || condition.equals("good")
+        || condition.equals("new"))))
     {
       throw new ValidationException(
           "Condition has to be either used, good or new");

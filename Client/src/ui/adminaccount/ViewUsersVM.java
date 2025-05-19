@@ -1,8 +1,5 @@
 package ui.adminaccount;
 
-import dtos.reservation.ReservationDto;
-import dtos.reservation.ReservationRequest;
-import dtos.reservation.ReservationReserveRequest;
 import dtos.studentAuth.ChangeUserRequest;
 import dtos.studentAuth.GetPasswordRequest;
 import dtos.user.BlacklistUserRequest;
@@ -11,20 +8,14 @@ import javafx.beans.Observable;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import model.entities.User;
-import networking.adminallvehicles.AllVehiclesSubscriber;
-import networking.studentaccount.StudentAccountClient;
 import networking.user.UsersClient;
 import networking.user.UsersSubscriber;
 import startup.ViewHandler;
 import state.AppState;
 import ui.popup.MessageType;
-import ui.reservation.ReservationFx;
-import ui.reservation.VehicleFx;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.List;
 
 public class ViewUsersVM
@@ -173,7 +164,7 @@ public class ViewUsersVM
     changeNameLabelVisibility.set(newVisibility);
 
     messageLabelVisibility.set(newVisibility);
-    confirmButtonVisibility.set(false);
+    confirmButtonVisibility.set(newVisibility);
   }
 
   public void resetInfo()

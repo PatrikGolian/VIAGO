@@ -6,277 +6,237 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class ReservationPostgresDao implements ReservationDao
-{
+public class ReservationPostgresDao implements ReservationDao {
   private static ReservationPostgresDao instance;
 
-  private ReservationPostgresDao() throws SQLException
-  {
+  private ReservationPostgresDao() throws SQLException {
     DriverManager.registerDriver(new org.postgresql.Driver());
   }
 
-  private static Connection getConnection() throws SQLException
-  {
+  private static Connection getConnection() throws SQLException {
     return DriverManager.getConnection(
         "jdbc:postgresql://localhost:5432/postgres?currentSchema=viago",
-        "postgres", "password");
+        "postgres", "password"
+    );
   }
 
-  public static synchronized ReservationPostgresDao getInstance()
-      throws SQLException
-  {
-    if (instance == null)
-    {
+  public static synchronized ReservationPostgresDao getInstance() throws SQLException {
+    if (instance == null) {
       instance = new ReservationPostgresDao();
     }
     return instance;
   }
 
-  public Reservation create(Reservation reservation) throws SQLException
-  {
-    int vehicleId = reservation.getVehicleId();
-    String ownerEmail = reservation.getOwnerEmail(), reservedByEmail = reservation.getReservedByEmail(), vehicleType = reservation.getVehicleType();
-    double price = reservation.getPrice();
-    PreparedStatement statement;
-    java.sql.Date sqlStartDate = reservation.getStartDate().toSQLDate();
-    java.sql.Date sqlEndDate = reservation.getEndDate().toSQLDate();
-
-    try (Connection connection = getConnection())
-    {
-      statement = connection.prepareStatement(
-          "INSERT INTO reservation(vehicleId, vehicleType, ownerEmail, reservedByEmail, startDate, endDate, price) VALUES(?,?,?,?,?,?,?)");
-
-      statement.setInt(1, vehicleId);
-      statement.setString(2, vehicleType);
-      statement.setString(3, ownerEmail);
-      statement.setString(4, reservedByEmail);
-      statement.setDate(5, sqlStartDate);
-      statement.setDate(6, sqlEndDate);
-      statement.setDouble(7, price);
-
-      statement.executeUpdate();
-      return new Reservation(vehicleId, vehicleType, ownerEmail,
-          reservedByEmail, reservation.getStartDate(), reservation.getEndDate(),
-          price);
-
+  @Override
+  public Reservation create(Reservation reservation) throws SQLException {
+    String sql =
+        "INSERT INTO reservation(vehicleId, reservedByEmail, startDate, endDate, price) " +
+            "VALUES (?,?,?,?,?)";
+    try (Connection conn = getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)) {
+      ps.setInt(1, reservation.getVehicleId());
+      ps.setString(2, reservation.getReservedByEmail());
+      ps.setDate(3, reservation.getStartDate().toSQLDate());
+      ps.setDate(4, reservation.getEndDate().toSQLDate());
+      ps.setDouble(5, reservation.getPrice());
+      ps.executeUpdate();
+      return reservation;
     }
   }
 
-  public void add(Reservation reservation) throws SQLException
-  {
+  @Override
+  public void add(Reservation reservation) throws SQLException {
     create(reservation);
   }
 
-  public ArrayList<Reservation> getByDate(model.Date date)
-  {
-    try (Connection connection = getConnection())
-    {
-      PreparedStatement statement = connection.prepareStatement(
-          "SELECT * FROM reservation WHERE startDate = ? OR endDate = ?");
-      java.sql.Date dated = date.toSQLDate();
-      statement.setDate(1, dated);
-      statement.setDate(2, dated);
-      ResultSet resultSet = statement.executeQuery();
-      ArrayList<Reservation> result = new ArrayList<>();
-      while (resultSet.next())
-      {
-        int vehicleId = resultSet.getInt("vehicleId");
-        String ownerEmail = resultSet.getString(
-            "ownerEmail"), reservedByEmail = resultSet.getString(
-            "reservedByEmail"), vehicleType = resultSet.getString(
-            "vehicleType");
-        double price = resultSet.getDouble("price");
-        java.sql.Date date1 = resultSet.getDate(
-            "startDate"), date2 = resultSet.getDate("endDate");
-        LocalDate temp = date1.toLocalDate();
-        model.Date startDate = new model.Date(temp.getDayOfMonth(), temp.getMonthValue(),
-            temp.getYear());
-        temp = date2.toLocalDate();
-        model.Date endDate = new model.Date(temp.getDayOfMonth(), temp.getMonthValue(),
-            temp.getYear());
-        result.add(
-            new Reservation(vehicleId, vehicleType, ownerEmail, reservedByEmail,
-                startDate, endDate, price));
+
+  private model.Date toModelDate(java.sql.Date d) {
+    LocalDate ld = d.toLocalDate();
+    return new model.Date(ld.getDayOfMonth(), ld.getMonthValue(), ld.getYear());
+  }
+
+  @Override
+  public ArrayList<Reservation> getByDate(model.Date date) {
+    String sql =
+        "SELECT r.vehicleId, r.reservedByEmail, r.startDate, r.endDate, r.price, " +
+            "       v.type AS vehicleType, v.owneremail " +
+            "FROM reservation r " +
+            "  JOIN vehicle v ON r.vehicleId = v.id " +
+            "WHERE r.startDate = ? OR r.endDate = ?";
+    ArrayList<Reservation> result = new ArrayList<>();
+
+    try (Connection conn = getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)) {
+
+      java.sql.Date d = date.toSQLDate();
+      ps.setDate(1, d);
+      ps.setDate(2, d);
+
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          int vid = rs.getInt("vehicleId");
+          String vtype = rs.getString("vehicleType");
+          String ownerEmail = rs.getString("owneremail");
+          String reservedBy = rs.getString("reservedByEmail");
+          model.Date start = toModelDate(rs.getDate("startDate"));
+          model.Date end = toModelDate(rs.getDate("endDate"));
+          double price = rs.getDouble("price");
+
+          result.add(new Reservation(
+              vid, vtype, ownerEmail, reservedBy, start, end, price
+          ));
+        }
       }
-      return result;
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
     }
-    catch (SQLException e)
-    {
+    return result;
+  }
+
+  @Override
+  public void delete(Reservation reservation) {
+    String sql =
+        "DELETE FROM reservation " +
+            "WHERE vehicleId = ? AND startDate = ? AND endDate = ?";
+    try (Connection conn = getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)) {
+
+      ps.setInt(1, reservation.getVehicleId());
+      ps.setDate(2, reservation.getStartDate().toSQLDate());
+      ps.setDate(3, reservation.getEndDate().toSQLDate());
+      ps.executeUpdate();
+    } catch (SQLException e) {
       throw new RuntimeException(e);
     }
   }
 
-  public void delete(Reservation reservation)
-  {
-    int vId = reservation.getVehicleId();
-    model.Date startDate = reservation.getStartDate(), endDate = reservation.getEndDate();
-    java.sql.Date date = startDate.toSQLDate();
-    java.sql.Date date2 = endDate.toSQLDate();
+  @Override
+  public void deleteAll(String email) {
+    String sql = "DELETE FROM reservation WHERE reservedByEmail = ?";
+    try (Connection conn = getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)) {
 
-    PreparedStatement statement;
-    try (Connection connection = getConnection())
-    {
-      statement = connection.prepareStatement(
-          "DELETE FROM reservation WHERE vehicleId = ? AND startDate = ? AND endDate = ?");
-      statement.setInt(1, vId);
-      statement.setDate(2, date);
-      statement.setDate(3, date2);
-      statement.executeUpdate();
-    }
-    catch (SQLException e)
-    {
+      ps.setString(1, email);
+      ps.executeUpdate();
+    } catch (SQLException e) {
       throw new RuntimeException(e);
     }
   }
 
-  public void deleteAll(String email)
-  {
-    PreparedStatement statement;
-    try (Connection connection = getConnection())
-    {
-      statement = connection.prepareStatement(
-          "DELETE FROM reservation WHERE reservedByEmail = ?");
-      statement.setString(1, email);
-      statement.executeUpdate();
-    }
-    catch (SQLException e)
-    {
-      throw new RuntimeException(e);
-    }
-  }
-
+  @Override
   public void save(Reservation reservation, Reservation oldReservation)
-      throws SQLException
-  {
-    int vehicleId = reservation.getVehicleId(), oldVehicleId = oldReservation.getVehicleId();
-    String ownerEmail = reservation.getOwnerEmail(), reservedByEmail = reservation.getReservedByEmail(), vehicleType = reservation.getVehicleType();
-    double price = reservation.getPrice();
-    java.sql.Date sqlStartDate = reservation.getStartDate().toSQLDate();
-    java.sql.Date sqlEndDate = reservation.getEndDate().toSQLDate();
-    java.sql.Date oldSqlStartDate = oldReservation.getStartDate().toSQLDate();
-    java.sql.Date oldSqlEndDate = oldReservation.getEndDate().toSQLDate();
+      throws SQLException {
+    String sql =
+        "UPDATE reservation SET " +
+            "  reservedByEmail = ?, startDate = ?, endDate = ?, price = ? " +
+            "WHERE vehicleId = ? AND startDate = ? AND endDate = ?";
+    try (Connection conn = getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)) {
 
-    try (Connection connection = getConnection())
-    {
-      PreparedStatement statement = connection.prepareStatement(
-          "UPDATE reservation SET vehicleId = ?, vehicleType = ?, ownerEmail = ?, reservedByEmail = ?, startDate = ?, endDate = ?, price = ?  WHERE vehicleId = ? AND startDate = ? AND endDate = ?");
-      statement.setInt(1, vehicleId);
-      statement.setString(2, vehicleType);
-      statement.setString(3, ownerEmail);
-      statement.setString(4, reservedByEmail);
-      statement.setDate(5, sqlStartDate);
-      statement.setDate(6, sqlEndDate);
-      statement.setDouble(7, price);
+      ps.setString(1, reservation.getReservedByEmail());
+      ps.setDate(2, reservation.getStartDate().toSQLDate());
+      ps.setDate(3, reservation.getEndDate().toSQLDate());
+      ps.setDouble(4, reservation.getPrice());
 
-      statement.setInt(8, oldVehicleId);
-      statement.setDate(9, oldSqlStartDate);
-      statement.setDate(10, oldSqlEndDate);
-      statement.executeUpdate();
+      ps.setInt(5, oldReservation.getVehicleId());
+      ps.setDate(6, oldReservation.getStartDate().toSQLDate());
+      ps.setDate(7, oldReservation.getEndDate().toSQLDate());
+      ps.executeUpdate();
     }
   }
 
+  @Override
   public ArrayList<Reservation> getByReserveEmail(String reservedByEmail)
-      throws SQLException
-  {
+      throws SQLException {
+    String sql =
+        "SELECT r.vehicleId, r.reservedByEmail, r.startDate, r.endDate, r.price, " +
+            "       v.type AS vehicleType, v.owneremail " +
+            "FROM reservation r " +
+            "  JOIN vehicle v ON r.vehicleId = v.id " +
+            "WHERE r.reservedByEmail = ?";
+    ArrayList<Reservation> list = new ArrayList<>();
 
-    ArrayList<Reservation> reservations = new ArrayList<>();
+    try (Connection conn = getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)) {
+      ps.setString(1, reservedByEmail);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          int vid = rs.getInt("vehicleId");
+          String vtype = rs.getString("vehicleType");
+          String ownerEmail = rs.getString("owneremail");
+          model.Date start = toModelDate(rs.getDate("startDate"));
+          model.Date end = toModelDate(rs.getDate("endDate"));
+          double price = rs.getDouble("price");
 
-    try (Connection connection = getConnection())
-    {
-      PreparedStatement statement = connection.prepareStatement(
-          "SELECT * FROM reservation where reservedByEmail = ?");
-      statement.setString(1, reservedByEmail);
-      ResultSet resultSet = statement.executeQuery();
-      while (resultSet.next())
-      {
-        String ownerEmail = resultSet.getString(
-            "ownerEmail"), vehicleType = resultSet.getString("vehicleType");
-        int vehicleId = resultSet.getInt("vehicleId");
-        java.sql.Date date1 = resultSet.getDate("startDate");
-        LocalDate temp = date1.toLocalDate();
-        model.Date startDate = new model.Date(temp.getDayOfMonth(), temp.getMonthValue(),
-            temp.getYear());
-        java.sql.Date date2 = resultSet.getDate("endDate");
-        temp = date2.toLocalDate();
-        model.Date endDate = new model.Date(temp.getDayOfMonth(), temp.getMonthValue(),
-            temp.getYear());
-        double price = resultSet.getDouble("price");
-
-        reservations.add(
-            new Reservation(vehicleId, vehicleType, ownerEmail, reservedByEmail,
-                startDate, endDate, price));
+          list.add(new Reservation(
+              vid, vtype, ownerEmail, reservedByEmail, start, end, price
+          ));
+        }
       }
     }
-    return reservations;
+    return list;
   }
 
+  @Override
   public ArrayList<Reservation> getByTypeAndId(int vehicleId, String vehicleType)
-      throws SQLException
-  {
+      throws SQLException {
+    String sql =
+        "SELECT r.vehicleId, r.reservedByEmail, r.startDate, r.endDate, r.price, " +
+            "       v.type AS vehicleType, v.owneremail " +
+            "FROM reservation r " +
+            "  JOIN vehicle v ON r.vehicleId = v.id " +
+            "WHERE r.vehicleId = ? AND v.type = ?";
+    ArrayList<Reservation> list = new ArrayList<>();
 
-    ArrayList<Reservation> reservations = new ArrayList<>();
+    try (Connection conn = getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)) {
 
-    try (Connection connection = getConnection())
-    {
-      PreparedStatement statement = connection.prepareStatement(
-          "SELECT * FROM reservation where vehicleId = ? AND vehicleType = ?");
-      statement.setInt(1, vehicleId);
-      statement.setString(2, vehicleType);
-      ResultSet resultSet = statement.executeQuery();
-      while (resultSet.next())
-      {
-        String ownerEmail = resultSet.getString(
-            "ownerEmail"), reservedByEmail = resultSet.getString("reservedByEmail");
-        java.sql.Date date1 = resultSet.getDate("startDate");
-        LocalDate temp = date1.toLocalDate();
-        model.Date startDate = new model.Date(temp.getDayOfMonth(), temp.getMonthValue(),
-            temp.getYear());
-        java.sql.Date date2 = resultSet.getDate("endDate");
-        temp = date2.toLocalDate();
-        model.Date endDate = new model.Date(temp.getDayOfMonth(), temp.getMonthValue(),
-            temp.getYear());
-        double price = resultSet.getDouble("price");
+      ps.setInt(1, vehicleId);
+      ps.setString(2, vehicleType);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          String ownerEmail = rs.getString("owneremail");
+          String reservedBy = rs.getString("reservedByEmail");
+          model.Date start = toModelDate(rs.getDate("startDate"));
+          model.Date end = toModelDate(rs.getDate("endDate"));
+          double price = rs.getDouble("price");
 
-        reservations.add(
-            new Reservation(vehicleId, vehicleType, ownerEmail, reservedByEmail,
-                startDate, endDate, price));
+          list.add(new Reservation(
+              vehicleId, vehicleType, ownerEmail, reservedBy, start, end, price
+          ));
+        }
       }
     }
-    return reservations;
+    return list;
   }
 
-  public ArrayList<Reservation> getAll() throws SQLException
-  {
-    ArrayList<Reservation> reservations = new ArrayList<>();
+  @Override
+  public ArrayList<Reservation> getAll() throws SQLException {
+    String sql =
+        "SELECT r.vehicleId, r.reservedByEmail, r.startDate, r.endDate, r.price, " +
+            "       v.type AS vehicleType, v.owneremail " +
+            "FROM reservation r " +
+            "  JOIN vehicle v ON r.vehicleId = v.id";
+    ArrayList<Reservation> list = new ArrayList<>();
 
-    try (Connection connection = getConnection())
-    {
-      PreparedStatement statement = connection.prepareStatement(
-          "SELECT * FROM reservation");
-      ResultSet resultSet = statement.executeQuery();
-      while (resultSet.next())
-      {
-        String ownerEmail = resultSet.getString(
-            "ownerEmail"), vehicleType = resultSet.getString(
-            "vehicleType"), reservedByEmail = resultSet.getString(
-            "reservedByEmail");
-        int vehicleId = resultSet.getInt("vehicleId");
-        java.sql.Date date1 = resultSet.getDate("startDate");
-        LocalDate temp = date1.toLocalDate();
-        model.Date startDate = new model.Date(temp.getDayOfMonth(), temp.getMonthValue(),
-            temp.getYear());
-        java.sql.Date date2 = resultSet.getDate("endDate");
-        temp = date2.toLocalDate();
-        model.Date endDate = new model.Date(temp.getDayOfMonth(), temp.getMonthValue(),
-            temp.getYear());
-        double price = resultSet.getDouble("price");
+    try (Connection conn = getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery()) {
 
-        reservations.add(
-            new Reservation(vehicleId, vehicleType, ownerEmail, reservedByEmail,
-                startDate, endDate, price));
+      while (rs.next()) {
+        int vid = rs.getInt("vehicleId");
+        String vtype = rs.getString("vehicleType");
+        String ownerEmail = rs.getString("owneremail");
+        String reservedBy = rs.getString("reservedByEmail");
+        model.Date start = toModelDate(rs.getDate("startDate"));
+        model.Date end = toModelDate(rs.getDate("endDate"));
+        double price = rs.getDouble("price");
+
+        list.add(new Reservation(
+            vid, vtype, ownerEmail, reservedBy, start, end, price
+        ));
       }
     }
-    return reservations;
+    return list;
   }
-
 }

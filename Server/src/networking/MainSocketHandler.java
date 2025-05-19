@@ -9,7 +9,6 @@ import dtos.reservation.ReservationDto;
 import dtos.reservation.ReservationRequest;
 import dtos.user.BlackListDto;
 import dtos.user.BlacklistUserRequest;
-import dtos.user.UserDataDto;
 import dtos.vehicle.*;
 import model.exceptions.ServerFailureException;
 import model.exceptions.ValidationException;
@@ -24,8 +23,6 @@ import utilities.logging.Logger;
 import java.io.*;
 import java.net.Socket;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 

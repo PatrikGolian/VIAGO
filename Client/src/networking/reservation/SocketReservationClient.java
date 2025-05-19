@@ -1,18 +1,14 @@
 package networking.reservation;
 
 import dtos.Request;
-import dtos.Response;
 import dtos.reservation.ReservationDto;
 import dtos.reservation.ReservationRequest;
 import dtos.reservation.ReservationRequestByIdType;
-import dtos.vehicle.AddNewVehicleRequest;
 import dtos.vehicle.VehicleDisplayDto;
-import model.entities.reservation.Reservation;
 import networking.SocketService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SocketReservationClient implements ReservationClient
 {

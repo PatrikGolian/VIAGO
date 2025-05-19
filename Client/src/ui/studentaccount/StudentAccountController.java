@@ -11,8 +11,6 @@ import ui.common.Controller;
 import ui.popup.MessageType;
 import ui.reservation.ReservationFx;
 
-import javax.swing.text.View;
-
 public class StudentAccountController implements Controller
 {
   @FXML Button logoutButton;

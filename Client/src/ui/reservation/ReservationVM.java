@@ -3,16 +3,13 @@ package ui.reservation;
 import dtos.reservation.ReservationDto;
 import dtos.reservation.ReservationRequest;
 import dtos.reservation.ReservationRequestByIdType;
-import dtos.vehicle.VehicleDataDto;
 import dtos.vehicle.VehicleDisplayDto;
-import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import model.Date;
 import model.entities.reservation.Reservation;
-import model.entities.vehicles.Vehicle;
 import networking.reservation.ReservationClient;
 import startup.ViewHandler;
 import state.AppState;
@@ -20,9 +17,7 @@ import ui.popup.MessageType;
 import networking.reservation.ReservationSubscriber;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

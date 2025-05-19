@@ -3,8 +3,6 @@ package ui.reservation;
 import dtos.reservation.ReservationDto;
 import javafx.beans.property.*;
 
-import model.Date;
-
 public class ReservationFx
 {
   private final StringProperty typeProp = new SimpleStringProperty();

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 public interface ReservationDao
 {
+  Reservation create(Reservation reservation) throws SQLException;
   void add(Reservation reservation) throws SQLException;
   ArrayList<Reservation> getByDate(model.Date date) throws SQLException;
   ArrayList<Reservation> getAll() throws SQLException;

@@ -1,8 +1,6 @@
 package ui.reservation;
 
 import dtos.reservation.ReservationRequestByIdType;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 
@@ -11,9 +9,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.skin.DatePickerSkin;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.util.Duration;
 import javafx.util.StringConverter;
-import model.Date;
 import model.entities.reservation.Reservation;
 import services.reservation.ReservationService;
 import startup.ViewHandler;

@@ -5,6 +5,7 @@ import dtos.vehicle.AddNewEBikeRequest;
 import dtos.vehicle.AddNewScooterRequest;
 import javafx.beans.Observable;
 import javafx.beans.property.*;
+import model.exceptions.ValidationException;
 import networking.addnew.AddNewVehicleClient;
 import networking.user.BlacklistSubscriber;
 import startup.ViewHandler;
@@ -62,15 +63,70 @@ public class AddNewVM
 
     String email = AppState.getCurrentUser().email();
     messageProp.set("");
+    double price = Double.parseDouble(priceProp.get());
+
+
+      if (!(typeProp.get().equals("bike") || typeProp.get().equals("e-bike") || typeProp.get().equals(
+          "scooter")))
+      {
+        messageProp.set(
+            "Type has to be either bike, e-bike or scooter");
+        return;
+      }
+
+
+      if (!brandProp.get().matches("[a-zA-Z ]+"))
+      {
+        messageProp.set("Brand can contain only letters");
+        return;
+      }
+
+
+      if (!((conditionProp.get().equals("used") || conditionProp.get().equals("good")
+          || conditionProp.get().equals("new"))))
+      {
+        messageProp.set(
+            "Condition has to be either used, good or new");
+        return;
+      }
+
+
+
+      if (!colorProp.get().matches("[a-zA-Z ]+"))
+      {
+        messageProp.set("Color can only contain letters");
+        return;
+      }
+
+
+
+      if (price <= 0)
+      {
+        messageProp.set("Price has to be a positive number");
+        return;
+      }
+
     try
     {
       switch (typeProp.get())
       {
         case "scooter" ->
         {
-          double price = Double.parseDouble(priceProp.get());
+
           int speed = Integer.parseInt(speedProp.get());
           int range = Integer.parseInt(rangeProp.get());
+
+          if (speed <= 0)
+          {
+            messageProp.set("Max speed has to be a positive number");
+            return;
+          }
+
+          if (range <= 0)
+          {
+            messageProp.set("Range has to be a positive number");
+            return;
+          }
           addNewService.addNewVehicle(
               new AddNewScooterRequest(idProp.get(), typeProp.get(),
                   brandProp.get(), modelProp.get(), conditionProp.get(),
@@ -83,7 +139,13 @@ public class AddNewVM
         }
         case "bike" ->
         {
-          double price = Double.parseDouble(priceProp.get());
+
+
+          if (!bikeTypeProp.get().matches("[a-zA-Z ]+"))
+          {
+            messageProp.set("Bike Type can only contain letters");
+            return;
+          }
           addNewService.addNewVehicle(
               new AddNewBikeRequest(idProp.get(), typeProp.get(),
                   brandProp.get(), modelProp.get(), conditionProp.get(),
@@ -97,9 +159,26 @@ public class AddNewVM
         }
         case "e-bike" ->
         {
-          double price = Double.parseDouble(priceProp.get());
+
           int speed = Integer.parseInt(speedProp.get());
           int range = Integer.parseInt(rangeProp.get());
+
+          if (!bikeTypeProp.get().matches("[a-zA-Z ]+"))
+          {
+            messageProp.set("Bike Type can only contain letters");
+            return;
+          }
+          if (speed <= 0)
+          {
+            messageProp.set("Max speed has to be a positive number");
+            return;
+          }
+
+          if (range <= 0)
+          {
+            messageProp.set("Range has to be a positive number");
+            return;
+          }
           addNewService.addNewVehicle(
               new AddNewEBikeRequest(idProp.get(), typeProp.get(),
                   brandProp.get(), modelProp.get(), conditionProp.get(),
