@@ -312,15 +312,24 @@ public class MainSocketHandler implements Runnable
           blacklistSubscribers.remove(subscriber);
         }
       }
-      for(ObjectOutputStream subscriber : viewUsersSubscribers)
+      for(ObjectOutputStream subscriber : reservationSubscribers)
       {
-        try
-        {
+        try{
           subscriber.writeObject(push);
         }
         catch (IOException e)
         {
-          viewUsersSubscribers.remove(subscriber);
+          reservationSubscribers.remove(subscriber);
+        }
+      }
+      for(ObjectOutputStream subscriber : allVehiclesSubscribers)
+      {
+        try{
+          subscriber.writeObject(push);
+        }
+        catch (IOException e)
+        {
+          allVehiclesSubscribers.remove(subscriber);
         }
       }
       return;

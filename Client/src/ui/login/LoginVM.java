@@ -46,7 +46,6 @@ public class LoginVM
 
   public void blacklistPopupAndDisconnect()
   {
-    ViewHandler.popupMessage(MessageType.WARNING,"You are being disconnected!! \nOne of our admins blacklisted you!");
     ViewHandler.showView(ViewType.LOGIN);
   }
 

@@ -42,6 +42,9 @@ public class ReservationSubscriber {
             case "SCOOTER_ADDED":
               Platform.runLater(action);
               break;
+            case "USER_BLACKLISTED":
+              Platform.runLater(action);
+              break;
             default:
           }
         }

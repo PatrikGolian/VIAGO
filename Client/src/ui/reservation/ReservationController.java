@@ -230,6 +230,8 @@ public class ReservationController implements Controller
           }
         });
 
+    datePicker.valueProperty().bindBidirectional(viewModel.datePickerProp());
+
     // Date Picker
     datePicker.setValue(LocalDate.now());
     datePicker.setConverter(new StringConverter<LocalDate>()

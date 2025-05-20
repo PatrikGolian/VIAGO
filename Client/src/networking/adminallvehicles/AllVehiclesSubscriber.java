@@ -37,6 +37,8 @@ public class AllVehiclesSubscriber {
               Platform.runLater(action);
               System.out.println("----> [allVehicles] recieved the reservation push!");
             }
+            break;
+            case "USER_BLACKLISTED":
               break;
             default:
           }
