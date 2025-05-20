@@ -6,10 +6,14 @@ import dtos.reservation.ReservationRequestByIdType;
 import dtos.reservation.ReservationReserveRequest;
 import model.Date;
 import model.entities.reservation.Reservation;
+import model.entities.vehicles.Bike;
+import model.entities.vehicles.EBike;
+import model.entities.vehicles.Scooter;
 import model.entities.vehicles.Vehicle;
 import model.exceptions.ValidationException;
 import persistence.reservation.ReservationDao;
 import persistence.vehicle.VehicleDao;
+import dtos.vehicle.*;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -139,6 +143,7 @@ public class ReservationServiceImpl implements ReservationService
     }
     return  result;
   }
+
 }
 
 

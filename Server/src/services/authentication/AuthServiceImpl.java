@@ -20,7 +20,7 @@ public class AuthServiceImpl implements AuthenticationService
   }
 
   @Override public void registerUser(RegisterUserRequest request)
-      throws SQLException
+      throws SQLException, ValidationException
   {
     User existingUser = userDao.getSingle(request.email());
     if (existingUser != null)
@@ -100,7 +100,7 @@ public class AuthServiceImpl implements AuthenticationService
   private static void validateEmailIsCorrectFormat(String email)
   {
     // validate email has correct format
-    if (!email.matches("^\\d{6,}@via\\.dk$") && !email.matches(
+    if (!email.matches("^\\d{6}@via\\.dk$") && !email.matches(
         "^[a-zA-Z]+@via\\.dk$"))
     {
       throw new ValidationException(

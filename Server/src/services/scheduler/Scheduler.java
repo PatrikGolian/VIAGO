@@ -24,7 +24,7 @@ public class Scheduler
         },
         0,
         10,
-        TimeUnit.SECONDS    // or SECONDS if you really meant “every second”
+        TimeUnit.SECONDS
     );
   }
 

@@ -30,6 +30,7 @@ public class ReservationVM
       vehicles, p -> true);
 
   // Realated to fields
+  private final ObjectProperty<LocalDate> datePickerProp = new SimpleObjectProperty<>();
   private final StringProperty profileTextRedirectProp = new SimpleStringProperty();
   private final StringProperty conditionProp = new SimpleStringProperty();
   private final StringProperty colorProp = new SimpleStringProperty();
@@ -249,6 +250,8 @@ public class ReservationVM
     speedProp.set("");
     rangeProp.set("");
     bikeTypeProp.set("");
+    datePickerProp.set(LocalDate.now());
+
   }
 
   // Additional info
@@ -292,6 +295,11 @@ public class ReservationVM
   public StringProperty finalPriceProperty()
   {
     return finalPriceProp;
+  }
+
+  public ObjectProperty<LocalDate> datePickerProp()
+  {
+    return datePickerProp;
   }
 
   // Visibility properties

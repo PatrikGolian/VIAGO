@@ -26,16 +26,16 @@ public class SocketUsersClient implements UsersClient
     @Override
     public void blacklist(BlacklistUserRequest blacklistRequest)
     {
-        Request request = new Request("users", "blacklist", blacklistRequest);
-        SocketService.sendRequest(request);
+        ReservationReserveRequest r2 = new ReservationReserveRequest(blacklistRequest.email());
+        Request request2 = new Request("reservation", "delete_allReservation",r2);
+        SocketService.sendRequest(request2);
 
         VehicleOwnerRequest r1 = new VehicleOwnerRequest(blacklistRequest.email());
         Request request1 = new Request("yourVehicles", "delete_allVehicle",r1);
         SocketService.sendRequest(request1);
 
-        ReservationReserveRequest r2 = new ReservationReserveRequest(blacklistRequest.email());
-        Request request2 = new Request("reservation", "delete_allReservation",r2);
-        SocketService.sendRequest(request2);
+        Request request = new Request("users", "blacklist", blacklistRequest);
+        SocketService.sendRequest(request);
     }
     @Override
     public void blackListReason(BlacklistUserRequest blacklistRequest)

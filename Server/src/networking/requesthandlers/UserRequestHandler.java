@@ -43,7 +43,6 @@ public class UserRequestHandler implements RequestHandler
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
-
             }
             case "blackListReason" -> {
                 Writer writer = new Writer(lock, () -> {
@@ -174,6 +173,8 @@ public class UserRequestHandler implements RequestHandler
                 }
                 return reader.getResult();
             }
+          default ->
+              throw new IllegalStateException("Unexpected value: " + action);
         }
         return null;
     }

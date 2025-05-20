@@ -8,7 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class ReservationSubscriber {
+public class  ReservationSubscriber {
   private final ObjectOutputStream out;
   private final ObjectInputStream in;
   private final Thread readerThread;
@@ -40,6 +40,9 @@ public class ReservationSubscriber {
               Platform.runLater(action);
               break;
             case "SCOOTER_ADDED":
+              Platform.runLater(action);
+              break;
+            case "USER_BLACKLISTED":
               Platform.runLater(action);
               break;
             default:

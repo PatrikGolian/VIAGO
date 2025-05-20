@@ -55,76 +55,89 @@ public class AddNewVM
     rangeProp.addListener(this::updateAddButtonState);
     bikeTypeProp.addListener(this::updateAddButtonState);
   }
-  
-
 
   public void add()
   {
 
     String email = AppState.getCurrentUser().email();
     messageProp.set("");
-    double price = Double.parseDouble(priceProp.get());
+    double price;
 
+    if (!(typeProp.get().equals("bike") || typeProp.get().equals("e-bike")
+        || typeProp.get().equals("scooter")))
+    {
+      messageProp.set("Type has to be either bike, e-bike or scooter");
+      return;
+    }
 
-      if (!(typeProp.get().equals("bike") || typeProp.get().equals("e-bike") || typeProp.get().equals(
-          "scooter")))
-      {
-        messageProp.set(
-            "Type has to be either bike, e-bike or scooter");
-        return;
-      }
+    if (!brandProp.get().matches("[a-zA-Z ]+"))
+    {
+      messageProp.set("Brand can contain only letters");
+      return;
+    }
 
+    if (!((conditionProp.get().equals("used") || conditionProp.get()
+        .equals("good") || conditionProp.get().equals("new"))))
+    {
+      messageProp.set("Condition has to be either used, good or new");
+      return;
+    }
 
-      if (!brandProp.get().matches("[a-zA-Z ]+"))
-      {
-        messageProp.set("Brand can contain only letters");
-        return;
-      }
+    if (!colorProp.get().matches("[a-zA-Z ]+"))
+    {
+      messageProp.set("Color can only contain letters");
+      return;
+    }
 
-
-      if (!((conditionProp.get().equals("used") || conditionProp.get().equals("good")
-          || conditionProp.get().equals("new"))))
-      {
-        messageProp.set(
-            "Condition has to be either used, good or new");
-        return;
-      }
-
-
-
-      if (!colorProp.get().matches("[a-zA-Z ]+"))
-      {
-        messageProp.set("Color can only contain letters");
-        return;
-      }
-
-
-
+    try
+    {
+      price = Double.parseDouble(priceProp.get());
       if (price <= 0)
       {
         messageProp.set("Price has to be a positive number");
         return;
       }
-
-    try
+    }
+    catch (NumberFormatException e)
     {
+      messageProp.set("Price can't contain letters");
+      return;
+    }
+
       switch (typeProp.get())
       {
         case "scooter" ->
         {
 
-          int speed = Integer.parseInt(speedProp.get());
-          int range = Integer.parseInt(rangeProp.get());
+          int speed;
+          int range;
 
-          if (speed <= 0)
+          try
           {
-            messageProp.set("Max speed has to be a positive number");
+            speed = Integer.parseInt(speedProp.get());
+            if (speed <= 0)
+            {
+              messageProp.set("Max speed has to be a positive number");
+              return;
+            }
+          }
+          catch (NumberFormatException e)
+          {
+            messageProp.set("Max speed can't contain letters.");
             return;
           }
-
-          if (range <= 0)
+          try
           {
-            messageProp.set("Range has to be a positive number");
+            range = Integer.parseInt(rangeProp.get());
+            if (range <= 0)
+            {
+              messageProp.set("Range has to be a positive number");
+              return;
+            }
+          }
+          catch (NumberFormatException e)
+          {
+            messageProp.set("Range can't contain letters.");
             return;
           }
           addNewService.addNewVehicle(
@@ -137,46 +150,61 @@ public class AddNewVM
           typeProp.set("");
           clearFields();
         }
+
         case "bike" ->
         {
-
-
           if (!bikeTypeProp.get().matches("[a-zA-Z ]+"))
           {
             messageProp.set("Bike Type can only contain letters");
             return;
           }
+
           addNewService.addNewVehicle(
               new AddNewBikeRequest(idProp.get(), typeProp.get(),
                   brandProp.get(), modelProp.get(), conditionProp.get(),
                   colorProp.get(), price, bikeTypeProp.get(), email,
                   "Available"));
-
           messageProp.set("Success");
           // clear fields
           typeProp.set("");
           clearFields();
         }
+
         case "e-bike" ->
         {
-
-          int speed = Integer.parseInt(speedProp.get());
-          int range = Integer.parseInt(rangeProp.get());
-
+          int speed;
+          int range;
+          try
+          {
+            speed = Integer.parseInt(speedProp.get());
+            if (speed <= 0)
+            {
+              messageProp.set("Max speed has to be a positive number");
+              return;
+            }
+          }
+          catch (NumberFormatException e)
+          {
+            messageProp.set("Max speed can't contain letters.");
+            return;
+          }
+          try
+          {
+            range = Integer.parseInt(rangeProp.get());
+            if (range <= 0)
+            {
+              messageProp.set("Range has to be a positive number");
+              return;
+            }
+          }
+          catch (NumberFormatException e)
+          {
+            messageProp.set("Range can't contain letters.");
+            return;
+          }
           if (!bikeTypeProp.get().matches("[a-zA-Z ]+"))
           {
             messageProp.set("Bike Type can only contain letters");
-            return;
-          }
-          if (speed <= 0)
-          {
-            messageProp.set("Max speed has to be a positive number");
-            return;
-          }
-
-          if (range <= 0)
-          {
-            messageProp.set("Range has to be a positive number");
             return;
           }
           addNewService.addNewVehicle(
@@ -192,19 +220,10 @@ public class AddNewVM
         }
         default ->
         {
-
+          messageProp.set("No such vehicle type found! Needs to be scooter, bike, e-bike");
+          return;
         }
       }
-    }
-    catch (NumberFormatException e)
-    {
-
-      messageProp.set(e.getMessage());
-    }
-    catch (Exception e)
-    {
-      messageProp.set(e.getMessage());
-    }
   }
 
   public void setVisibility()
@@ -368,7 +387,7 @@ public class AddNewVM
             brandProp.get()) || StringUtils.isNullOrEmpty(modelProp.get())
             || StringUtils.isNullOrEmpty(conditionProp.get())
             || StringUtils.isNullOrEmpty(colorProp.get())
-            || StringUtils.isNullOrEmpty(priceProp.get());
+            || StringUtils.isNullOrEmpty(String.valueOf(priceProp.get()));
 
     // Additional fields depending on the selected type
     if ("scooter".equals(typeProp.get()))

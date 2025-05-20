@@ -20,4 +20,5 @@ public interface ReservationDao
   void deleteAll(String request);
   void save(Reservation reservation, Reservation oldReservation)
       throws SQLException;
+  void deleteByVehicleId(int vehicleId) throws SQLException;
 }

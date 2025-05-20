@@ -1,10 +1,14 @@
 package ui.register;
 
 import dtos.auth.RegisterUserRequest;
+import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.*;
+import model.exceptions.ValidationException;
 import networking.authentication.AuthenticationClient;
 import utils.StringUtils;
+
+import java.io.IOException;
 
 public class RegisterVM
 {
@@ -31,22 +35,26 @@ public class RegisterVM
 
     public void registerUser()
     {
-        messageProp.set(""); // clear potential existing message
+        // Clear potential existing message
+        messageProp.set("");
 
-        // validate all input is present
+        // Validate all input is present
         if (emailProp.get() == null || emailProp.get().isEmpty())
         {
             messageProp.set("Email cannot be empty");
             return;
         }
-
-
+        else if(!(emailProp.get().matches(("^[a-zA-Z]+@via\\.dk$"))) && !(emailProp.get().matches("^\\d{6}@via\\.dk$")))
+        {
+            messageProp.set("Email format not recognized");
+            return;
+        }
         if (firstNameProp.get() == null || firstNameProp.get().isEmpty())
         {
             messageProp.set("First name cannot be empty");
             return;
         }
-        if(firstNameProp.get().length() <2)
+        if(firstNameProp.get().length() <= 2)
         {
             messageProp.set("First name has to have at least 3 letters");
             return;
@@ -61,7 +69,7 @@ public class RegisterVM
             messageProp.set("Last name cannot be empty");
             return;
         }
-        if(lastNameProp.get().length() < 2)
+        if(lastNameProp.get().length() <= 2)
         {
             messageProp.set("Last name has to have at least 3 letters");
             return;
@@ -79,10 +87,19 @@ public class RegisterVM
         if (!passwordProp.get().equals(repeatProp.get()))
         {
             messageProp.set("Passwords do not match");
-            System.out.println(passwordProp.get()+repeatProp.get());
+            System.out.println(passwordProp.get() + repeatProp.get());
             return;
         }
-
+        if (passwordProp.get().length() < 8)
+        {
+            messageProp.set("Password must be 8 or more characters");
+            return;
+        }
+        if (passwordProp.get().length() > 24)
+        {
+            messageProp.set("Password must be 24 or fewer characters");
+            return;
+        }
         try
         {
             authService.registerUser(new RegisterUserRequest(
@@ -91,16 +108,20 @@ public class RegisterVM
                     firstNameProp.get(),
                     lastNameProp.get())
             );
-
+            System.out.println("No exception thrown - setting message to Success");
             messageProp.set("Success");
-            // clear fields
             clearFields();
         }
-        catch (Exception e)
-        {
-            // might receive exception from lower layer (i.e. client)
-            messageProp.set(e.getMessage());
+        catch (ValidationException ve) {
+            messageProp.set(ve.getMessage());
+            return;
         }
+        catch (Exception e) {
+            messageProp.set("Unexpected error: " + e.getMessage());
+            return;
+        }
+
+
     }
 
     private void clearFields()

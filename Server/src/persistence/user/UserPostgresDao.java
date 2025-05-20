@@ -144,10 +144,10 @@ public class UserPostgresDao implements UserDao
       if (resultSet.next()) {
         String pwd = resultSet.getString("password");
         System.out.println("[DAO] getSingle(): found row, password column = [" + pwd + "]");
-        String firstName       = resultSet.getString("firstname");
-        String lastName        = resultSet.getString("lastname");
-        boolean isAdmin        = resultSet.getBoolean("isAdmin");
-        boolean isBlackListed  = resultSet.getBoolean("isBlackListed");
+        String firstName = resultSet.getString("firstname");
+        String lastName = resultSet.getString("lastname");
+        boolean isAdmin = resultSet.getBoolean("isAdmin");
+        boolean isBlackListed = resultSet.getBoolean("isBlackListed");
         String blacklistReason = resultSet.getString("blackListReason");
         return new User(email, pwd, firstName, lastName, isAdmin, isBlackListed, blacklistReason);
       }

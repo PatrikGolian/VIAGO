@@ -2,6 +2,7 @@ package networking.requesthandlers;
 
 import dtos.auth.LoginRequest;
 import dtos.auth.RegisterUserRequest;
+import model.exceptions.ValidationException;
 import networking.exceptions.InvalidActionException;
 import networking.readerswriters.ReadWrite;
 import networking.readerswriters.Reader;
@@ -28,20 +29,33 @@ public class AuthRequestHandler implements RequestHandler
         {
             case "register" ->
             {
-                Writer writer = new Writer(lock, () -> {
-                    try {
-                        authenticationService.registerUser((RegisterUserRequest) payload);
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e); // wrap checked exception
-                    }
-                });
-                Thread writerThread = new Thread(writer);
-                writerThread.start();
-                try {
-                    writerThread.join();
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
+//                Writer writer = new Writer(lock, () -> {
+//                  try
+//                  {
+                    authenticationService.registerUser((RegisterUserRequest) payload);
+//                  }
+//                  catch (ValidationException e)
+//                  {
+//                      throw new ValidationException(e.getMessage());
+//                  }
+//                  catch (SQLException e)
+//                  {
+//                    throw new RuntimeException(e);
+//                  }
+//                  return null;
+//                });
+//                Thread writerThread = new Thread(writer);
+//                try {
+//                    writerThread.start();
+//                    writerThread.join();
+//                } catch (InterruptedException e) {
+//                    Thread.currentThread().interrupt();
+//                }
+//                catch (ValidationException e)
+//                {
+//                    throw new ValidationException(e.getMessage());
+//                }
+//                return writer.getResult();
             }
             case "login" ->
             {
@@ -69,10 +83,9 @@ public class AuthRequestHandler implements RequestHandler
                 return reader.getResult();
             }
             default ->
-            {
+
                 throw new InvalidActionException("auth", action);
-            }
         }
-        return null;
+      return payload;
     }
 }

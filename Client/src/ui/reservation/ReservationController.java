@@ -230,6 +230,8 @@ public class ReservationController implements Controller
           }
         });
 
+    datePicker.valueProperty().bindBidirectional(viewModel.datePickerProp());
+
     // Date Picker
     datePicker.setValue(LocalDate.now());
     datePicker.setConverter(new StringConverter<LocalDate>()
@@ -309,55 +311,6 @@ public class ReservationController implements Controller
           }
         });
 
-        /*datePicker.setDayCellFactory(dp -> new DateCell()
-        {
-          @Override public void updateItem(LocalDate item, boolean empty)
-          {
-            if (!(empty || item == null))
-            {
-              if (reservations != null)
-              {
-                boolean met = false;
-                for (Reservation res : reservations)
-                {
-                  Date s = res.getStartDate();
-                  Date e = res.getEndDate();
-                  LocalDate starts = LocalDate.of(s.getYear(), s.getMonth(),
-                      s.getDay());
-                  LocalDate ends = LocalDate.of(e.getYear(), e.getMonth(),
-                      e.getDay());
-
-                  if ((item.isEqual(starts) || item.isEqual(ends) || (
-                      item.isAfter(starts) && item.isBefore(ends))))
-                  {
-                    //System.out.println(starts);
-                    met = true;
-                    break;
-                  }
-                }
-
-                if (!met)
-                {
-                  //System.out.println("set disable false");
-                  setDisable(false);
-                }
-                else
-                {
-                  setDisable(true);
-                  //System.out.println("set for "+item);
-                  //System.out.println("empty: "+empty);
-                  setStyle("-fx-background-color: #ffc0cb;");
-                }
-              }
-              if (item.isBefore(LocalDate.now()))
-              {
-                setDisable(true);
-                setStyle("-fx-background-color: #D3D3D3;");
-              }
-            }
-            super.updateItem(item, empty);
-          }
-        });*/
 
         // Get the DatePicker's Skin to access its content
         DatePickerSkin skin = (DatePickerSkin) datePicker.getSkin();

@@ -3,6 +3,7 @@ package ui.addnew;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.shape.Rectangle;
+import javafx.util.converter.NumberStringConverter;
 import startup.ViewHandler;
 import startup.ViewType;
 import ui.common.Controller;

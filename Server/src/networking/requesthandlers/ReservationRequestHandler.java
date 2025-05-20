@@ -63,6 +63,7 @@ public class ReservationRequestHandler implements RequestHandler
           Thread.currentThread().interrupt();
         }
       }
+
       case "view_vehicles" ->
       {
         Reader<Object> reader = new Reader<>(lock, () -> {

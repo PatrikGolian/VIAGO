@@ -3,6 +3,7 @@ package networking;
 import dtos.Request;
 import dtos.Response;
 import dtos.error.ErrorResponse;
+import model.exceptions.ValidationException;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -45,6 +46,10 @@ public class SocketService
     catch (ClassNotFoundException e)
     {
       throw new RuntimeException("Invalid response from server.");
+    }
+    catch (ValidationException e)
+    {
+      throw new ValidationException(e.getMessage());
     }
   }
 }

@@ -19,5 +19,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" exported="" name="mockito.core" level="project" />
+    <orderEntry type="library" name="postgresql-42.7.5" level="application" />
   </component>
 </module>

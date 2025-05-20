@@ -1,5 +1,7 @@
 package networking.readerswriters;
 
+import model.exceptions.ValidationException;
+
 import java.util.concurrent.Callable;
 
 public class Reader<T> implements Runnable {
@@ -17,8 +19,12 @@ public class Reader<T> implements Runnable {
     lock.acquireRead();
     try {
       result = task.call(); // execute read logic
-    } catch (Exception e) {
-      e.printStackTrace(); // handle/log exception
+    }catch (ValidationException e)
+    {
+      throw new ValidationException(e.getMessage());
+    }
+    catch (Exception e) {
+      throw  new RuntimeException(e);
     } finally {
       lock.releaseRead();
     }

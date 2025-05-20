@@ -291,9 +291,9 @@ public class ViewUsersVM
       messageProp.set("First name cannot be empty");
       return;
     }
-    if (first.length() < 2 || !first.matches("[a-zA-Z ]+"))
+    if (first.length() <= 2 || !first.matches("[a-zA-Z ]+"))
     {
-      messageProp.set("First name must be at least 2 letters and only letters");
+      messageProp.set("First name must be at least 3 letters and only letters");
       return;
     }
     if (last.isEmpty())
@@ -301,9 +301,9 @@ public class ViewUsersVM
       messageProp.set("Last name cannot be empty");
       return;
     }
-    if (last.length() < 2 || !last.matches("[a-zA-Z ]+"))
+    if (last.length() <= 2 || !last.matches("[a-zA-Z ]+"))
     {
-      messageProp.set("Last name must be at least 2 letters and only letters");
+      messageProp.set("Last name must be at least 3 letters and only letters");
       return;
     }
 

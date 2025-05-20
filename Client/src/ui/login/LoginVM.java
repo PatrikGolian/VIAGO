@@ -36,7 +36,8 @@ public class LoginVM
 
     try
     {
-      new BlacklistSubscriber("localhost", 2910, () -> {blacklistPopupAndDisconnect();});
+      new BlacklistSubscriber("localhost", 2910,
+          this::blacklistPopupAndDisconnect);
     }
     catch (IOException e)
     {
@@ -46,7 +47,6 @@ public class LoginVM
 
   public void blacklistPopupAndDisconnect()
   {
-    ViewHandler.popupMessage(MessageType.WARNING,"You are being disconnected!! \nOne of our admins blacklisted you!");
     ViewHandler.showView(ViewType.LOGIN);
   }
 
@@ -81,7 +81,8 @@ public class LoginVM
 
   public void login()
   {
-    messageProp.set(""); // Clear previous messages
+    // Clear previous messages
+    messageProp.set("");
     String email = emailProp.get();
     String password = passwordProp.get();
 

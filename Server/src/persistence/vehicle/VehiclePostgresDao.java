@@ -456,7 +456,10 @@ public class VehiclePostgresDao implements VehicleDao {
 
       for (String sub : new String[]{"bike","ebike","scooter"}) {
         String sql = String.format(
-            "DELETE FROM %s WHERE vehicleId IN (SELECT id FROM vehicle WHERE ownerEmail=?)",
+            "ALTER TABLE reservation\n"
+                + "  ADD CONSTRAINT reservation_vehicleid_fkey\n"
+                + "  FOREIGN KEY (vehicleid)\n" + "    REFERENCES vehicle(id)\n"
+                + "    ON DELETE CASCADE;",
             sub
         );
         try (PreparedStatement ps = conn.prepareStatement(sql)) {

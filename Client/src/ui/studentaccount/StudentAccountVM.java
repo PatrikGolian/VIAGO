@@ -228,16 +228,16 @@ public class StudentAccountVM
       messageProp.set("First name cannot be empty");
       return;
     }
-    if (first.length() < 2 || !first.matches("[a-zA-Z ]+")) {
-      messageProp.set("First name must be at least 2 letters and only letters");
+    if (first.length() <= 2 || !first.matches("[a-zA-Z ]+")) {
+      messageProp.set("First name must be at least 3 letters and only letters");
       return;
     }
     if (last.isEmpty()) {
       messageProp.set("Last name cannot be empty");
       return;
     }
-    if (last.length() < 2 || !last.matches("[a-zA-Z ]+")) {
-      messageProp.set("Last name must be at least 2 letters and only letters");
+    if (last.length() <= 2 || !last.matches("[a-zA-Z ]+")) {
+      messageProp.set("Last name must be at least 3 letters and only letters");
       return;
     }
 

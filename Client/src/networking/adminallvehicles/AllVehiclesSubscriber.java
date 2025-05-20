@@ -33,11 +33,12 @@ public class AllVehiclesSubscriber {
             case "BIKE_ADDED":
             case "EBIKE_ADDED":
             case "SCOOTER_ADDED":
+            case "USER_BLACKLISTED":
             {
               Platform.runLater(action);
               System.out.println("----> [allVehicles] recieved the reservation push!");
             }
-              break;
+            break;
             default:
           }
         }

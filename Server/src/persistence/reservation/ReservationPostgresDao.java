@@ -239,4 +239,16 @@ public class ReservationPostgresDao implements ReservationDao {
     }
     return list;
   }
+  @Override
+  public void deleteByVehicleId(int vehicleId) {
+    String sql = "DELETE FROM reservation WHERE vehicleId = ?";
+    try (Connection conn = getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)) {
+
+      ps.setInt(1, vehicleId);
+      ps.executeUpdate();
+    } catch (SQLException e) {
+      throw new RuntimeException("Failed to delete reservations for vehicleId " + vehicleId, e);
+    }
+  }
 }

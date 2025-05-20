@@ -11,7 +11,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../University Work/Semester 2/Java Programming 2/postgresql-42.7.5.jar!/" />
+          <root url="jar://$USER_HOME$/University Work/Semester 2/Java Programming 2/postgresql-42.7.5.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -21,22 +21,23 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../XmlJsonParser-1.4 (2).jar!/" />
+          <root url="jar://$USER_HOME$/XmlJsonParser-1.4 (2).jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../XmlJsonParser-1.4 (2).jar!/" />
+          <root url="jar://$USER_HOME$/XmlJsonParser-1.4 (2).jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../postgresql-42.7.5.jar!/" />
+          <root url="jar://$USER_HOME$/postgresql-42.7.5.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="postgresql-42.7.5" level="application" />
   </component>
 </module>

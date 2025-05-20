@@ -312,15 +312,24 @@ public class MainSocketHandler implements Runnable
           blacklistSubscribers.remove(subscriber);
         }
       }
-      for(ObjectOutputStream subscriber : viewUsersSubscribers)
+      for(ObjectOutputStream subscriber : reservationSubscribers)
       {
-        try
-        {
+        try{
           subscriber.writeObject(push);
         }
         catch (IOException e)
         {
-          viewUsersSubscribers.remove(subscriber);
+          reservationSubscribers.remove(subscriber);
+        }
+      }
+      for(ObjectOutputStream subscriber : allVehiclesSubscribers)
+      {
+        try{
+          subscriber.writeObject(push);
+        }
+        catch (IOException e)
+        {
+          allVehiclesSubscribers.remove(subscriber);
         }
       }
       return;
@@ -344,9 +353,15 @@ public class MainSocketHandler implements Runnable
       case "allVehicles"  -> serviceProvider.getAllVehiclesRequestHandler(sharedResource);
       default -> throw new InvalidActionException("Unknown handler: " + req.handler(), req.action());
     };
+    try
+    {
+      return handler.handle(req.action(), req.payload());
+    }
+    catch (Exception e)
+    {
+      throw new ValidationException(e.getMessage());
+    }
 
-    // now invoke the handler, passing along action + payload
-    return handler.handle(req.action(), req.payload());
   }
 
   private void registerSubscriber(Request request, ObjectOutputStream outgoing)
