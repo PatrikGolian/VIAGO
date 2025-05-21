@@ -25,7 +25,7 @@
             <TableColumn fx:id="ownerEmail" editable="false" prefWidth="143.20003662109377" text="Owner email" />
          </columns>
       </TableView>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e0e0e0" height="638.0" layoutX="-5.0" layoutY="75.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="286.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e0e0e0" height="650.0" layoutX="-5.0" layoutY="75.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="286.0" />
       <Button fx:id="deleteButton" layoutX="294.0" layoutY="678.0" mnemonicParsing="false" onAction="#onDeleteReservation" prefHeight="30.0" prefWidth="450.0" text="DELETE" textFill="WHITE">
          <font>
             <Font size="14.0" />

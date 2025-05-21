@@ -18,14 +18,14 @@
 <children>
     <TableView fx:id="vehiclesTable" layoutX="7.0" layoutY="81.0" prefHeight="349.0" prefWidth="714.0">
         <columns>
-            <TableColumn fx:id="typeColumn" prefWidth="104.80002117156982" text="Type" />
-            <TableColumn fx:id="brandColumn" prefWidth="110.4000244140625" text="Brand" />
-            <TableColumn fx:id="modelColumn" prefWidth="127.19999694824219" text="Model" />
-            <TableColumn fx:id="priceColumn" minWidth="0.0" prefWidth="60.0" text="PPD" />
-            <TableColumn fx:id="conditionColumn" prefWidth="90.39996337890625" text="Condition" />
-            <TableColumn fx:id="colorColumn" prefWidth="93.60003662109375" text="Color" />
-            <TableColumn fx:id="stateColumn" prefWidth="127.199951171875" text="State" />
-            <TableColumn fx:id="ownerEmailColumn" prefWidth="75.0" text="Owner" />
+            <TableColumn fx:id="typeColumn" prefWidth="85.33334636688232" text="Type" />
+            <TableColumn fx:id="brandColumn" prefWidth="86.0" text="Brand" />
+            <TableColumn fx:id="modelColumn" prefWidth="87.33334350585938" text="Model" />
+            <TableColumn fx:id="priceColumn" minWidth="0.0" prefWidth="72.00006103515625" text="PPD" />
+            <TableColumn fx:id="conditionColumn" prefWidth="83.3333740234375" text="Condition" />
+            <TableColumn fx:id="colorColumn" prefWidth="86.66668701171875" text="Color" />
+            <TableColumn fx:id="stateColumn" maxWidth="100.0" prefWidth="204.0" text="State" />
+            <TableColumn fx:id="ownerEmailColumn" prefWidth="108.66668701171875" text="Owner" />
         </columns>
     </TableView>
     <TextField fx:id="speedField" layoutX="50.0" layoutY="435.0" prefHeight="30.0" prefWidth="184.0">

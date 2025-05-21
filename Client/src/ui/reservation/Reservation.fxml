@@ -31,7 +31,7 @@
             <font>
                 <Font size="24.0" />
             </font></Button>
-        <TextField fx:id="searchField" layoutX="7.0" layoutY="136.0" prefHeight="31.0" prefWidth="414.0" promptText="Search by type or availability">
+        <TextField fx:id="searchField" layoutX="7.0" layoutY="136.0" prefHeight="31.0" prefWidth="414.0" promptText="Search by type">
             <font>
                 <Font size="14.0" />
             </font></TextField>
