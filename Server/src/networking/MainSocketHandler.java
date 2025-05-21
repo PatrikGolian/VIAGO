@@ -37,6 +37,7 @@ public class MainSocketHandler implements Runnable
   private static final List<ObjectOutputStream> allVehiclesSubscribers = new CopyOnWriteArrayList<>();
   private static final List<ObjectOutputStream> viewUsersSubscribers = new CopyOnWriteArrayList<>();
   private static final List<ObjectOutputStream> blacklistSubscribers = new CopyOnWriteArrayList<>();
+  private static final List<ObjectOutputStream> studentAccountSubscribers = new CopyOnWriteArrayList<>();
 
   public MainSocketHandler(Socket clientSocket, ServiceProvider serviceProvider,
       ReadWrite sharedResource)
@@ -70,6 +71,7 @@ public class MainSocketHandler implements Runnable
     }
     catch (EOFException eof)
     {
+
     }
     catch (Exception e)
     {
@@ -269,6 +271,7 @@ public class MainSocketHandler implements Runnable
       }
       return;
     }
+
     if("auth".equals(request.handler()) && "register".equals(request.action()))
     {
       RegisterUserRequest registerUserRequest = (RegisterUserRequest) request.payload();
@@ -292,6 +295,7 @@ public class MainSocketHandler implements Runnable
       }
       return;
     }
+
     if("users".equals(request.handler()) && "blacklist".equals(request.action()))
     {
       BlacklistUserRequest blacklistUserRequest = (BlacklistUserRequest)request.payload();
@@ -330,6 +334,17 @@ public class MainSocketHandler implements Runnable
         catch (IOException e)
         {
           allVehiclesSubscribers.remove(subscriber);
+        }
+      }
+      for(ObjectOutputStream subscriber : studentAccountSubscribers)
+      {
+        try
+        {
+          subscriber.writeObject(push);
+        }
+        catch (IOException e)
+        {
+          studentAccountSubscribers.remove(subscriber);
         }
       }
       return;
@@ -375,6 +390,7 @@ public class MainSocketHandler implements Runnable
         viewUsersSubscribers.add(outgoing);
         blacklistSubscribers.add(outgoing);
       } break;
+      case "student" : studentAccountSubscribers.add(outgoing); break;
     }
   }
 
@@ -383,7 +399,8 @@ public class MainSocketHandler implements Runnable
     return ("reservation".equals(request.handler()) && "subscribe".equals(request.action()))
         || ("yourVehicles".equals(request.handler()) && "subscribe".equals(request.action()))
         || ("allVehicles".equals(request.handler()) && "subscribe".equals(request.action()))
-        || ("users".equals(request.handler()) && "subscribe".equals(request.action()));
+        || ("users".equals(request.handler()) && "subscribe".equals(request.action()))
+        || ("student".equals(request.handler()) && "subscribe".equals(request.action()));
   }
 
   private void handleRequestWithErrorHandling(Request req,
