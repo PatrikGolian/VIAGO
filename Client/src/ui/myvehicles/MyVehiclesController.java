@@ -8,11 +8,7 @@ import startup.ViewHandler;
 import startup.ViewType;
 import ui.common.Controller;
 import ui.popup.MessageType;
-import ui.reservation.ReservationFx;
-import ui.reservation.ReservationVM;
 import ui.reservation.VehicleFx;
-
-import javax.swing.text.View;
 
 public class MyVehiclesController implements Controller
 {

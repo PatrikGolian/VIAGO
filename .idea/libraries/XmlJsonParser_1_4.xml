@@ -1,0 +1,17 @@
+<component name="libraryTable">
+  <library name="XmlJsonParser-1.4">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Downloads/XmlJsonParser-1.4.jar!/" />
+      <root url="file://$USER_HOME$/Downloads" />
+      <root url="jar://$USER_HOME$/Downloads/XmlJsonParser-1.4.jar!/parser" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/Downloads/XmlJsonParser-1.4.jar!/" />
+      <root url="file://$USER_HOME$/Downloads/SEP1/SEP1/src" />
+      <root url="file://$USER_HOME$/Downloads" />
+    </SOURCES>
+    <jarDirectory url="file://$USER_HOME$/Downloads" recursive="false" />
+    <jarDirectory url="file://$USER_HOME$/Downloads" recursive="false" type="SOURCES" />
+  </library>
+</component>

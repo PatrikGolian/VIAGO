@@ -1,4 +1,4 @@
-package ui.reservation;
+package ui.studentaccount;
 
 import dtos.reservation.ReservationDto;
 import javafx.beans.property.*;
