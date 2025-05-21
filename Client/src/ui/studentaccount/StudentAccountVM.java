@@ -10,11 +10,13 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import networking.studentaccount.StudentAccountClient;
+import networking.studentaccount.StudentAccountSubscriber;
 import startup.ViewHandler;
 import state.AppState;
 import ui.popup.MessageType;
 import ui.reservation.ReservationFx;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -62,6 +64,15 @@ public class StudentAccountVM
   {
     this.studentAccountService = studentAccountService;
     loadReservations();
+
+    try
+    {
+      new StudentAccountSubscriber("localhost", 2910, this::loadReservations);
+    }
+    catch (IOException e)
+    {
+
+    }
   }
 
 
@@ -89,6 +100,7 @@ public class StudentAccountVM
       {
         emailProp.set(AppState.getCurrentUser().email());
         List<ReservationDto> loadedReservations = studentAccountService.getReservations(new ReservationReserveRequest(emailProp.get()));
+        reservations.clear();
         for (ReservationDto reservation : loadedReservations)
         {
           reservations.add(new ReservationFx(reservation));
