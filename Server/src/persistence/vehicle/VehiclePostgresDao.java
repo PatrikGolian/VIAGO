@@ -121,104 +121,6 @@ public class VehiclePostgresDao implements VehicleDao {
   }
 
   @Override
-  public ArrayList<Vehicle> getByType(String type) throws SQLException {
-    return switch (type) {
-      case "bike"    -> getBike();
-      case "e-bike"  -> getEBike();
-      case "scooter" -> getScooter();
-      default        -> new ArrayList<>();
-    };
-  }
-
-  @Override
-  public ArrayList<Vehicle> getByState(String state) throws SQLException {
-    ArrayList<Vehicle> list = new ArrayList<>();
-    try (Connection conn = getConnection()) {
-      String sqlB = """
-                SELECT v.*, b.bikeType
-                  FROM vehicle v
-                  JOIN bike b ON v.id = b.vehicleId
-                 WHERE v.state = ?
-                """;
-      try (PreparedStatement ps = conn.prepareStatement(sqlB)) {
-        ps.setString(1, state);
-        try (ResultSet rs = ps.executeQuery()) {
-          while (rs.next()) {
-            list.add(new Bike(
-                rs.getInt("id"),
-                rs.getString("type"),
-                rs.getString("brand"),
-                rs.getString("model"),
-                rs.getString("condition"),
-                rs.getString("color"),
-                rs.getDouble("pricePerDay"),
-                rs.getString("bikeType"),
-                rs.getString("ownerEmail"),
-                rs.getString("state")
-            ));
-          }
-        }
-      }
-
-      String sqlE = """
-                SELECT v.*, e.bikeType, e.maxSpeed, e.oneChargeRange
-                  FROM vehicle v
-                  JOIN ebike e ON v.id = e.vehicleId
-                 WHERE v.state = ?
-                """;
-      try (PreparedStatement ps = conn.prepareStatement(sqlE)) {
-        ps.setString(1, state);
-        try (ResultSet rs = ps.executeQuery()) {
-          while (rs.next()) {
-            list.add(new EBike(
-                rs.getInt("id"),
-                rs.getString("type"),
-                rs.getString("brand"),
-                rs.getString("model"),
-                rs.getString("condition"),
-                rs.getString("color"),
-                rs.getDouble("pricePerDay"),
-                rs.getString("bikeType"),
-                rs.getInt("maxSpeed"),
-                rs.getInt("oneChargeRange"),
-                rs.getString("ownerEmail"),
-                rs.getString("state")
-            ));
-          }
-        }
-      }
-
-      String sqlS = """
-                SELECT v.*, s.maxSpeed, s.oneChargeRange
-                  FROM vehicle v
-                  JOIN scooter s ON v.id = s.vehicleId
-                 WHERE v.state = ?
-                """;
-      try (PreparedStatement ps = conn.prepareStatement(sqlS)) {
-        ps.setString(1, state);
-        try (ResultSet rs = ps.executeQuery()) {
-          while (rs.next()) {
-            list.add(new Scooter(
-                rs.getInt("id"),
-                rs.getString("type"),
-                rs.getString("brand"),
-                rs.getString("model"),
-                rs.getString("condition"),
-                rs.getString("color"),
-                rs.getDouble("pricePerDay"),
-                rs.getInt("maxSpeed"),
-                rs.getInt("oneChargeRange"),
-                rs.getString("ownerEmail"),
-                rs.getString("state")
-            ));
-          }
-        }
-      }
-    }
-    return list;
-  }
-
-  @Override
   public ArrayList<Vehicle> getAll() throws SQLException {
     ArrayList<Vehicle> all = new ArrayList<>();
     all.addAll(getBike());
@@ -449,34 +351,6 @@ public class VehiclePostgresDao implements VehicleDao {
     }
   }
 
-  @Override
-  public void deleteAll(String ownerEmail) throws SQLException {
-    try (Connection conn = getConnection()) {
-      conn.setAutoCommit(false);
-
-      for (String sub : new String[]{"bike","ebike","scooter"}) {
-        String sql = String.format(
-            "ALTER TABLE reservation\n"
-                + "  ADD CONSTRAINT reservation_vehicleid_fkey\n"
-                + "  FOREIGN KEY (vehicleid)\n" + "    REFERENCES vehicle(id)\n"
-                + "    ON DELETE CASCADE;",
-            sub
-        );
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-          ps.setString(1, ownerEmail);
-          ps.executeUpdate();
-        }
-      }
-
-      try (PreparedStatement ps = conn.prepareStatement(
-          "DELETE FROM vehicle WHERE ownerEmail=?")) {
-        ps.setString(1, ownerEmail);
-        ps.executeUpdate();
-      }
-
-      conn.commit();
-    }
-  }
 
   private ArrayList<Vehicle> getBike() throws SQLException {
     var list = new ArrayList<Vehicle>();
