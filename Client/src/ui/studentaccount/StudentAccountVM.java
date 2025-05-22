@@ -14,7 +14,6 @@ import networking.studentaccount.StudentAccountSubscriber;
 import startup.ViewHandler;
 import state.AppState;
 import ui.popup.MessageType;
-import ui.reservation.ReservationFx;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -37,7 +36,6 @@ public class StudentAccountVM
   private final StringProperty emailProp = new SimpleStringProperty();
   private final StringProperty nameProp = new SimpleStringProperty();
   private final StringProperty messageProp = new SimpleStringProperty();
-  private final StringProperty messageProp2 = new SimpleStringProperty();
 
   // Visiblity bind
   private final BooleanProperty changeNameLabelVisibility = new SimpleBooleanProperty();
