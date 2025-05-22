@@ -1,179 +1,234 @@
-/*package services.vehicle;
-
-import model.entities.vehicles.Bike;
-import model.entities.vehicles.EBike;
-import model.entities.vehicles.Scooter;
-import model.entities.vehicles.Vehicle;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Scanner;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-import static org.mockito.Mockito.mock;
-
-class VehicleServiceImplTest
-{
-
-  @Mock private VehicleService service;
-
-  @InjectMocks private VehicleServiceImpl vehicleService = mock(
-      VehicleServiceImpl.class);
-
-  @BeforeEach void setUp() throws Exception
-  {
-    //    Mockito
-    //        .when(service.fetchAllVehicles())
-    //        .thenReturn(List.of(
-    //            new Bike(1, "Type", "Brand", "Model",
-    //                "Condition", "Color", 20,
-    //                "bikeType","owner@via.dk","Available"),
-    //            new EBike(2, "Type", "Brand", "Model",
-    //                "Condition","Color",60,"bikeType",
-    //                50, 1000, "owner@via.dk", "Available"),
-    //            new Scooter(3, "Type", "Brand", "Model",
-    //                "Condition", "Color", 30, 20,
-    //                30,"owner@via.dk", "Available")
-    //        ));
-  }
-
-  @Test public void testGetVehiclesOverview()
-  {
-    try
-    {
-      //VehicleService service = new VehicleServiceImpl();
-      var list = service.getVehiclesOverview();
-      assertNotNull(list);
-      list.forEach(System.out::println);
-    }
-    catch (Exception e)
-    {
-      fail("Exception occurred: " + e.getMessage());
-    }
-  }
-}*/
-
 package services.vehicle;
 
 import dtos.vehicle.AddNewBikeRequest;
 import dtos.vehicle.AddNewEBikeRequest;
 import dtos.vehicle.AddNewScooterRequest;
+import dtos.vehicle.VehicleDisplayDto;
+import dtos.vehicle.BikeDisplayDto;
+import dtos.vehicle.EBikeDisplayDto;
+import dtos.vehicle.ScooterDisplayDto;
 import model.entities.vehicles.Bike;
 import model.entities.vehicles.EBike;
 import model.entities.vehicles.Scooter;
+import model.entities.vehicles.Vehicle;
 import model.exceptions.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import persistence.vehicle.VehicleDao;
+import dtos.vehicle.AddNewVehicleRequest; // needed for unknown request type test
+import services.vehicle.VehicleServiceImpl;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 class VehicleServiceImplTest {
-
-  private VehicleDao mockDao;
   private VehicleServiceImpl service;
+  private StubVehicleDao stubDao;
 
   @BeforeEach
   void setUp() {
-    mockDao = mock(VehicleDao.class);
-    service = new VehicleServiceImpl(mockDao);
+    stubDao = new StubVehicleDao();
+    service = new VehicleServiceImpl(stubDao);
   }
 
+  // Z: null addNew request -> NullPointerException
   @Test
-  void addNewBike_validRequest_callsDaoAddWithBike() throws SQLException {
-    var req = new AddNewBikeRequest(
-         1,
-         "bike",
-         "BrandCo",
-         "X100",
-         "good",
-         "Blue",
-         15.0,
-         "Mountain",
-         "owner@example.com",
-         "Available"
-    );
+  void addNew_nullRequest_throwsNPE() {
+    assertThrows(NullPointerException.class, () -> service.addNew(null));
+  }
 
+  // O: valid Bike
+  @Test
+  void addNew_validBike_addsBike() throws SQLException {
+    AddNewBikeRequest req = new AddNewBikeRequest(1, "bike", "BrandA", "ModelA", "new", "Red", 10.0, "Mountain", "owner@x.com", "Available");
     service.addNew(req);
-
-    // verify that we handed off a Bike instance to the DAO
-    verify(mockDao, times(1)).add(any(Bike.class));
+    assertEquals(1, stubDao.added.size());
+    Vehicle v = stubDao.added.get(0);
+    assertTrue(v instanceof Bike);
+    assertEquals("BrandA", ((Bike)v).getBrand());
   }
 
+  // O: valid EBike
   @Test
-  void addNewEBike_validRequest_callsDaoAddWithEBike() throws SQLException {
-    var req = new AddNewEBikeRequest(
-        2,
-        "e-bike",
-        "eBrand",
-        "E200",
-        "new",
-        "Green",
-        25.5,
-        30,
-        80,
-        "mountain",
-        "ebike-owner@example.com",
-        "Available"
-    );
-
+  void addNew_validEBike_addsEBike() throws SQLException {
+    AddNewEBikeRequest req = new AddNewEBikeRequest(2, "e-bike", "BrandB", "ModelB", "new", "Blue", 20.0, 25, 100, "City", "owner@x.com", "Available");
     service.addNew(req);
-
-    verify(mockDao, times(1)).add(any(EBike.class));
+    assertEquals(1, stubDao.added.size());
+    assertTrue(stubDao.added.get(0) instanceof EBike);
   }
 
+  // O: valid Scooter
   @Test
-  void addNewScooter_validRequest_callsDaoAddWithScooter() throws SQLException {
-    var req = new AddNewScooterRequest(
-        3,
-        "scooter",
-        "ScootCo",
-        "S300",
-        "used",
-        "Red",
-        12.0,
-        20,
-        50,
-        "scooter-owner@example.com",
-        "Available"
-    );
-
+  void addNew_validScooter_addsScooter() throws SQLException {
+    AddNewScooterRequest req = new AddNewScooterRequest(3, "scooter", "BrandC", "ModelC", "used", "Green", 15.0, 30, 80, "owner@x.com", "Available");
     service.addNew(req);
-
-    verify(mockDao, times(1)).add(any(Scooter.class));
+    assertEquals(1, stubDao.added.size());
+    assertTrue(stubDao.added.get(0) instanceof Scooter);
   }
 
+  // B: invalid type
   @Test
-  void addNewBike_invalidBrand_throwsValidationException() {
-    // brand contains digits ----> invalid
-    var req = new AddNewBikeRequest(
-        4,
-        "bike",
-        "Brand123",
-        "ModelX",
-        "good",
-        "Black",
-        10.0,
-        "Road",
-        "owner@example.com",
-        "Available"
-    );
+  void addNew_invalidType_throwsValidationException() {
+    AddNewBikeRequest req = new AddNewBikeRequest(1, "car", "BrandA", "ModelA", "new", "Red", 10.0, "Mountain", "owner@x.com", "Available");
+    assertThrows(ValidationException.class, () -> service.addNew(req));
+  }
 
-    ValidationException ex = assertThrows(ValidationException.class, () -> {
-      service.addNew(req);
-    });
-    assertTrue(ex.getMessage().contains("Brand can contain only letters"));
-    verifyNoInteractions(mockDao);
+  // B: invalid brand
+  @Test
+  void addNew_invalidBrand_throwsValidationException() {
+    AddNewBikeRequest req = new AddNewBikeRequest(1, "bike", "Brand1", "ModelA", "new", "Red", 10.0, "Mountain", "owner@x.com", "Available");
+    assertThrows(ValidationException.class, () -> service.addNew(req));
+  }
+
+  // B: empty model
+  @Test
+  void addNew_emptyModel_throwsValidationException() {
+    AddNewBikeRequest req = new AddNewBikeRequest(1, "bike", "BrandA", "", "new", "Red", 10.0, "Mountain", "owner@x.com", "Available");
+    assertThrows(ValidationException.class, () -> service.addNew(req));
+  }
+
+  // B: invalid condition
+  @Test
+  void addNew_invalidCondition_throwsValidationException() {
+    AddNewBikeRequest req = new AddNewBikeRequest(1, "bike", "BrandA", "ModelA", "old", "Red", 10.0, "Mountain", "owner@x.com", "Available");
+    assertThrows(ValidationException.class, () -> service.addNew(req));
+  }
+
+  // B: invalid color
+  @Test
+  void addNew_invalidColor_throwsValidationException() {
+    AddNewBikeRequest req = new AddNewBikeRequest(1, "bike", "BrandA", "ModelA", "new", "Red1", 10.0, "Mountain", "owner@x.com", "Available");
+    assertThrows(ValidationException.class, () -> service.addNew(req));
+  }
+
+  // B: non-positive price
+  @Test
+  void addNew_zeroPrice_throwsValidationException() {
+    AddNewBikeRequest req = new AddNewBikeRequest(1, "bike", "BrandA", "ModelA", "new", "Red", 0.0, "Mountain", "owner@x.com", "Available");
+    assertThrows(ValidationException.class, () -> service.addNew(req));
+  }
+
+  // B: invalid bikeType
+  @Test
+  void addNew_invalidBikeType_throwsValidationException() {
+    AddNewBikeRequest req = new AddNewBikeRequest(1, "bike", "BrandA", "ModelA", "new", "Red", 10.0, "123", "owner@x.com", "Available");
+    assertThrows(ValidationException.class, () -> service.addNew(req));
+  }
+
+  // B: non-positive maxSpeed
+  @Test
+  void addNew_zeroMaxSpeedEBike_throwsValidationException() {
+    AddNewEBikeRequest req = new AddNewEBikeRequest(2, "e-bike", "BrandB", "ModelB", "new", "Blue", 20.0, 0, 100, "City", "owner@x.com", "Available");
+    assertThrows(ValidationException.class, () -> service.addNew(req));
+  }
+
+  // B: non-positive oneChargeRange
+  @Test
+  void addNew_zeroRangeEBike_throwsValidationException() {
+    AddNewEBikeRequest req = new AddNewEBikeRequest(2, "e-bike", "BrandB", "ModelB", "new", "Blue", 20.0, 25, 0, "City", "owner@x.com", "Available");
+    assertThrows(ValidationException.class, () -> service.addNew(req));
+  }
+
+  // E: dao add throws SQLException
+  @Test
+  void addNew_daoThrowsSQLException() {
+    stubDao.failAdd = true;
+    AddNewBikeRequest req = new AddNewBikeRequest(1, "bike", "BrandA", "ModelA", "new", "Red", 10.0, "Mountain", "owner@x.com", "Available");
+    assertThrows(SQLException.class, () -> service.addNew(req));
+  }
+
+  // Unknown request type
+  @Test
+  void addNew_unknownRequestType_throwsIllegalArgumentException() {
+    // Use anonymous implementation of AddNewVehicleRequest
+    assertThrows(IllegalArgumentException.class,
+        () -> service.addNew(new AddNewVehicleRequest() {}));
+  }
+
+  // Zero overview
+  @Test
+  void getVehiclesOverview_zero_returnsEmpty() throws SQLException {
+    stubDao.toReturn = Collections.emptyList();
+    List<VehicleDisplayDto> list = service.getVehiclesOverview();
+    assertTrue(list.isEmpty());
+  }
+
+  // Many overview
+  @Test
+  void getVehiclesOverview_many_returnsAll() throws SQLException {
+    Bike b = new Bike(1, "bike", "BrandA", "ModelA", "new", "Red", 10.0, "Mountain", "owner@x.com", "Available");
+    EBike e = new EBike(2, "e-bike", "BrandB", "ModelB", "new", "Blue", 20.0, "City", 25, 100, "owner@x.com", "Available");
+    Scooter s = new Scooter(3, "scooter", "BrandC", "ModelC", "new", "Green", 15.0, 30, 80, "owner@x.com", "Available");
+    stubDao.toReturn = List.of(b,e,s);
+    List<VehicleDisplayDto> list = service.getVehiclesOverview();
+    assertEquals(3, list.size());
+    assertTrue(list.get(0) instanceof BikeDisplayDto);
+    assertTrue(list.get(1) instanceof EBikeDisplayDto);
+    assertTrue(list.get(2) instanceof ScooterDisplayDto);
+  }
+
+  // Unknown subtype overview
+  @Test
+  void getVehiclesOverview_unknownSubtype_throwsIllegalStateException() throws SQLException {
+    // Vehicle type that ServiceImpl cannot handle
+    stubDao.toReturn = List.of(
+        new Vehicle(1, "unknown", "BrandX", "ModelX", "new", "Black", 1.0, "owner@x.com", "Available")
+    );
+    assertThrows(IllegalStateException.class,
+        () -> service.getVehiclesOverview());
+  }
+
+  // Stub implementation
+  private static class StubVehicleDao implements VehicleDao {
+    private List<Vehicle> toReturn = Collections.emptyList();
+    private final List<Vehicle> added = new ArrayList<>();
+    boolean failAdd = false;
+
+    @Override
+    public void add(Vehicle vehicle) throws SQLException {
+      if (failAdd) throw new SQLException("add failure");
+      added.add(vehicle);
+    }
+
+    @Override
+    public ArrayList<Vehicle> getAll() throws SQLException {
+      return new ArrayList<>(toReturn);
+    }
+
+    @Override
+    public Vehicle getByIdAndType(int id, String vehicleType) throws SQLException {
+      return null;
+    }
+
+    @Override
+    public ArrayList<Vehicle> getByType(String type) throws SQLException {
+      return new ArrayList<>();
+    }
+
+    @Override
+    public ArrayList<Vehicle> getByState(String state) throws SQLException {
+      return new ArrayList<>();
+    }
+
+    @Override
+    public ArrayList<Vehicle> getByOwnerEmail(String ownerEmail) throws SQLException {
+      return new ArrayList<>(toReturn);
+    }
+
+    @Override
+    public void delete(Vehicle vehicle) throws SQLException {
+    }
+
+    @Override
+    public void deleteAll(String request) throws SQLException {
+    }
+
+    @Override
+    public void save(Vehicle vehicle, Vehicle oldVehicle) throws SQLException {
+    }
   }
 }
