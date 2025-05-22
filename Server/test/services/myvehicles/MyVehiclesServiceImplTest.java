@@ -186,10 +186,7 @@ class MyVehiclesServiceImplTest {
     // unused stubs
     @Override public void add(Vehicle vehicle) throws SQLException {}
     @Override public Vehicle getByIdAndType(int id, String vehicleType) throws SQLException { return null; }
-    @Override public ArrayList<Vehicle> getByType(String type) throws SQLException { return new ArrayList<>(); }
-    @Override public ArrayList<Vehicle> getByState(String state) throws SQLException { return new ArrayList<>(); }
     @Override public ArrayList<Vehicle> getAll() throws SQLException { return new ArrayList<>(); }
-    @Override public void deleteAll(String request) throws SQLException {}
     @Override public void save(Vehicle vehicle, Vehicle oldVehicle) throws SQLException {}
   }
 }

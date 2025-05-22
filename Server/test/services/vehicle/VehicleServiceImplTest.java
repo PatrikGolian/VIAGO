@@ -205,26 +205,12 @@ class VehicleServiceImplTest {
     }
 
     @Override
-    public ArrayList<Vehicle> getByType(String type) throws SQLException {
-      return new ArrayList<>();
-    }
-
-    @Override
-    public ArrayList<Vehicle> getByState(String state) throws SQLException {
-      return new ArrayList<>();
-    }
-
-    @Override
     public ArrayList<Vehicle> getByOwnerEmail(String ownerEmail) throws SQLException {
       return new ArrayList<>(toReturn);
     }
 
     @Override
     public void delete(Vehicle vehicle) throws SQLException {
-    }
-
-    @Override
-    public void deleteAll(String request) throws SQLException {
     }
 
     @Override

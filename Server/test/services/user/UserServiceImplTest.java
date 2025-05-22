@@ -19,7 +19,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserServiceImplTestFull {
+class UserServiceImplTest{
   private static final String VALID_LETTER_EMAIL = "abcdef@via.dk";
   private static final String VALID_DIGIT_EMAIL  = "123456@via.dk";
   private static final String INVALID_EMAIL      = "ab12cd@via.dk"; // mixed letters/digits
