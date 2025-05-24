@@ -44,7 +44,7 @@ class ReservationServiceImplTest {
   @Test
   void updateVehicleState_startToday_rentsOutVehicle() {
     Date today = Date.today();
-    Reservation res = new Reservation(1, "bike", "owner@x", "user@x", today, today, 50);
+    Reservation res = new Reservation(1, "bike", "111111@via.dk", "222222@via.dk", today, today, 50);
     stubResDao.toReturn = List.of(res);
     Vehicle veh = new Vehicle(res.getVehicleId(), res.getVehicleType(), "brand", "model", "condition", "color", 10.0, "owner@x", "Available");
     stubVehDao.nextVehicle = veh;
@@ -62,7 +62,7 @@ class ReservationServiceImplTest {
     java.time.LocalDate ld = yesterday.toLocalDate().minusDays(1);
     Date start = new Date(ld.getDayOfMonth(), ld.getMonthValue(), ld.getYear());
     Date end = new Date(start.getDay(), start.getMonth(), start.getYear());
-    Reservation res = new Reservation(2, "scooter", "owner@x", "user@x", start, end, 30);
+    Reservation res = new Reservation(2, "scooter", "111111@via.dk", "222222@via.dk", start, end, 30);
     stubResDao.toReturn = List.of(res);
     Vehicle veh0 = new Vehicle(res.getVehicleId(), res.getVehicleType(), "brand", "model", "condition", "color", 10.0, "owner@x", "RentedOut");
     stubVehDao.nextVehicle = veh0;
@@ -76,7 +76,7 @@ class ReservationServiceImplTest {
   void addNewReservation_endBeforeStart_throwsValidationException() {
     Date d1 = new Date(10,1,2025);
     Date d2 = new Date(9,1,2025);
-    ReservationRequest req = new ReservationRequest(1, "bike", "owner@x", "user@x", d1, d2, 20);
+    ReservationRequest req = new ReservationRequest(1, "bike", "111111@via.dk", "222222@via.dk", d1, d2, 20);
     assertThrows(ValidationException.class, () -> service.addNewReservation(req));
   }
 
@@ -84,7 +84,7 @@ class ReservationServiceImplTest {
   @Test
   void addNewReservation_valid_callsDaoAdd() {
     Date d = Date.today();
-    ReservationRequest req = new ReservationRequest(3, "e-bike", "owner@x", "user@x", d, d, 15);
+    ReservationRequest req = new ReservationRequest(3, "e-bike", "111111@via.dk", "222222@via.dk", d, d, 15);
     service.addNewReservation(req);
     assertTrue(stubResDao.addedCalled);
     assertEquals(3, stubResDao.addedRes.getVehicleId());
@@ -93,7 +93,7 @@ class ReservationServiceImplTest {
   // O: deleteAll calls dao.deleteAll
   @Test
   void deleteAll_invokesDao() {
-    ReservationReserveRequest req = new ReservationReserveRequest("user@x");
+    ReservationReserveRequest req = new ReservationReserveRequest("222222@via.dk");
     service.deleteAll(req);
     assertTrue(stubResDao.deleteAllCalled);
     assertEquals("user@x", stubResDao.deleteAllEmail);
@@ -102,8 +102,8 @@ class ReservationServiceImplTest {
   // O: getReservationsByTypeAndId filters correctly
   @Test
   void getReservationsByTypeAndId_returnsMatching() throws SQLException {
-    Reservation r1 = new Reservation(1, "bike", "owner@x", "user@x", Date.today(), Date.today(), 25);
-    Reservation r2 = new Reservation(2, "scooter", "owner@x", "user@x", Date.today(), Date.today(), 30);
+    Reservation r1 = new Reservation(1, "bike", "111111@via.dk", "222222@via.dk", Date.today(), Date.today(), 25);
+    Reservation r2 = new Reservation(2, "scooter", "111111@via.dk", "222222@via.dk", Date.today(), Date.today(), 30);
     stubResDao.byTypeId = List.of(r1, r2);
     ReservationRequestByIdType req = new ReservationRequestByIdType(1, "bike");
     List<ReservationDto> dtos = service.getReservationsByTypeAndId(req);

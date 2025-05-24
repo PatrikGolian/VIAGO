@@ -32,8 +32,8 @@ class AuthServiceImplTest {
   // B: existing email -> ValidationException
   @Test
   void registerUser_existingEmail_throwsValidationException() {
-    stubDao.existingUser = new User("a@via.dk", "password", "First", "Last");
-    RegisterUserRequest req = new RegisterUserRequest("a@via.dk", "password", "First", "Last");
+    stubDao.existingUser = new User("111111@via.dk", "password", "First", "Last");
+    RegisterUserRequest req = new RegisterUserRequest("111111@via.dk", "password", "First", "Last");
     ValidationException ex = assertThrows(ValidationException.class, () -> service.registerUser(req));
     assertEquals("Email is already in use.", ex.getMessage());
     assertNull(stubDao.addedUser);
@@ -50,7 +50,7 @@ class AuthServiceImplTest {
   // B: password too short -> ValidationException
   @Test
   void registerUser_shortPassword_throwsValidationException() {
-    RegisterUserRequest req = new RegisterUserRequest("abcdef@via.dk", "short", "First", "Last");
+    RegisterUserRequest req = new RegisterUserRequest("111111@via.dk", "short", "First", "Last");
     ValidationException ex = assertThrows(ValidationException.class, () -> service.registerUser(req));
     assertEquals("Password must be 8 or more characters", ex.getMessage());
   }
@@ -59,7 +59,7 @@ class AuthServiceImplTest {
   @Test
   void registerUser_longPassword_throwsValidationException() {
     String longPwd = "a".repeat(25);
-    RegisterUserRequest req = new RegisterUserRequest("abcdef@via.dk", longPwd, "First", "Last");
+    RegisterUserRequest req = new RegisterUserRequest("111111@via.dk", longPwd, "First", "Last");
     ValidationException ex = assertThrows(ValidationException.class, () -> service.registerUser(req));
     assertEquals("Password must be 24 or fewer characters", ex.getMessage());
   }
@@ -67,7 +67,7 @@ class AuthServiceImplTest {
   // B: empty first name -> ValidationException
   @Test
   void registerUser_emptyFirstName_throwsValidationException() {
-    RegisterUserRequest req = new RegisterUserRequest("abcdef@via.dk", "password", "", "Last");
+    RegisterUserRequest req = new RegisterUserRequest("111111@via.dk", "password", "", "Last");
     ValidationException ex = assertThrows(ValidationException.class, () -> service.registerUser(req));
     assertEquals("First name cannot be empty", ex.getMessage());
   }
@@ -75,7 +75,7 @@ class AuthServiceImplTest {
   // B: short first name -> ValidationException
   @Test
   void registerUser_shortFirstName_throwsValidationException() {
-    RegisterUserRequest req = new RegisterUserRequest("abcdef@via.dk", "password", "A", "Last");
+    RegisterUserRequest req = new RegisterUserRequest("111111@via.dk", "password", "A", "Last");
     ValidationException ex = assertThrows(ValidationException.class, () -> service.registerUser(req));
     assertEquals("First name has to have at least 3 letters", ex.getMessage());
   }
@@ -83,7 +83,7 @@ class AuthServiceImplTest {
   // B: invalid first name chars -> ValidationException
   @Test
   void registerUser_invalidFirstNameChars_throwsValidationException() {
-    RegisterUserRequest req = new RegisterUserRequest("abcdef@via.dk", "password", "Jo3", "Last");
+    RegisterUserRequest req = new RegisterUserRequest("111111@via.dk", "password", "Jo3", "Last");
     ValidationException ex = assertThrows(ValidationException.class, () -> service.registerUser(req));
     assertEquals("First name can only contain letters", ex.getMessage());
   }
@@ -91,7 +91,7 @@ class AuthServiceImplTest {
   // B: empty last name -> ValidationException
   @Test
   void registerUser_emptyLastName_throwsValidationException() {
-    RegisterUserRequest req = new RegisterUserRequest("abcdef@via.dk", "password", "First", "");
+    RegisterUserRequest req = new RegisterUserRequest("111111@via.dk", "password", "First", "");
     ValidationException ex = assertThrows(ValidationException.class, () -> service.registerUser(req));
     assertEquals("Last name cannot be empty", ex.getMessage());
   }
@@ -99,7 +99,7 @@ class AuthServiceImplTest {
   // B: short last name -> ValidationException
   @Test
   void registerUser_shortLastName_throwsValidationException() {
-    RegisterUserRequest req = new RegisterUserRequest("abcdef@via.dk", "password", "First", "B");
+    RegisterUserRequest req = new RegisterUserRequest("111111@via.dk", "password", "First", "B");
     ValidationException ex = assertThrows(ValidationException.class, () -> service.registerUser(req));
     assertEquals("Last name has to have at least 3 letters.", ex.getMessage());
   }
@@ -107,7 +107,7 @@ class AuthServiceImplTest {
   // B: invalid last name chars -> ValidationException
   @Test
   void registerUser_invalidLastNameChars_throwsValidationException() {
-    RegisterUserRequest req = new RegisterUserRequest("abcdef@via.dk", "password", "First", "La5");
+    RegisterUserRequest req = new RegisterUserRequest("111111@via.dk", "password", "First", "La5");
     ValidationException ex = assertThrows(ValidationException.class, () -> service.registerUser(req));
     assertEquals("Last name can only contain letters", ex.getMessage());
   }
@@ -134,7 +134,7 @@ class AuthServiceImplTest {
   @Test
   void registerUser_daoGetThrowsSQLException() throws SQLException {
     stubDao.failGet = true;
-    RegisterUserRequest req = new RegisterUserRequest("abcdef@via.dk", "password123", "First", "Last");
+    RegisterUserRequest req = new RegisterUserRequest("111111@via.dk", "password123", "First", "Last");
     assertThrows(SQLException.class, () -> service.registerUser(req));
   }
 
@@ -156,8 +156,8 @@ class AuthServiceImplTest {
   // B: login wrong password -> ValidationException
   @Test
   void login_wrongPassword_throwsValidationException() throws SQLException {
-    stubDao.existingUser = new User("abcdef@via.dk", "correctPwd", "First", "Last");
-    LoginRequest req = new LoginRequest("abcdef@via.dk", "wrongPwd");
+    stubDao.existingUser = new User("111111@via.dk", "correctPwd", "First", "Last");
+    LoginRequest req = new LoginRequest("111111@via.dk", "wrongPwd");
     ValidationException ex = assertThrows(ValidationException.class, () -> service.login(req));
     assertEquals("Incorrect password.", ex.getMessage());
   }
@@ -165,11 +165,11 @@ class AuthServiceImplTest {
   // B: login blacklisted user -> ValidationException
   @Test
   void login_blacklistedUser_throwsValidationException() throws SQLException {
-    User u = new User("abcdef@via.dk", "pwd", "First", "Last");
+    User u = new User("111111@via.dk", "pwd", "First", "Last");
     u.setBlacklisted(true);
     u.setReason("nope");
     stubDao.existingUser = u;
-    LoginRequest req = new LoginRequest("abcdef@via.dk", "pwd");
+    LoginRequest req = new LoginRequest("111111@via.dk", "pwd");
     ValidationException ex = assertThrows(ValidationException.class, () -> service.login(req));
     assertTrue(ex.getMessage().contains("This user is blacklisted: nope"));
   }
@@ -177,9 +177,9 @@ class AuthServiceImplTest {
   // O: successful login returns correct DTO
   @Test
   void login_success_returnsUserDataDto() throws SQLException {
-    User u = new User("abcdef@via.dk", "pwd12345", "First", "Last");
+    User u = new User("111111@via.dk", "pwd12345", "First", "Last");
     stubDao.existingUser = u;
-    LoginRequest req = new LoginRequest("abcdef@via.dk", "pwd12345");
+    LoginRequest req = new LoginRequest("111111@via.dk", "pwd12345");
     UserDataDto dto = service.login(req);
     assertEquals(u.getEmail(), dto.email());
     assertEquals(u.getFirstName(), dto.firstName());

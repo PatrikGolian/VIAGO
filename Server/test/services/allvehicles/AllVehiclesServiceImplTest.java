@@ -41,9 +41,9 @@ class AllVehiclesServiceImplTest {
 
   @Test
   void getVehiclesOverview_many_returnsCorrectDtos() throws SQLException {
-    Bike b = new Bike(1, "bike", "BrandA", "ModelA", "cond", "Color", 10.0, "Type", "owner@x.com", "Available");
-    EBike e = new EBike(2, "e-bike", "BrandB", "ModelB", "cond", "Color", 20.0, "Type", 30, 100, "owner@x.com", "Available");
-    Scooter s = new Scooter(3, "scooter", "BrandC", "ModelC", "cond", "Color", 15.0, 40, 120, "owner@x.com", "Available");
+    Bike b = new Bike(1, "bike", "BrandA", "ModelA", "cond", "Color", 10.0, "Type", "111111@via.dk", "Available");
+    EBike e = new EBike(2, "e-bike", "BrandB", "ModelB", "cond", "Color", 20.0, "Type", 30, 100, "111111@via.dk", "Available");
+    Scooter s = new Scooter(3, "scooter", "BrandC", "ModelC", "cond", "Color", 15.0, 40, 120, "111111@via.dk", "Available");
     stubDao.toReturn = new ArrayList<>(List.of(b, e, s));
 
     List<VehicleDisplayDto> dtos = service.getVehiclesOverview();
@@ -55,7 +55,7 @@ class AllVehiclesServiceImplTest {
 
   @Test
   void getVehiclesOverview_unknownSubtype_throwsIllegalStateException() throws SQLException {
-    Vehicle unknown = new Vehicle(99, "unknown", "B", "M", "C", "Color", 5.0, "owner@x.com", "Available");
+    Vehicle unknown = new Vehicle(99, "unknown", "B", "M", "C", "Color", 5.0, "111111@via.dk", "Available");
     stubDao.toReturn = new ArrayList<>(List.of(unknown));
     assertThrows(IllegalStateException.class, service::getVehiclesOverview);
   }
@@ -68,7 +68,7 @@ class AllVehiclesServiceImplTest {
 
   @Test
   void deleteBike_available_deletesBike() throws SQLException {
-    DeleteBikeRequest req = new DeleteBikeRequest(1, "bike", "BrandA", "ModelA", "cond", "Color", 10.0, "Type", "owner@x.com", "Available");
+    DeleteBikeRequest req = new DeleteBikeRequest(1, "bike", "BrandA", "ModelA", "cond", "Color", 10.0, "Type", "111111@via.dk", "Available");
     service.delete(req);
     assertEquals(1, stubDao.deleted.size());
     assertTrue(stubDao.deleted.get(0) instanceof Bike);
@@ -76,13 +76,13 @@ class AllVehiclesServiceImplTest {
 
   @Test
   void deleteBike_unavailable_throwsIllegalArgumentException() {
-    DeleteBikeRequest req = new DeleteBikeRequest(1, "bike", "BrandA", "ModelA", "cond", "Color", 10.0, "Type", "owner@x.com", "RentedOut");
+    DeleteBikeRequest req = new DeleteBikeRequest(1, "bike", "BrandA", "ModelA", "cond", "Color", 10.0, "Type", "111111@via.dk", "RentedOut");
     assertThrows(IllegalArgumentException.class, () -> service.delete(req));
   }
 
   @Test
   void deleteEBike_available_deletesEBike() throws SQLException {
-    DeleteEBikeRequest req = new DeleteEBikeRequest(2, "e-bike", "BrandB", "ModelB", "cond", "Color", 20.0, 100, 30, "Type", "owner@x.com", "Available");
+    DeleteEBikeRequest req = new DeleteEBikeRequest(2, "e-bike", "BrandB", "ModelB", "cond", "Color", 20.0, 100, 30, "Type", "111111@via.dk", "Available");
     service.delete(req);
     assertEquals(1, stubDao.deleted.size());
     assertTrue(stubDao.deleted.get(0) instanceof EBike);
@@ -90,7 +90,7 @@ class AllVehiclesServiceImplTest {
 
   @Test
   void deleteScooter_available_deletesScooter() throws SQLException {
-    DeleteScooterRequest req = new DeleteScooterRequest(3, "scooter", "BrandC", "ModelC", "cond", "Color", 15.0, 40, 120, "owner@x.com", "Available");
+    DeleteScooterRequest req = new DeleteScooterRequest(3, "scooter", "BrandC", "ModelC", "cond", "Color", 15.0, 40, 120, "111111@via.dk", "Available");
     service.delete(req);
     assertEquals(1, stubDao.deleted.size());
     assertTrue(stubDao.deleted.get(0) instanceof Scooter);
@@ -99,7 +99,7 @@ class AllVehiclesServiceImplTest {
   @Test
   void delete_daoThrowsSQLException_wrapsRuntimeException() {
     stubDao.failDelete = true;
-    DeleteBikeRequest req = new DeleteBikeRequest(1, "bike", "BrandA", "ModelA", "cond", "Color", 10.0, "Type", "owner@x.com", "Available");
+    DeleteBikeRequest req = new DeleteBikeRequest(1, "bike", "BrandA", "ModelA", "cond", "Color", 10.0, "Type", "111111@via.dk", "Available");
     RuntimeException ex = assertThrows(RuntimeException.class, () -> service.delete(req));
     assertTrue(ex.getMessage().contains("Failed to delete vehicle"));
   }

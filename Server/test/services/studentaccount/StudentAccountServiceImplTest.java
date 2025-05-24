@@ -37,7 +37,7 @@ class StudentAccountServiceImplTest {
   void getReservationsOverview_zero_returnsEmpty() throws SQLException {
     stubRes.toReturn = new ArrayList<>();
     List<ReservationDto> dtos = service.getReservationsOverview(
-        new ReservationReserveRequest("user@x"));
+        new ReservationReserveRequest("222222@via.dk"));
     assertNotNull(dtos);
     assertTrue(dtos.isEmpty());
   }
@@ -45,13 +45,13 @@ class StudentAccountServiceImplTest {
   // O: many reservations -> correct DTOs
   @Test
   void getReservationsOverview_many_returnsDtos() throws SQLException {
-    Reservation r1 = new Reservation(1, "bike", "owner@x", "user@x",
+    Reservation r1 = new Reservation(1, "bike", "111111@via.dk", "222222@via.dk",
         stubRes.date(1), stubRes.date(2), 50);
-    Reservation r2 = new Reservation(2, "scooter", "owner@x", "user@x",
+    Reservation r2 = new Reservation(2, "scooter", "111111@via.dk", "222222@via.dk",
         stubRes.date(3), stubRes.date(4), 75);
     stubRes.toReturn = new ArrayList<>(List.of(r1, r2));
     List<ReservationDto> dtos = service.getReservationsOverview(
-        new ReservationReserveRequest("user@x"));
+        new ReservationReserveRequest("222222@via.dk"));
     assertEquals(2, dtos.size());
     assertEquals(1, dtos.get(0).vehicleId());
     assertEquals("scooter", dtos.get(1).vehicleType());
@@ -63,14 +63,14 @@ class StudentAccountServiceImplTest {
     stubRes.failGet = true;
     assertThrows(SQLException.class,
         () -> service.getReservationsOverview(
-            new ReservationReserveRequest("user@x")));
+            new ReservationReserveRequest("222222@via.dk")));
   }
 
   // B: changeUser user not found -> ValidationException
   @Test
   void changeUser_userNotFound_throwsValidationException() throws SQLException {
     stubUser.singleUser = null;
-    ChangeUserRequest req = new ChangeUserRequest("F","L","user@x","pwd");
+    ChangeUserRequest req = new ChangeUserRequest("F","L","222222@via.dk","pwd");
     ValidationException ex = assertThrows(ValidationException.class,
         () -> service.changeUser(req));
     assertEquals("User not found", ex.getMessage());
@@ -81,7 +81,7 @@ class StudentAccountServiceImplTest {
   void changeUser_blankPassword_updatesNameOnly() throws SQLException {
     User u = new User("user@x","oldpwd","F","L");
     stubUser.singleUser = u;
-    ChangeUserRequest req = new ChangeUserRequest("NewF","NewL","user@x","   ");
+    ChangeUserRequest req = new ChangeUserRequest("NewF","NewL","222222@via.dk","   ");
     service.changeUser(req);
     assertTrue(stubUser.updateNameCalled);
     assertFalse(stubUser.updatePasswordCalled);
@@ -92,7 +92,7 @@ class StudentAccountServiceImplTest {
   void changeUser_newPassword_updatesPassword() throws SQLException {
     User u = new User("user@x","oldpwd","F","L");
     stubUser.singleUser = u;
-    ChangeUserRequest req = new ChangeUserRequest("F","L","user@x","newpwd");
+    ChangeUserRequest req = new ChangeUserRequest("F","L","222222@via.dk","newpwd");
     service.changeUser(req);
     assertTrue(stubUser.updateNameCalled);
     assertTrue(stubUser.updatePasswordCalled);
@@ -102,7 +102,7 @@ class StudentAccountServiceImplTest {
   @Test
   void getPassword_returnsPassword() throws SQLException {
     stubUser.singleUser = new User("user@x","secret","F","L");
-    String pwd = service.getPassword(new GetPasswordRequest("user@x"));
+    String pwd = service.getPassword(new GetPasswordRequest("222222@via.dk"));
     assertEquals("secret", pwd);
   }
 
@@ -111,7 +111,7 @@ class StudentAccountServiceImplTest {
   void delete_futureReservation_deletes() {
     LocalDate tomorrow = LocalDate.now().plusDays(1);
     ReservationRequest req = new ReservationRequest(
-        1, "bike", "owner@x", "user@x",
+        1, "bike", "111111@via.dk", "222222@via.dk",
         stubRes.toDate(tomorrow), stubRes.toDate(tomorrow.plusDays(1)), 20);
     service.delete(req);
     assertTrue(stubRes.deletedCalled);
@@ -122,7 +122,7 @@ class StudentAccountServiceImplTest {
   void delete_pastReservation_throwsIllegalArgumentException() {
     LocalDate today = LocalDate.now();
     ReservationRequest req = new ReservationRequest(
-        1, "bike", "owner@x", "user@x",
+        1, "bike", "111111@via.dk", "222222@via.dk",
         stubRes.toDate(today), stubRes.toDate(today), 20);
     assertThrows(IllegalArgumentException.class,
         () -> service.delete(req));
