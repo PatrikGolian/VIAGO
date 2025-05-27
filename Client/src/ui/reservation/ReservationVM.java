@@ -86,39 +86,64 @@ public class ReservationVM
     }
   }
 
-
-  public void addReservation()
+public void addReservation()
+{
+  messageProp.set("");
+  VehicleFx v = selectedVehicle.get();
+  if (v == null || startDate == null || endDate == null || startDate.get() == null || endDate.get() == null)
   {
-    messageProp.set("");
-    VehicleFx v = selectedVehicle.get();
-    if (v == null || startDate == null || endDate == null)
-    {
-      return;
-    }
-    try
-    {
-      LocalDate start = startDate.get();
-      LocalDate end = endDate.get();
-      String reservedEmail = AppState.getCurrentUser().email();
-      double price = Double.parseDouble(finalPriceProp.get());
-      ReservationRequest request = new ReservationRequest(idProp.get(),
-          v.typePropProperty().get(), ownerEmailProp.get(), reservedEmail,
-          new Date(start.getDayOfMonth(), start.getMonth().getValue(),
-              start.getYear()),
-          new Date(end.getDayOfMonth(), end.getMonth().getValue(),
-              end.getYear()), price);
-
-      reservationService.addNewReservation(request);
-      reservationSuccess.set(true);
-
-      messageProp.set("Success");
-    }
-    catch (Exception e)
-    {
-      messageProp.set(e.getMessage());
-      reservationSuccess.set(false);
-    }
+    messageProp.set("Missing vehicle or dates.");
+    reservationSuccess.set(false);
+    return;
   }
+
+  LocalDate start = startDate.get();
+  LocalDate end = endDate.get();
+
+
+  ReservationRequestByIdType requestCheck = new ReservationRequestByIdType(
+      v.idPropProperty().get(),
+      v.typePropProperty().get());
+  List<Reservation> existingReservations = getReservationsByTypeAndId(requestCheck);
+
+  boolean overlaps = existingReservations.stream().anyMatch(res -> {
+    LocalDate resStart = res.getStartDate().toLocalDate();
+    LocalDate resEnd = res.getEndDate().toLocalDate();
+
+    return !end.isBefore(resStart) && !start.isAfter(resEnd);
+  });
+
+  if (overlaps)
+  {
+    messageProp.set("Selected dates overlap with an existing reservation.");
+    reservationSuccess.set(false);
+    return;
+  }
+
+  try
+  {
+    String reservedEmail = AppState.getCurrentUser().email();
+    double price = Double.parseDouble(finalPriceProp.get());
+
+    ReservationRequest request = new ReservationRequest(
+        idProp.get(),
+        v.typePropProperty().get(),
+        ownerEmailProp.get(),
+        reservedEmail,
+        new Date(start.getDayOfMonth(), start.getMonthValue(), start.getYear()),
+        new Date(end.getDayOfMonth(), end.getMonthValue(), end.getYear()),
+        price);
+
+    reservationService.addNewReservation(request);
+    reservationSuccess.set(true);
+    messageProp.set("Success");
+  }
+  catch (Exception e)
+  {
+    messageProp.set("Error: " + e.getMessage());
+    reservationSuccess.set(false);
+  }
+}
 
   public void loadVehicles()
   {
@@ -126,7 +151,7 @@ public class ReservationVM
     {
       List<VehicleDisplayDto> loadedVehicles = reservationService.getVehicles();
       vehicles.clear();
-      for (VehicleDisplayDto vehicle : loadedVehicles) // (int i = 0; i < loadedVehicles.size(); i++)
+      for (VehicleDisplayDto vehicle : loadedVehicles)
       {
         vehicles.add(new VehicleFx(vehicle));
       }

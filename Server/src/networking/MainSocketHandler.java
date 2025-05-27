@@ -105,11 +105,9 @@ public class MainSocketHandler implements Runnable
         try
         {
           subscriber.writeObject(push);
-          System.out.println("Pushed to listener to reserveationSubscriber:)");
         }
         catch (IOException e)
         {
-          System.out.println("Removing subscriber from reservationSub");
           reservationSubscribers.remove(subscriber);
         }
       }
@@ -118,11 +116,9 @@ public class MainSocketHandler implements Runnable
         try
         {
           subscriber.writeObject(push);
-          System.out.println("Pushed to listener to myVehiclesSubscriber:)");
         }
         catch (IOException e)
         {
-          System.out.println("Removing subscriber from myVehiclesSub");
           myVehiclesSubscribers.remove(subscriber);
         }
       }
@@ -131,11 +127,10 @@ public class MainSocketHandler implements Runnable
         try
         {
           subscriber.writeObject(push);
-          System.out.println("Pushed to listener to allVehiclesSubscriber :)");
         }
         catch (IOException e)
         {
-          System.out.println("Removing subscriber from allVehiclesSub");
+          allVehiclesSubscribers.remove(subscriber);
         }
       }
       return;
