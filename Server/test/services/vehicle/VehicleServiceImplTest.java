@@ -35,13 +35,11 @@ class VehicleServiceImplTest {
     service = new VehicleServiceImpl(stubDao);
   }
 
-  // Z: null addNew request -> NullPointerException
   @Test
   void addNew_nullRequest_throwsNPE() {
     assertThrows(NullPointerException.class, () -> service.addNew(null));
   }
 
-  // O: valid Bike
   @Test
   void addNew_validBike_addsBike() throws SQLException {
     AddNewBikeRequest req = new AddNewBikeRequest(1, "bike", "BrandA", "ModelA", "new", "Red", 10.0, "Mountain", "111111@via.dk", "Available");
@@ -52,7 +50,6 @@ class VehicleServiceImplTest {
     assertEquals("BrandA", ((Bike)v).getBrand());
   }
 
-  // O: valid EBike
   @Test
   void addNew_validEBike_addsEBike() throws SQLException {
     AddNewEBikeRequest req = new AddNewEBikeRequest(2, "e-bike", "BrandB", "ModelB", "new", "Blue", 20.0, 25, 100, "City", "111111@via.dk", "Available");
@@ -61,7 +58,6 @@ class VehicleServiceImplTest {
     assertTrue(stubDao.added.get(0) instanceof EBike);
   }
 
-  // O: valid Scooter
   @Test
   void addNew_validScooter_addsScooter() throws SQLException {
     AddNewScooterRequest req = new AddNewScooterRequest(3, "scooter", "BrandC", "ModelC", "used", "Green", 15.0, 30, 80, "111111@via.dk", "Available");
@@ -70,70 +66,60 @@ class VehicleServiceImplTest {
     assertTrue(stubDao.added.get(0) instanceof Scooter);
   }
 
-  // B: invalid type
   @Test
   void addNew_invalidType_throwsValidationException() {
     AddNewBikeRequest req = new AddNewBikeRequest(1, "car", "BrandA", "ModelA", "new", "Red", 10.0, "Mountain", "111111@via.dk", "Available");
     assertThrows(ValidationException.class, () -> service.addNew(req));
   }
 
-  // B: invalid brand
   @Test
   void addNew_invalidBrand_throwsValidationException() {
     AddNewBikeRequest req = new AddNewBikeRequest(1, "bike", "Brand1", "ModelA", "new", "Red", 10.0, "Mountain", "111111@via.dk", "Available");
     assertThrows(ValidationException.class, () -> service.addNew(req));
   }
 
-  // B: empty model
   @Test
   void addNew_emptyModel_throwsValidationException() {
     AddNewBikeRequest req = new AddNewBikeRequest(1, "bike", "BrandA", "", "new", "Red", 10.0, "Mountain", "111111@via.dk", "Available");
     assertThrows(ValidationException.class, () -> service.addNew(req));
   }
 
-  // B: invalid condition
   @Test
   void addNew_invalidCondition_throwsValidationException() {
     AddNewBikeRequest req = new AddNewBikeRequest(1, "bike", "BrandA", "ModelA", "old", "Red", 10.0, "Mountain", "111111@via.dk", "Available");
     assertThrows(ValidationException.class, () -> service.addNew(req));
   }
 
-  // B: invalid color
   @Test
   void addNew_invalidColor_throwsValidationException() {
     AddNewBikeRequest req = new AddNewBikeRequest(1, "bike", "BrandA", "ModelA", "new", "Red1", 10.0, "Mountain", "111111@via.dk", "Available");
     assertThrows(ValidationException.class, () -> service.addNew(req));
   }
 
-  // B: non-positive price
   @Test
   void addNew_zeroPrice_throwsValidationException() {
     AddNewBikeRequest req = new AddNewBikeRequest(1, "bike", "BrandA", "ModelA", "new", "Red", 0.0, "Mountain", "111111@via.dk", "Available");
     assertThrows(ValidationException.class, () -> service.addNew(req));
   }
 
-  // B: invalid bikeType
   @Test
   void addNew_invalidBikeType_throwsValidationException() {
     AddNewBikeRequest req = new AddNewBikeRequest(1, "bike", "BrandA", "ModelA", "new", "Red", 10.0, "123", "111111@via.dk", "Available");
     assertThrows(ValidationException.class, () -> service.addNew(req));
   }
 
-  // B: non-positive maxSpeed
   @Test
   void addNew_zeroMaxSpeedEBike_throwsValidationException() {
     AddNewEBikeRequest req = new AddNewEBikeRequest(2, "e-bike", "BrandB", "ModelB", "new", "Blue", 20.0, 0, 100, "City", "111111@via.dk", "Available");
     assertThrows(ValidationException.class, () -> service.addNew(req));
   }
 
-  // B: non-positive oneChargeRange
   @Test
   void addNew_zeroRangeEBike_throwsValidationException() {
     AddNewEBikeRequest req = new AddNewEBikeRequest(2, "e-bike", "BrandB", "ModelB", "new", "Blue", 20.0, 25, 0, "City", "111111@via.dk", "Available");
     assertThrows(ValidationException.class, () -> service.addNew(req));
   }
 
-  // E: dao add throws SQLException
   @Test
   void addNew_daoThrowsSQLException() {
     stubDao.failAdd = true;
@@ -141,7 +127,6 @@ class VehicleServiceImplTest {
     assertThrows(SQLException.class, () -> service.addNew(req));
   }
 
-  // Unknown request type
   @Test
   void addNew_unknownRequestType_throwsIllegalArgumentException() {
     // Use anonymous implementation of AddNewVehicleRequest
@@ -149,7 +134,6 @@ class VehicleServiceImplTest {
         () -> service.addNew(new AddNewVehicleRequest() {}));
   }
 
-  // Zero overview
   @Test
   void getVehiclesOverview_zero_returnsEmpty() throws SQLException {
     stubDao.toReturn = Collections.emptyList();
@@ -157,7 +141,6 @@ class VehicleServiceImplTest {
     assertTrue(list.isEmpty());
   }
 
-  // Many overview
   @Test
   void getVehiclesOverview_many_returnsAll() throws SQLException {
     Bike b = new Bike(1, "bike", "BrandA", "ModelA", "new", "Red", 10.0, "Mountain", "111111@via.dk", "Available");
@@ -171,7 +154,6 @@ class VehicleServiceImplTest {
     assertTrue(list.get(2) instanceof ScooterDisplayDto);
   }
 
-  // Unknown subtype overview
   @Test
   void getVehiclesOverview_unknownSubtype_throwsIllegalStateException() throws SQLException {
     // Vehicle type that ServiceImpl cannot handle
@@ -182,7 +164,6 @@ class VehicleServiceImplTest {
         () -> service.getVehiclesOverview());
   }
 
-  // Stub implementation
   private static class StubVehicleDao implements VehicleDao {
     private List<Vehicle> toReturn = Collections.emptyList();
     private final List<Vehicle> added = new ArrayList<>();

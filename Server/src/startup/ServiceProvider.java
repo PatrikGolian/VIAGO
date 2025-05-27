@@ -30,13 +30,6 @@ import java.sql.SQLException;
 
 public class ServiceProvider
 {
-  // The service provider is responsible for providing services, where needed.
-  // It ensures various services receives the correct arguments.
-  // If an implementation needs to be swapped out, e.g. DAO implementations,
-  // we can do that a single place, and it will take effect across the entire application.
-
-  // This is a fairly crude and basic implementation of the Service Locator pattern.
-
   public RequestHandler getAuthenticationRequestHandler(ReadWrite sharedResource)
   {
     return new AuthRequestHandler(getAuthenticationService(), sharedResource);
@@ -113,7 +106,7 @@ public class ServiceProvider
     catch (SQLException e)
     {
       throw new RuntimeException("Failed to initialize DAO",
-          e); // or handle as needed
+          e);
     }
   }
 
@@ -126,7 +119,7 @@ public class ServiceProvider
     catch (SQLException e)
     {
       throw new RuntimeException("Failed to initialize DAO",
-          e); // or handle as needed
+          e);
     }
   }
 
@@ -139,7 +132,7 @@ public class ServiceProvider
     catch (SQLException e)
     {
       throw new RuntimeException("Failed to initialize DAO",
-          e); // or handle as needed
+          e);
     }
   }
 

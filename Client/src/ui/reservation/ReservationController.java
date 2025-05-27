@@ -374,12 +374,8 @@ public class ReservationController implements Controller
         content.setOnMouseReleased(e -> {
           if (iniCell != null && endCell != null)
           {
-            iniDate = LocalDate.of(datePicker.getValue().getYear(),
-                datePicker.getValue().getMonth(),
-                Integer.parseInt(iniCell.getText()));
-            endDate = LocalDate.of(datePicker.getValue().getYear(),
-                datePicker.getValue().getMonth(),
-                Integer.parseInt(endCell.getText()));
+            iniDate = iniCell.getItem();
+            endDate = endCell.getItem();
 
             System.out.println("Selection from " + iniDate + " to " + endDate);
 

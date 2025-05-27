@@ -35,13 +35,11 @@ class UserServiceImplTest{
     service = new UserServiceImpl(stubDao);
   }
 
-  // Z: null changeUser request -> NullPointerException
   @Test
   void changeUser_nullRequest_throwsNPE() {
     assertThrows(NullPointerException.class, () -> service.changeUser(null));
   }
 
-  // B: user not found -> ValidationException
   @Test
   void changeUser_userNotFound_throwsValidationException() throws SQLException {
     stubDao.singleUser = null;
@@ -51,7 +49,6 @@ class UserServiceImplTest{
     assertFalse(stubDao.updateNameCalled);
   }
 
-  // O: blank password -> only name update
   @Test
   void changeUser_blankPassword_onlyUpdatesName() throws SQLException {
     stubDao.singleUser = new User(VALID_LETTER_EMAIL, "pwd", "F", "L", false, false, "");
@@ -64,7 +61,6 @@ class UserServiceImplTest{
     assertFalse(stubDao.updatePasswordCalled);
   }
 
-  // O: new password different -> name and password update
   @Test
   void changeUser_newPasswordDifferent_updatesPassword() throws SQLException {
     stubDao.singleUser = new User(VALID_LETTER_EMAIL, "oldpwd", "F", "L", false, false, "");
@@ -76,28 +72,24 @@ class UserServiceImplTest{
     assertEquals("newpwd", stubDao.lastNewPassword);
   }
 
-  // E: invalid email mixed characters -> ValidationException
   @Test
   void changeUser_invalidMixedEmail_throwsValidationException() {
     ChangeUserRequest req = new ChangeUserRequest("F", "L", INVALID_EMAIL, null);
     assertThrows(ValidationException.class, () -> service.changeUser(req));
   }
 
-  // E: invalid digit email (too few digits) -> ValidationException
   @Test
   void changeUser_invalidShortDigitEmail_throwsValidationException() {
     ChangeUserRequest req = new ChangeUserRequest("F", "L", INVALID_DIGIT_SHORT, null);
     assertThrows(ValidationException.class, () -> service.changeUser(req));
   }
 
-  // E: invalid digit email (too many digits) -> ValidationException
   @Test
   void changeUser_invalidLongDigitEmail_throwsValidationException() {
     ChangeUserRequest req = new ChangeUserRequest("F", "L", INVALID_DIGIT_LONG, null);
     assertThrows(ValidationException.class, () -> service.changeUser(req));
   }
 
-  // O: getPassword returns correct password
   @Test
   void getPassword_returnsPassword() throws SQLException {
     stubDao.singleUser = new User(VALID_DIGIT_EMAIL, "secret", "A", "B", false, false, "");
@@ -105,7 +97,6 @@ class UserServiceImplTest{
     assertEquals("secret", service.getPassword(req));
   }
 
-  // E: getPassword dao error -> SQLException
   @Test
   void getPassword_daoError_throwsSQLException() throws SQLException {
     stubDao.failGetSingle = true;
@@ -113,7 +104,6 @@ class UserServiceImplTest{
     assertThrows(SQLException.class, () -> service.getPassword(req));
   }
 
-  // M: getUsersOverview zero users
   @Test
   void getUsersOverview_zeroUsers() throws SQLException {
     stubDao.manyUsers = Collections.emptyList();
@@ -122,7 +112,6 @@ class UserServiceImplTest{
     assertTrue(dtos.isEmpty());
   }
 
-  // M: getUsersOverview many users
   @Test
   void getUsersOverview_manyUsers() throws SQLException {
     User u1 = new User(VALID_LETTER_EMAIL, "p1", "A", "B", false, true, "reason1");
@@ -135,7 +124,6 @@ class UserServiceImplTest{
     assertFalse(dtos.get(1).isBlacklisted());
   }
 
-  // B: blacklistUser not found -> NotFoundException
   @Test
   void blacklistUser_userNotFound_throwsNotFoundException() throws SQLException {
     stubDao.singleUser = null;
@@ -143,7 +131,6 @@ class UserServiceImplTest{
     assertThrows(NotFoundException.class, () -> service.blacklistUser(req));
   }
 
-  // O: blacklistUser first time
   @Test
   void blacklistUser_firstTime_blacklistsUser() throws SQLException {
     stubDao.singleUser = new User(VALID_LETTER_EMAIL, "p", "A", "B", false, false, "");
@@ -153,7 +140,6 @@ class UserServiceImplTest{
     assertEquals("reason", stubDao.savedUser.getBlacklistReason());
   }
 
-  // B: blacklistUser toggle off
   @Test
   void blacklistUser_alreadyBlacklisted_unblacklistsUser() throws SQLException {
     stubDao.singleUser = new User(VALID_LETTER_EMAIL, "p", "A", "B", false, true, "old");
@@ -162,7 +148,6 @@ class UserServiceImplTest{
     assertFalse(stubDao.savedUser.isBlacklisted());
   }
 
-  // O: blacklistUserReason saves only reason
   @Test
   void blacklistUserReason_savesReasonOnly() throws SQLException {
     stubDao.singleUser = new User(VALID_LETTER_EMAIL, "p", "A", "B", false, false, "");
@@ -171,7 +156,6 @@ class UserServiceImplTest{
     assertEquals("r", stubDao.savedUser.getBlacklistReason());
   }
 
-  // O: getBlackListReason returns reason
   @Test
   void getBlackListReason_returnsReason() throws SQLException {
     stubDao.singleUser = new User(VALID_DIGIT_EMAIL, "p", "A", "B", false, true, "reason");
@@ -179,7 +163,6 @@ class UserServiceImplTest{
     assertEquals("reason", service.getBlackListReason(req));
   }
 
-  // E: updatePassword user not found -> NotFoundException
   @Test
   void updatePassword_userNotFound_throwsNotFoundException() throws SQLException {
     stubDao.singleUser = null;
@@ -187,7 +170,6 @@ class UserServiceImplTest{
     assertThrows(NotFoundException.class, () -> service.updatePassword(req));
   }
 
-  // B: updatePassword incorrect old -> ValidationException
   @Test
   void updatePassword_incorrectOldPassword_throwsValidationException() throws SQLException {
     stubDao.singleUser = new User(VALID_LETTER_EMAIL, "oldpwd", "A", "B", false, false, "");
@@ -196,7 +178,6 @@ class UserServiceImplTest{
     assertEquals("Incorrect password", ex.getMessage());
   }
 
-  // O: updatePassword success
   @Test
   void updatePassword_success_updatesAndSaves() throws SQLException {
     stubDao.singleUser = new User(VALID_DIGIT_EMAIL, "oldpwd", "A", "B", false, false, "");
@@ -206,7 +187,6 @@ class UserServiceImplTest{
     assertEquals("newpwd", stubDao.savedUser.getPassword());
   }
 
-  // Stub DAO
   private static class StubUserDao implements UserDao {
     User singleUser;
     List<User> manyUsers;

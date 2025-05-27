@@ -21,13 +21,6 @@ public class UserServiceImpl implements UserService
     this.userDao = userDao;
   }
 
-  // Following transaction script pattern:
-  // * retrieve
-  // * validate
-  // * update
-  // * save changes
-
-
   @Override public void changeUser(ChangeUserRequest request)
       throws SQLException
   {

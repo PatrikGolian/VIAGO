@@ -106,32 +106,6 @@ public class UserPostgresDao implements UserDao
         user.getBlacklistReason());
   }
 
-  /*@Override public User getSingle(String email) throws SQLException
-  {
-    try (Connection connection = getConnection())
-    {
-      PreparedStatement statement = connection.prepareStatement(
-          "SELECT * FROM account WHERE email =?");
-      statement.setString(1, email);
-      ResultSet resultSet = statement.executeQuery();
-      if (resultSet.next())
-      {
-        String password = resultSet.getString("password");
-        String firstName = resultSet.getString("firstname");
-        String lastName = resultSet.getString("lastname");
-        boolean isAdmin = resultSet.getBoolean("isAdmin");
-        boolean isBlackListed = resultSet.getBoolean("isBlackListed");
-        String blacklistReason = resultSet.getString("blackListReason");
-        return new User(email, password, firstName, lastName, isAdmin,
-            isBlackListed, blacklistReason);
-
-      }
-      else
-      {
-        return null;
-      }
-    }
-  }*/
   @Override
   public User getSingle(String email) throws SQLException {
     System.out.println("[DAO] getSingle(): looking for email = " + email);

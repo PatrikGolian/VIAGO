@@ -161,7 +161,7 @@ public class AdminAllVehiclesController implements Controller
     }
     else
     {
-      ViewHandler.popupMessage(MessageType.WARNING, "Please select a reservation to delete.");
+      ViewHandler.popupMessage(MessageType.WARNING, "Please select a vehicle to delete.");
     }
   }
   public void clearTable() {

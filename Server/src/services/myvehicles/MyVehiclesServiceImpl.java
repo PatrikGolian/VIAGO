@@ -155,31 +155,5 @@ public class MyVehiclesServiceImpl implements MyVehiclesService
               + e.getMessage(), e);
     }
   }
-
-//  public void deleteAllVehiclesAndReservations(VehicleOwnerRequest ownerEmail) {
-//    try {
-//      List<Vehicle> vehicles = vehicleDao.getByOwnerEmail(ownerEmail.ownerEmail());
-//
-//      for (Vehicle vehicle : vehicles) {
-//        // Step 1: Delete reservation(s) tied to this vehicle
-//        reservationDao.deleteByVehicleId(vehicle.getId());
-//
-//        // Step 2: Delete the vehicle
-//        if (vehicle instanceof Bike bike) {
-//          vehicleDao.delete(bike);
-//        } else if (vehicle instanceof EBike ebike) {
-//          vehicleDao.delete(ebike);
-//        } else if (vehicle instanceof Scooter scooter) {
-//          vehicleDao.delete(scooter);
-//        } else {
-//          throw new IllegalStateException("Unknown vehicle type: " + vehicle.getClass().getName());
-//        }
-//      }
-//    } catch (SQLException e) {
-//      throw new RuntimeException("Failed to delete vehicles and reservations for owner " + ownerEmail + ": " + e.getMessage(), e);
-//    }
-//  }
-
-
 }
 

@@ -23,13 +23,11 @@ class AuthServiceImplTest {
     service = new AuthServiceImpl(stubDao);
   }
 
-  // Z: null register request -> NullPointerException
   @Test
   void registerUser_nullRequest_throwsNPE() {
     assertThrows(NullPointerException.class, () -> service.registerUser(null));
   }
 
-  // B: existing email -> ValidationException
   @Test
   void registerUser_existingEmail_throwsValidationException() {
     stubDao.existingUser = new User("111111@via.dk", "password", "First", "Last");
@@ -39,7 +37,7 @@ class AuthServiceImplTest {
     assertNull(stubDao.addedUser);
   }
 
-  // B: invalid email format -> ValidationException
+
   @Test
   void registerUser_invalidEmailFormat_throwsValidationException() {
     RegisterUserRequest req = new RegisterUserRequest("user@other.com", "password", "First", "Last");
@@ -47,7 +45,7 @@ class AuthServiceImplTest {
     assertEquals("Email needs to be a valid VIA UC email (format: user@via.dk)", ex.getMessage());
   }
 
-  // B: password too short -> ValidationException
+
   @Test
   void registerUser_shortPassword_throwsValidationException() {
     RegisterUserRequest req = new RegisterUserRequest("111111@via.dk", "short", "First", "Last");
@@ -55,7 +53,7 @@ class AuthServiceImplTest {
     assertEquals("Password must be 8 or more characters", ex.getMessage());
   }
 
-  // B: password too long -> ValidationException
+
   @Test
   void registerUser_longPassword_throwsValidationException() {
     String longPwd = "a".repeat(25);
@@ -64,7 +62,6 @@ class AuthServiceImplTest {
     assertEquals("Password must be 24 or fewer characters", ex.getMessage());
   }
 
-  // B: empty first name -> ValidationException
   @Test
   void registerUser_emptyFirstName_throwsValidationException() {
     RegisterUserRequest req = new RegisterUserRequest("111111@via.dk", "password", "", "Last");
@@ -72,7 +69,6 @@ class AuthServiceImplTest {
     assertEquals("First name cannot be empty", ex.getMessage());
   }
 
-  // B: short first name -> ValidationException
   @Test
   void registerUser_shortFirstName_throwsValidationException() {
     RegisterUserRequest req = new RegisterUserRequest("111111@via.dk", "password", "A", "Last");
@@ -80,7 +76,6 @@ class AuthServiceImplTest {
     assertEquals("First name has to have at least 3 letters", ex.getMessage());
   }
 
-  // B: invalid first name chars -> ValidationException
   @Test
   void registerUser_invalidFirstNameChars_throwsValidationException() {
     RegisterUserRequest req = new RegisterUserRequest("111111@via.dk", "password", "Jo3", "Last");
@@ -88,7 +83,6 @@ class AuthServiceImplTest {
     assertEquals("First name can only contain letters", ex.getMessage());
   }
 
-  // B: empty last name -> ValidationException
   @Test
   void registerUser_emptyLastName_throwsValidationException() {
     RegisterUserRequest req = new RegisterUserRequest("111111@via.dk", "password", "First", "");
@@ -96,7 +90,6 @@ class AuthServiceImplTest {
     assertEquals("Last name cannot be empty", ex.getMessage());
   }
 
-  // B: short last name -> ValidationException
   @Test
   void registerUser_shortLastName_throwsValidationException() {
     RegisterUserRequest req = new RegisterUserRequest("111111@via.dk", "password", "First", "B");
@@ -104,7 +97,6 @@ class AuthServiceImplTest {
     assertEquals("Last name has to have at least 3 letters.", ex.getMessage());
   }
 
-  // B: invalid last name chars -> ValidationException
   @Test
   void registerUser_invalidLastNameChars_throwsValidationException() {
     RegisterUserRequest req = new RegisterUserRequest("111111@via.dk", "password", "First", "La5");
@@ -112,7 +104,6 @@ class AuthServiceImplTest {
     assertEquals("Last name can only contain letters", ex.getMessage());
   }
 
-  // O: letter email grants admin
   @Test
   void registerUser_letterEmail_setsAdminTrue() throws SQLException {
     RegisterUserRequest req = new RegisterUserRequest("abcdef@via.dk", "password123", "First", "Last");
@@ -121,7 +112,6 @@ class AuthServiceImplTest {
     assertTrue(stubDao.addedUser.isAdmin());
   }
 
-  // O: digit email leaves admin false
   @Test
   void registerUser_digitEmail_setsAdminFalse() throws SQLException {
     RegisterUserRequest req = new RegisterUserRequest("123456@via.dk", "password123", "First", "Last");
@@ -130,7 +120,6 @@ class AuthServiceImplTest {
     assertFalse(stubDao.addedUser.isAdmin());
   }
 
-  // E: getSingle throws SQLException in register -> propagate
   @Test
   void registerUser_daoGetThrowsSQLException() throws SQLException {
     stubDao.failGet = true;
@@ -138,13 +127,11 @@ class AuthServiceImplTest {
     assertThrows(SQLException.class, () -> service.registerUser(req));
   }
 
-  // Z: null login request -> NullPointerException
   @Test
   void login_nullRequest_throwsNPE() {
     assertThrows(NullPointerException.class, () -> service.login(null));
   }
 
-  // B: login unknown user -> ValidationException
   @Test
   void login_unknownUser_throwsValidationException() throws SQLException {
     stubDao.existingUser = null;
@@ -153,7 +140,6 @@ class AuthServiceImplTest {
     assertEquals("User not found.", ex.getMessage());
   }
 
-  // B: login wrong password -> ValidationException
   @Test
   void login_wrongPassword_throwsValidationException() throws SQLException {
     stubDao.existingUser = new User("111111@via.dk", "correctPwd", "First", "Last");
@@ -162,7 +148,6 @@ class AuthServiceImplTest {
     assertEquals("Incorrect password.", ex.getMessage());
   }
 
-  // B: login blacklisted user -> ValidationException
   @Test
   void login_blacklistedUser_throwsValidationException() throws SQLException {
     User u = new User("111111@via.dk", "pwd", "First", "Last");
@@ -174,7 +159,6 @@ class AuthServiceImplTest {
     assertTrue(ex.getMessage().contains("This user is blacklisted: nope"));
   }
 
-  // O: successful login returns correct DTO
   @Test
   void login_success_returnsUserDataDto() throws SQLException {
     User u = new User("111111@via.dk", "pwd12345", "First", "Last");
@@ -189,7 +173,6 @@ class AuthServiceImplTest {
     assertEquals(u.getBlacklistReason(), dto.blackListReason());
   }
 
-  // Stub DAO implementation
   private static class StubUserDao implements UserDao {
     User existingUser;
     User addedUser;
@@ -206,7 +189,6 @@ class AuthServiceImplTest {
       addedUser = user;
     }
 
-    // other methods not used
     @Override public void updateName(String email, String fname, String lname) throws SQLException {}
     @Override public void updatePassword(String email, String password) throws SQLException {}
     @Override public void delete(String email) throws SQLException {}

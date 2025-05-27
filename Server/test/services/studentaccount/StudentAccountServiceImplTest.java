@@ -32,7 +32,6 @@ class StudentAccountServiceImplTest {
     service = new StudentAccountServiceImpl(stubRes, stubUser);
   }
 
-  // Z: no reservations -> empty overview
   @Test
   void getReservationsOverview_zero_returnsEmpty() throws SQLException {
     stubRes.toReturn = new ArrayList<>();
@@ -42,7 +41,6 @@ class StudentAccountServiceImplTest {
     assertTrue(dtos.isEmpty());
   }
 
-  // O: many reservations -> correct DTOs
   @Test
   void getReservationsOverview_many_returnsDtos() throws SQLException {
     Reservation r1 = new Reservation(1, "bike", "111111@via.dk", "222222@via.dk",
@@ -57,7 +55,6 @@ class StudentAccountServiceImplTest {
     assertEquals("scooter", dtos.get(1).vehicleType());
   }
 
-  // E: DAO throws SQLException -> propagated
   @Test
   void getReservationsOverview_daoThrowsSQLException_propagates() throws SQLException {
     stubRes.failGet = true;
@@ -66,7 +63,6 @@ class StudentAccountServiceImplTest {
             new ReservationReserveRequest("222222@via.dk")));
   }
 
-  // B: changeUser user not found -> ValidationException
   @Test
   void changeUser_userNotFound_throwsValidationException() throws SQLException {
     stubUser.singleUser = null;
@@ -76,7 +72,6 @@ class StudentAccountServiceImplTest {
     assertEquals("User not found", ex.getMessage());
   }
 
-  // O: changeUser only name update
   @Test
   void changeUser_blankPassword_updatesNameOnly() throws SQLException {
     User u = new User("user@x","oldpwd","F","L");
@@ -87,7 +82,6 @@ class StudentAccountServiceImplTest {
     assertFalse(stubUser.updatePasswordCalled);
   }
 
-  // O: changeUser new password -> updates both
   @Test
   void changeUser_newPassword_updatesPassword() throws SQLException {
     User u = new User("user@x","oldpwd","F","L");
@@ -98,7 +92,6 @@ class StudentAccountServiceImplTest {
     assertTrue(stubUser.updatePasswordCalled);
   }
 
-  // E: getPassword returns correct
   @Test
   void getPassword_returnsPassword() throws SQLException {
     stubUser.singleUser = new User("user@x","secret","F","L");
@@ -106,7 +99,6 @@ class StudentAccountServiceImplTest {
     assertEquals("secret", pwd);
   }
 
-  // E: delete future reservation -> calls DAO.delete
   @Test
   void delete_futureReservation_deletes() {
     LocalDate tomorrow = LocalDate.now().plusDays(1);
@@ -117,7 +109,6 @@ class StudentAccountServiceImplTest {
     assertTrue(stubRes.deletedCalled);
   }
 
-  // B: delete past reservation -> IllegalArgumentException
   @Test
   void delete_pastReservation_throwsIllegalArgumentException() {
     LocalDate today = LocalDate.now();
@@ -128,7 +119,6 @@ class StudentAccountServiceImplTest {
         () -> service.delete(req));
   }
 
-  // StubReservationDao
   private static class StubReservationDao implements ReservationDao {
     ArrayList<Reservation> toReturn = new ArrayList<>();
     boolean failGet = false;
@@ -145,11 +135,9 @@ class StudentAccountServiceImplTest {
       deletedCalled = true;
     }
 
-    // helpers
     model.Date date(int dayOffset) { return toDate(LocalDate.now().plusDays(dayOffset)); }
     model.Date toDate(LocalDate ld) { return new model.Date(ld.getDayOfMonth(), ld.getMonthValue(), ld.getYear()); }
 
-    // other methods unused
     @Override public Reservation create(Reservation r) throws SQLException { return null; }
     @Override public ArrayList<Reservation> getAll() throws SQLException { return null; }
     @Override public ArrayList<Reservation> getByDate(model.Date date) throws SQLException { return null; }
@@ -160,7 +148,6 @@ class StudentAccountServiceImplTest {
     @Override public void deleteByVehicleId(int vehicleId) throws SQLException { }
   }
 
-  // StubUserDao
   private static class StubUserDao implements UserDao {
     User singleUser;
     boolean updateNameCalled = false;
@@ -173,7 +160,6 @@ class StudentAccountServiceImplTest {
 
     @Override public void updateName(String email, String fname, String lname) throws SQLException { updateNameCalled = true; }
     @Override public void updatePassword(String email, String password) throws SQLException { updatePasswordCalled = true; }
-    // unused
     @Override public void add(User user) throws SQLException {}
     @Override public void delete(String email) throws SQLException {}
     @Override public void save(User user) throws SQLException {}

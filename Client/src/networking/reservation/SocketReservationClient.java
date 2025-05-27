@@ -29,14 +29,6 @@ public class SocketReservationClient implements ReservationClient
     Request request = new Request("reservation", "view_vehicles", null);
     return (List<VehicleDisplayDto>) SocketService.sendRequest(request);
 
-    /*Object rawResponse = SocketService.sendRequest(request);
-
-    if (!(rawResponse instanceof List<?> rawList))
-    {
-      throw new RuntimeException("Expected List, got: " + rawResponse);
-    }
-
-    return (List<VehicleDisplayDto>) rawList;*/
   }
 
 

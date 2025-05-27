@@ -32,7 +32,6 @@ class ReservationServiceImplTest {
     service = new ReservationServiceImpl(stubResDao, stubVehDao);
   }
 
-  // Z: updateVehicleState with empty reservations
   @Test
   void updateVehicleState_noReservations_doesNothing() {
     stubResDao.toReturn = new ArrayList<>();
@@ -40,7 +39,6 @@ class ReservationServiceImplTest {
     assertFalse(stubVehDao.savedCalled);
   }
 
-  // O: reservation starts today -> state set to RentedOut
   @Test
   void updateVehicleState_startToday_rentsOutVehicle() {
     Date today = Date.today();
@@ -54,7 +52,6 @@ class ReservationServiceImplTest {
     assertEquals("Available", stubVehDao.savedOld.getState());
   }
 
-  // O: day after endDate == today -> state set to Available
   @Test
   void updateVehicleState_endYesterday_returnsAvailable() {
     // create yesterday endDate
@@ -71,7 +68,6 @@ class ReservationServiceImplTest {
     assertEquals("Available", stubVehDao.savedNew.getState());
   }
 
-  // E: validatePeriod end before start -> ValidationException
   @Test
   void addNewReservation_endBeforeStart_throwsValidationException() {
     Date d1 = new Date(10,1,2025);
@@ -80,7 +76,6 @@ class ReservationServiceImplTest {
     assertThrows(ValidationException.class, () -> service.addNewReservation(req));
   }
 
-  // O: addNewReservation valid -> calls dao.add
   @Test
   void addNewReservation_valid_callsDaoAdd() {
     Date d = Date.today();
@@ -90,7 +85,6 @@ class ReservationServiceImplTest {
     assertEquals(3, stubResDao.addedRes.getVehicleId());
   }
 
-  // O: deleteAll calls dao.deleteAll
   @Test
   void deleteAll_invokesDao() {
     ReservationReserveRequest req = new ReservationReserveRequest("222222@via.dk");
@@ -99,7 +93,6 @@ class ReservationServiceImplTest {
     assertEquals("user@x", stubResDao.deleteAllEmail);
   }
 
-  // O: getReservationsByTypeAndId filters correctly
   @Test
   void getReservationsByTypeAndId_returnsMatching() throws SQLException {
     Reservation r1 = new Reservation(1, "bike", "111111@via.dk", "222222@via.dk", Date.today(), Date.today(), 25);
@@ -111,7 +104,7 @@ class ReservationServiceImplTest {
     assertEquals(1, dtos.get(0).vehicleId());
   }
 
-  // Stub DAOs
+
   private static class StubReservationDao implements ReservationDao {
     List<Reservation> toReturn = new ArrayList<>();
     boolean addedCalled = false;
@@ -142,7 +135,6 @@ class ReservationServiceImplTest {
       deleteAllEmail = email;
     }
 
-    // other methods not used
     @Override public Reservation create(Reservation reservation) { return null; }
     @Override public ArrayList<Reservation> getByDate(Date date) { return null; }
     @Override public ArrayList<Reservation> getByReserveEmail(String reservedEmail) { return null; }

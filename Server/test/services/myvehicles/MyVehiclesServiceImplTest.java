@@ -32,7 +32,6 @@ class MyVehiclesServiceImplTest {
     service = new MyVehiclesServiceImpl(stubDao);
   }
 
-  // Z: zero vehicles overview
   @Test
   void getVehiclesOverview_zero_returnsEmpty() throws SQLException {
     stubDao.toReturn = new ArrayList<>();
@@ -41,7 +40,6 @@ class MyVehiclesServiceImplTest {
     assertTrue(dtos.isEmpty());
   }
 
-  // O: many vehicles overview
   @Test
   void getVehiclesOverview_many_returnsDtos() throws SQLException {
     Bike b = new Bike(1, "bike", "BrandA", "ModelA", "cond", "Color", 10.0, "Type", "111111@via.dk", "Available");
@@ -56,7 +54,6 @@ class MyVehiclesServiceImplTest {
     assertTrue(dtos.get(2) instanceof ScooterDisplayDto);
   }
 
-  // E: unknown subtype overview
   @Test
   void getVehiclesOverview_unknownSubtype_throwsIllegalStateException() throws SQLException {
     stubDao.toReturn = List.of(new Vehicle(99, "unknown", "B", "M", "C", "Color", 5.0, "111111@via.dk", "Available"));
@@ -64,7 +61,6 @@ class MyVehiclesServiceImplTest {
         () -> service.getVehiclesOverview(new VehicleOwnerRequest("111111@via.dk")));
   }
 
-  // E: DAO throws SQLException
   @Test
   void getVehiclesOverview_daoThrowsSQLException_propagates() {
     stubDao.failGet = true;
@@ -72,7 +68,6 @@ class MyVehiclesServiceImplTest {
         () -> service.getVehiclesOverview(new VehicleOwnerRequest("111111@via.dk")));
   }
 
-  // O: delete Bike available
   @Test
   void deleteBike_available_deletesBike() {
     DeleteBikeRequest req = new DeleteBikeRequest(1, "bike", "BrandA", "ModelA", "cond", "Color", 10.0, "Type", "111111@via.dk", "Available");
@@ -81,14 +76,12 @@ class MyVehiclesServiceImplTest {
     assertTrue(stubDao.deleted.get(0) instanceof Bike);
   }
 
-  // B: delete Bike unavailable
   @Test
   void deleteBike_unavailable_throwsIllegalArgumentException() {
     DeleteBikeRequest req = new DeleteBikeRequest(1, "bike", "BrandA", "ModelA", "cond", "Color", 10.0, "Type", "111111@via.dk", "RentedOut");
     assertThrows(IllegalArgumentException.class, () -> service.delete(req));
   }
 
-  // E: delete DAO throws SQLException wraps RuntimeException
   @Test
   void deleteBike_daoThrowsSQLException_wrapsRuntimeException() {
     stubDao.failDelete = true;
@@ -97,7 +90,6 @@ class MyVehiclesServiceImplTest {
     assertTrue(ex.getMessage().contains("Failed to delete vehicle"));
   }
 
-  // O: delete EBike available
   @Test
   void deleteEBike_available_deletesEBike() {
     DeleteEBikeRequest req = new DeleteEBikeRequest(
@@ -119,7 +111,6 @@ class MyVehiclesServiceImplTest {
     assertTrue(stubDao.deleted.get(0) instanceof EBike);
   }
 
-  // O: delete Scooter available
   @Test
   void deleteScooter_available_deletesScooter() {
     DeleteScooterRequest req = new DeleteScooterRequest(3, "scooter", "BrandC", "ModelC", "cond", "Color", 15.0, 40, 120, "111111@via.dk", "Available");
@@ -128,7 +119,6 @@ class MyVehiclesServiceImplTest {
     assertTrue(stubDao.deleted.get(0) instanceof Scooter);
   }
 
-  // Z: deleteAll zero vehicles
   @Test
   void deleteAll_zero_doesNothing() {
     stubDao.toReturn = new ArrayList<>();
@@ -136,7 +126,6 @@ class MyVehiclesServiceImplTest {
     assertTrue(stubDao.deleted.isEmpty());
   }
 
-  // O: deleteAll deletes all vehicles
   @Test
   void deleteAll_many_deletesAll() {
     Bike b = new Bike(1, "bike", "BrandA", "ModelA", "cond", "Color", 10.0, "Type", "111111@via.dk", "Available");
@@ -147,7 +136,6 @@ class MyVehiclesServiceImplTest {
     assertEquals(3, stubDao.deleted.size());
   }
 
-  // E: deleteAll unknown subtype
   @Test
   void deleteAll_unknownSubtype_throwsIllegalStateException() {
     stubDao.toReturn = List.of(new Vehicle(99, "unknown", "B", "M", "C", "Color", 5.0, "111111@via.dk", "Available"));
@@ -155,7 +143,6 @@ class MyVehiclesServiceImplTest {
         () -> service.deleteAll(new VehicleOwnerRequest("111111@via.dk")));
   }
 
-  // E: deleteAll DAO throws SQLException wraps RuntimeException
   @Test
   void deleteAll_daoThrowsSQLException_wrapsRuntimeException() {
     stubDao.failGet = true;
@@ -164,7 +151,6 @@ class MyVehiclesServiceImplTest {
     assertTrue(ex.getMessage().contains("Failed to delete all vehicles"));
   }
 
-  // Stub implementation
   private static class StubVehicleDao implements VehicleDao {
     List<Vehicle> toReturn = new ArrayList<>();
     List<Vehicle> deleted = new ArrayList<>();
@@ -183,7 +169,6 @@ class MyVehiclesServiceImplTest {
       deleted.add(vehicle);
     }
 
-    // unused stubs
     @Override public void add(Vehicle vehicle) throws SQLException {}
     @Override public Vehicle getByIdAndType(int id, String vehicleType) throws SQLException { return null; }
     @Override public ArrayList<Vehicle> getAll() throws SQLException { return new ArrayList<>(); }

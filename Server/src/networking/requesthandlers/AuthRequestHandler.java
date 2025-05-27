@@ -29,33 +29,7 @@ public class AuthRequestHandler implements RequestHandler
         {
             case "register" ->
             {
-//                Writer writer = new Writer(lock, () -> {
-//                  try
-//                  {
                     authenticationService.registerUser((RegisterUserRequest) payload);
-//                  }
-//                  catch (ValidationException e)
-//                  {
-//                      throw new ValidationException(e.getMessage());
-//                  }
-//                  catch (SQLException e)
-//                  {
-//                    throw new RuntimeException(e);
-//                  }
-//                  return null;
-//                });
-//                Thread writerThread = new Thread(writer);
-//                try {
-//                    writerThread.start();
-//                    writerThread.join();
-//                } catch (InterruptedException e) {
-//                    Thread.currentThread().interrupt();
-//                }
-//                catch (ValidationException e)
-//                {
-//                    throw new ValidationException(e.getMessage());
-//                }
-//                return writer.getResult();
             }
             case "login" ->
             {
